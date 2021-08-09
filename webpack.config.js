@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     entry: "./src/client/index.js", // bundle's entry point
@@ -39,10 +39,8 @@ module: {
       },
       // CSS, PostCSS, Sass
       {
-      test: /\.(scss|css)$/,
-      use: [{
-        loader: MiniCssExtractPlugin.loader,
-      },'style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
   ],
 },
@@ -51,6 +49,7 @@ plugins: [
     filename: 'index.html',
     template: 'src/client/html/index.html',
   }),
+  new MiniCssExtractPlugin(),
 ],
 
 };

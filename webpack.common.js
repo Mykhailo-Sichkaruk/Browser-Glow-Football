@@ -28,6 +28,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
+      template: 'src/client/css/style.html',
     }),
   ],
   

@@ -3,7 +3,6 @@ import './css/style.css';
 
 document.addEventListener('DOMContentLoaded', function() {
 
-let background = document.getElementById("background");
 let ping_tag = document.getElementById("ping");
 let nickname_form = document.getElementById("nickname_form");
 let start_game_button = document.getElementById("start_game_button");
@@ -27,12 +26,14 @@ function ping(){
       }, 500); 
 }
 
-ping();
+
 
 function html_start(){
-      nickname_form.style.display("none");
-      start_game_button.style.display("none");
+      nickname_form.style.display = "none";
+      start_game_button.style.display = "none";
 }
+document.getElementById ("start_game_button").addEventListener ("click", start_game, false);
+
 
 function start_game(){
       html_start();
@@ -41,6 +42,6 @@ function start_game(){
 }
 
 
-
+ping();
 
 }, false);
