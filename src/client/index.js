@@ -1,10 +1,9 @@
 const Constants = require('../shared/constants');
+import { LibraryTemplatePlugin } from 'webpack';
 import './css/style.css';
 import { startCapturingInput } from './input';
 
 //import {renderUpdate} from './render';
-
-document.addEventListener('DOMContentLoaded', function() {
 
 
 
@@ -20,6 +19,9 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
+let background = new Image();
+background.src = ".../public/accets/background.svg";
+
 
 console.log(canvas.width + 'x' + canvas.height);
 
@@ -113,7 +115,6 @@ ping();
 
 
 
-}, false);
 
 
 
