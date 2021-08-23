@@ -11,13 +11,20 @@ module.exports = Object.freeze({
     SCORE_BULLET_HIT: 20,
     SCORE_PER_SECOND: 1,
   
-    MAP_SIZE: 1000,
-    MAP_SIZE_X: 1920,
-    MAP_SIZE_Y: 1080,
+    MAP_SIZE: 500,
+    MAP_SIZE_X: 600,
+    MAP_SIZE_Y: 1000,
+    PITCH_BORDER_THICKNESS: 20,
 
-    BALL_RADIUS: 50,
-    PLAYER_RADIUS: 100,
+    BALL: {
+      MASS: 50,
+      RADIUS: 7,
+      COLOR: 'red',
+    },
+
+    PLAYER_RADIUS: 10,
     
+    SERVER_PING: 100,
 
     MSG_TYPES: {
       JOIN_GAME: 'join_game',

@@ -6,8 +6,8 @@ module.exports = {
     entry: "./src/client/index.js", // bundle's entry point
     output: {
     filename: 'index.js',
-    path: path.resolve(__dirname, 'testt'),
-      
+    path: path.resolve(__dirname, 'dist'),
+
   },
   
   resolve: {

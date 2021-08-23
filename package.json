@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development node src/server/info.js",
     "build": "webpack --mode production",
-    "rew": "webpack --env production"
+    "rew": "webpack --env production",
+    "ser": "cross-env NODE_ENV=development node src/server/info.js"
   },
   "author": "Mykhailo Sichkaruk",
   "license": "ISC",
@@ -30,9 +31,6 @@
     "node-sass": "^6.0.1",
     "path-browserify": "^1.0.1",
     "plugin": "^0.3.3",
-    "postcss-loader": "^6.1.1",
-    "postcss-preset-env": "^6.7.0",
-    "sass-loader": "^12.1.0",
     "socket.io": "^4.1.3",
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.2.1",
