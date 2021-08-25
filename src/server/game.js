@@ -35,7 +35,7 @@ class Game {
 
     update(){
       //Process movement
-      this.move(this.lastUpdateTime - Date.now());
+      this.move((this.lastUpdateTime - Date.now())/1000);
       //Process update
       this.colision();
 

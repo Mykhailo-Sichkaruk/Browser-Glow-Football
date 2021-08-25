@@ -6,6 +6,7 @@ let mouse;
 function MouseInput (e){
   const dir = Math.atan2(e.clientX - me.x,  e.clientY - me.y);
   updateDirection(dir);
+  console.log(dir)
 }
 
 function updateDirection(dir){

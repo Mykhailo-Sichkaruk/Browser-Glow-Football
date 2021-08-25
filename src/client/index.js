@@ -14,6 +14,7 @@ let tbl = document.createElement("table");
 let tblBody = document.createElement("tbody");
 
 let current_update;
+let me;
 
 let pong_resieved = false;
 
@@ -39,22 +40,22 @@ socket.on(Constants.MSG_TYPES.PING, function(msg) {
       ping_button.innerHTML =  'Ping: ' + (Date.now() - msg) + ' ms';
 });
 
-let me;
 
 socket.on(Constants.MSG_TYPES.GAME_UPDATE, function(data) {
       current_update = data;
+      findMe(data);
       requestAnimationFrame(renderUpdate);
-      me = findMe(data);
-      console.log(me)
 });
 
 function findMe(update){
       update.players.forEach(player => {
             if(player.socket == socket.id){
-                  return {
+                  let res = {
                         x : player.x,
                         y : player.y
                   };
+                  me = res;
+                  return;
             }
         });
 }
