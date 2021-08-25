@@ -8,33 +8,38 @@ class Game {
       this.sockets = {};
       this.players = {};
       this.ball = new Ball();
-      this.pitch = {
-        thickness: Constants.PITCH_BORDER_THICKNESS,
-        width: Constants.MAP_SIZE_X,
-        height: Constants.MAP_SIZE_Y
-      };
-      console.log('Ball created:' + this.ball)
       this.lastUpdateTime = Date.now();
       this.shouldSendUpdate = false;
-      console.log('Game created');
+      this.players_count = 0;
+      this.BLUE_score = 0;
+      this.RED_score = 0;
+      this.BLUE_players_count = 0;
+      this.RED_players_count = 0;
       setInterval(() => {this.update();}, Constants.SERVER_PING);
     }
 
   
     addPlayer(socket, nickname) {
-      console.log('Player:  '+ nickname + '  connected    (' + socket.id + ')' );
+      this.players_count++;
+      const team = this.players_count%2;
+      const team_name= (team==true)?('BLUE'):('RED ');
+      (team==true)?(this.BLUE_players_count++):(this.RED_players_count++);
+      console.log(team_name + ':    '+ nickname + ':  connected:    on socket: ( ' + socket.id + ' )' );
       this.sockets[socket.id] = socket;
 
       // Generate a position to start this player at.
-      const x = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
-      const y = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
-      this.players[socket.id] = new Player(socket.id, nickname, x, y);
+      const x = Constants.PITCH.FULL_X/3 + Constants.PITCH.FULL_X/3 * (!team);
+      const y = Constants.PITCH.FULL_Y/5 * ((team==true)?((this.BLUE_players_count%3) + 2):((this.RED_players_count%3) + 2));
+      this.players[socket.id] = new Player(socket.id, nickname, x, y, team);
     }
 
     update(){
+      //Process movement
+      this.move();
+      //Process update
       this.colision();
 
-
+      //Send update to all players
       Object.keys(this.sockets).forEach(playerID => {
         const socket = this.sockets[playerID];
         socket.emit(Constants.MSG_TYPES.GAME_UPDATE, this.createUpdate());
@@ -42,10 +47,13 @@ class Game {
     }
 
     colision(){
+
       Object.values(this.players).forEach(player => {
+
         if(this.IsTouch(player)){
           this.PlayerBall(player);
         }
+
       });
     }
 
@@ -58,6 +66,9 @@ class Game {
         x : this.ball.x - this.ball.Px,
         y : this.ball.y - this.ball.Py,
       }
+
+
+
       let PowerVector = {
         x : this.ball.x - player.x,
         y : this.ball.y - player.y,
@@ -77,11 +88,12 @@ class Game {
     }
 
     removePlayer(socket){
+      this.players_count--;
       delete this.sockets[socket.id];
       delete this.players[socket.id];
     }
 
-    handleInput(socket, res){
+    handleKeyboardInput(socket, res){
       if (this.players[socket.id]) {
         this.players[socket.id].Px = this.players[socket.id].x;
         this.players[socket.id].Py = this.players[socket.id].y;
@@ -90,11 +102,15 @@ class Game {
       }
     }
 
+    handleMouseInput(socket, dir){
+      this.players[socket.id].dir = dir;
+    }
+
     IsTouch(player){
-      let distance =  (this.ball.x - player.x)**2 + (this.ball.y - player.y)**2;
+      let current_distance =  (this.ball.x - player.x)**2 + (this.ball.y - player.y)**2;
       let collision_distance = this.ball.radius + player.radius;
       //console.log(this.ball.radius +  '    '   +   player.radius)
-      if(distance > collision_distance**2)
+      if(current_distance > collision_distance**2)
         return false;
       else
       return true;

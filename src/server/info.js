@@ -11,7 +11,7 @@ let game = new Game();
 
 server.listen(3000);
 app.use(express.static('dist'));
-console.log('server running on port 3000');
+console.log('Server running on port 3000');
 
 function createArray(x, y) {
   return Array.apply(null, Array(x)).map(e => Array(y));
@@ -27,7 +27,8 @@ io.on('connection', socket => {
   console.log('Player connected!' + socket.id);
 
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
-  socket.on(Constants.MSG_TYPES.INPUT, handleInput);
+  socket.on(Constants.MSG_TYPES.INPUT, handleKeyboardInput);
+  socket.on(Constants.MSG_TYPES.MOUSE_INPUT, handleMouseInput);
   socket.on('disconnect', onDisconnect);
   socket.on(Constants.MSG_TYPES.PING,(msg => {
     let res =  Date.now() - msg;
@@ -44,8 +45,12 @@ function joinGame(username) {
   game.addPlayer(this, username);
 }
 
-function handleInput(res){
-  game.handleInput(this, res);
+function handleKeyboardInput(res){
+  game.handleKeyboardInput(this, res);
+}
+
+function handleMouseInput(res){
+  game.handleMouseInput(this, res);
 }
 
 

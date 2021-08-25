@@ -5,11 +5,29 @@
 
 canvas{
     position:absolute; 
+	top: 0%;
+	left: 0%;
     width: 100%; 
     height: 100%;
+	z-index: 1;
     background: linear-gradient(-80deg, red, rgb(255, 0, 255), blue);
 	background-size: 500% 500%;
 	animation: gradient 10s ease infinite;
+    display: block;
+	margin: 0px;
+    padding: 0px;
+}
+
+.canvass{
+    position:absolute; 
+	top: 0%;
+	left: 0%;
+    width: 100%; 
+    height: 100%;
+	z-index: 1;
+	background: radial-gradient(circle, rgba(0,199,19,1) 0%, rgba(2,255,26,1) 50%, rgba(0,199,19,1) 100%);
+	background-size: 500% 500%;
+	animation: func 1s ease infinite;
     display: block;
 	margin: 0px;
     padding: 0px;
@@ -60,6 +78,7 @@ canvas{
 	left: 0%;
 	width: 8%;
 	height: 5%;
+	z-index: 4;
 	color: rgb(19, 19, 19);
 	font-size: 150%;
 	font-family: monospace;
@@ -78,4 +97,17 @@ canvas{
 	100% {
 		background-position: 0% 50%;
 	}
+}
+
+@keyframes func {
+	0% {
+		background-size: 100% 100%;
+		background-position: 50% 50%;
+	}
+	100% {
+		background-size: 500% 500%;
+		background-position: 50% 50%;
+
+	}
+
 }

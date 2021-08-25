@@ -1,57 +1,62 @@
 const Constants = require('../shared/constants');
 
+function MouseInput (e){
+  const dir = Math.atan2(e.clientX ,  e.clientY);
+  updateDirection(dir);
+}
 
-function updateXPosition(dx){
+function updateDirection(dir){
+  socket.emit(Constants.MSG_TYPES.MOUSE_INPUT, dir);
+}
+
+function MoveLeft(dx){
+    let res = {x: (-dx), y: 0};
+    socket.emit(Constants.MSG_TYPES.INPUT, res);
+}
+
+function MoveRight(dx){
     let res = {x: dx, y: 0};
     socket.emit(Constants.MSG_TYPES.INPUT, res);
 }
 
-function MoveUp(dx){
-    let res = {x: -dx, y: 0};
-    socket.emit(Constants.MSG_TYPES.INPUT, res);
-}
-
-function MoveDown(dx){
-    let res = {x: dx, y: 0};
-    socket.emit(Constants.MSG_TYPES.INPUT, res);
-}
-
-function MoveRight(dy){
+function MoveDown(dy){
     let res = {x: 0, y: dy};
     socket.emit(Constants.MSG_TYPES.INPUT, res);
 }
 
-function MoveLeft(dy){
-    let res = {x: 0, y: dy};
+function MoveUp(dy){
+    let res = {x: 0, y: (-dy)};
     socket.emit(Constants.MSG_TYPES.INPUT, res);
 }
 
 let moveRate = 10;
 
-/*const controller = {
-    87: {pressed: false, func: MoveUp},
-    83: {pressed: false, func: MoveDown},
-    38: {pressed: false, func: MoveUp},
-    40: {pressed: false, func: MoveDown},
+const controller = {
+    "KeyW": {pressed: false, func: MoveUp},
+    "KeyS": {pressed: false, func: MoveDown},
+    "KeyD": {pressed: false, func: MoveRight},
+    "KeyA": {pressed: false, func: MoveLeft},
   }
 
   document.addEventListener("keydown", (e) => {
-    if(controller[e.keyCode]){
-      controller[e.keyCode].pressed = true
+    if(controller[e.code]){
+      controller[e.code].pressed = true
     }
+    else
+        console.log(e.code);
   })
   document.addEventListener("keyup", (e) => {
-    if(controller[e.keyCode]){
-      controller[e.keyCode].pressed = false
+    if(controller[e.code]){
+      controller[e.code].pressed = false
     }
-  });*/
+  });
 
  export function startInput() {
-    setInterval(executeMoves = () => {
+    setInterval( ()=> {
     Object.keys(controller).forEach(key=> {
       controller[key].pressed && controller[key].func(moveRate)
     }) 
-  }, 20);
+  }, 50);
 }
 
 
@@ -71,4 +76,5 @@ export function startCapturingInput() {
             MoveRight(moveRate);
         }
       }, false);
+      document.addEventListener('mousemove', MouseInput);
   }

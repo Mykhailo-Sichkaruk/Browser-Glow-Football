@@ -1,9 +1,10 @@
 const Constants = require('../shared/constants');
 
 class Player{
-    constructor(socket, nickname, x, y) {
+    constructor(socket, nickname, x, y, team) {
         this.socket = socket;
         this.nickname = nickname;
+        this.team = team;
         this.x = x;
         this.y = y;
         this.Px = x;

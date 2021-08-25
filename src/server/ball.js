@@ -3,10 +3,10 @@ const Constants = require('../shared/constants');
 
 class Ball{
     constructor(){
-        this.x = Constants.MAP_SIZE/2,
-        this.y = Constants.MAP_SIZE/2,
-        this.Px = Constants.MAP_SIZE/2,
-        this.Py = Constants.MAP_SIZE/2,
+        this.x  = Constants.PITCH.FULL_X/2,
+        this.y  = Constants.PITCH.FULL_Y/2,
+        this.Px = Constants.PITCH.FULL_X/2
+        this.Py = Constants.PITCH.FULL_Y/2
         this.mass = Constants.BALL.MASS,
         this.radius = Constants.BALL.RADIUS,
         this.inertion = 0;
