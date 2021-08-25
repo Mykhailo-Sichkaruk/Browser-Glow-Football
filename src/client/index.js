@@ -1,6 +1,6 @@
 const Constants = require('../shared/constants');
 import './css/style.css';
-import { startInput } from './input';
+import { startInput, InitInput } from './input';
 
 import {renderUpdate, initCanvas} from './render';
 
@@ -13,14 +13,7 @@ let body = document.getElementById("body");
 let tbl = document.createElement("table");
 let tblBody = document.createElement("tbody");
 
-
-
-
-
 let current_update;
-
-
-
 
 let pong_resieved = false;
 
@@ -51,7 +44,20 @@ let me;
 socket.on(Constants.MSG_TYPES.GAME_UPDATE, function(data) {
       current_update = data;
       requestAnimationFrame(renderUpdate);
+      me = findMe(data);
+      console.log(me)
 });
+
+function findMe(update){
+      update.players.forEach(player => {
+            if(player.socket == socket.id){
+                  return {
+                        x : player.x,
+                        y : player.y
+                  };
+            }
+        });
+}
 
 function html_start(){
       nickname_form.style.display = "none";
@@ -64,22 +70,14 @@ document.getElementById("start_game_button").addEventListener("click", start_gam
 
 function start_game(){
       html_start();
+      InitInput();
       startInput();
       initCanvas();
       nickname = nickname_form.value;
       socket.emit(Constants.MSG_TYPES.JOIN_GAME, nickname);
 }
 
-
-
-
 ping();
 
-
-
-
-
-
-
-export {current_update};
+export {current_update, me};
 

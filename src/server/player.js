@@ -9,10 +9,7 @@ class Player{
         this.y = y;
         this.Px = x;
         this.Py = y;
-        this.direction = {
-            x: 1,
-            y: 1,
-        };
+        this.direction = 0;
 
         this.velosity = Constants.PLAYER_SPEED;
         this.radius = Constants.PLAYER_RADIUS;
@@ -22,6 +19,11 @@ class Player{
         this.hp = Constants.PLAYER_MAX_HP;
         this.fireCooldown = 0;
         this.score = 0;
+    }
+
+    move(dt){
+        this.x += dt * this.velosity * Math.sin(this.direction);
+        this.y -= dt * this.velosity * Math.cos(this.direction);
     }
 }
 

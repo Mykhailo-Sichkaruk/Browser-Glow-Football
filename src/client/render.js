@@ -1,4 +1,3 @@
-import { PITCH } from '../shared/constants';
 import {current_update} from './index.js'
 const Constants = require('../shared/constants');
 
@@ -6,10 +5,10 @@ const canvas = document.getElementById('canvas');
 let ctx;
 
 function initCanvas(){
-ctx = canvas.getContext('2d');
-ctx.canvas.width  = 1600;
-ctx.canvas.height = 900;
-console.log('Game screen inicializated: ' + ctx.canvas.width + 'x' + ctx.canvas.height)
+  ctx = canvas.getContext('2d');
+  ctx.canvas.width  = 1600;
+  ctx.canvas.height = 900;
+  console.log('Game screen inicializated: ' + ctx.canvas.width + 'x' + ctx.canvas.height)
 }
 
 let GOAL = {
@@ -20,9 +19,6 @@ let GOAL = {
     x21: Constants.PITCH.X + Constants.PITCH.OUTLINE_WIDTH + Constants.PITCH.PADDING_WIDTH,
     x22: Constants.PITCH.OUTLINE_WIDTH,
   }
-
-
-
 
 function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     if (typeof stroke === 'undefined') {
@@ -104,7 +100,6 @@ function renderUpdate(){
     
     //Draw every player
     current_update.players.forEach(p => {
-
         drawCircle(ctx, p.x , p.y, Constants.PLAYER_RADIUS, (p.team==true)?(Constants.PLAYER.BLUE_COLOR):(Constants.PLAYER.RED_COLOR), 'red', 1);
     });
  

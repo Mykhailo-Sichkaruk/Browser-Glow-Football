@@ -4,14 +4,17 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+const colors = require('colors');
 
 const Constants = require('../shared/constants');
 const Game = require('./game');
+const { start } = require('repl');
 let game = new Game();
 
 server.listen(3000);
 app.use(express.static('dist'));
-console.log('Server running on port 3000');
+
+console.log('Server running on port: '.green + '3000'.red);
 
 function createArray(x, y) {
   return Array.apply(null, Array(x)).map(e => Array(y));
@@ -24,7 +27,7 @@ function create_room(){
 
 
 io.on('connection', socket => {
-  console.log('Player connected!' + socket.id);
+  console.log('Player connected! '.white + socket.id.grey);
 
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
   socket.on(Constants.MSG_TYPES.INPUT, handleKeyboardInput);

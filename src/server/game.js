@@ -35,7 +35,7 @@ class Game {
 
     update(){
       //Process movement
-      this.move();
+      this.move(this.lastUpdateTime - Date.now());
       //Process update
       this.colision();
 
@@ -43,6 +43,13 @@ class Game {
       Object.keys(this.sockets).forEach(playerID => {
         const socket = this.sockets[playerID];
         socket.emit(Constants.MSG_TYPES.GAME_UPDATE, this.createUpdate());
+      });
+      this.lastUpdateTime = Date.now();
+    }
+
+    move(dt){
+      Object.values(this.players).forEach(player => {
+        player.move(dt);
       });
     }
 

@@ -1,7 +1,10 @@
 const Constants = require('../shared/constants');
+import {me} from './index';
+
+let mouse;
 
 function MouseInput (e){
-  const dir = Math.atan2(e.clientX ,  e.clientY);
+  const dir = Math.atan2(e.clientX - me.x,  e.clientY - me.y);
   updateDirection(dir);
 }
 
@@ -60,7 +63,7 @@ const controller = {
 }
 
 
-export function startCapturingInput() {
+export function InitInput() {
     document.addEventListener('keypress', (event) => {
         if (event.code === "KeyS"){
             // Handle "down"
@@ -76,5 +79,6 @@ export function startCapturingInput() {
             MoveRight(moveRate);
         }
       }, false);
+      mouse = document.getElementById('mouse');
       document.addEventListener('mousemove', MouseInput);
   }
