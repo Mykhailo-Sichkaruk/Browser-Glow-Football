@@ -22,7 +22,7 @@ class Player{
     }
 
     move(dt){
-        this.x += dt * this.velosity * Math.sin(this.direction);
+        this.x -= dt * this.velosity * Math.sin(this.direction);
         this.y -= dt * this.velosity * Math.cos(this.direction);
     }
 }

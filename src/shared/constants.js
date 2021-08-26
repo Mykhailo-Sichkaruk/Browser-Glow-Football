@@ -1,7 +1,7 @@
 module.exports = Object.freeze({
     PLAYER_RADIUS: 20,
     PLAYER_MAX_HP: 100,
-    PLAYER_SPEED: 400,
+    PLAYER_SPEED: 15,
     PLAYER_FIRE_COOLDOWN: 0.25,
     PLAYER: {
       RED_COLOR: 'red',

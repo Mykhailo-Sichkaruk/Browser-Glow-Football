@@ -110,7 +110,7 @@ class Game {
     }
 
     handleMouseInput(socket, dir){
-      this.players[socket.id].dir = dir;
+      this.players[socket.id].direction = dir;
     }
 
     IsTouch(player){

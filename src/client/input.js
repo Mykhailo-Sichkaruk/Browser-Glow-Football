@@ -4,6 +4,7 @@ import {me} from './index';
 let mouse;
 
 function MouseInput (e){
+  console.log(e.clientX +  ' ' +  me.x + ' ' + e.clientY + ' ' + me.y)
   const dir = Math.atan2(e.clientX - me.x,  e.clientY - me.y);
   updateDirection(dir);
   console.log(dir)
