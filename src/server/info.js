@@ -11,10 +11,13 @@ const Game = require('./game');
 const { start } = require('repl');
 let game = new Game();
 
-server.listen(3000);
+let port = 3000;
+let adress_IPv4 = 'localhost';
+//server.listen(3000, '192.168.31.137');
+server.listen(port, adress_IPv4);
 app.use(express.static('dist'));
 
-console.log('Server running on port: '.green + '3000'.red);
+console.log('Server running on : '.green + adress_IPv4.white + ':' + `${port}`.red);
 
 function createArray(x, y) {
   return Array.apply(null, Array(x)).map(e => Array(y));
