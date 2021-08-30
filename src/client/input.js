@@ -9,11 +9,8 @@ let X_RATIO;
 let Y_RATIO;
 
 function MouseInput(e) {
-    //console.log(e.clientX +  ' ' +  me.x + ' ' + e.clientY + ' ' + me.y)
     const dir = Math.atan2(e.clientX * X_RATIO - me.x, e.clientY * Y_RATIO - me.y);
-    mouse.innerHTML = e.clientX + ' X ' + e.clientY
     updateDirection(dir);
-    //console.log(dir);
 }
 
 function updateDirection(dir) {

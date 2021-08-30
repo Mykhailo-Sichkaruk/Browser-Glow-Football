@@ -98,8 +98,8 @@ class Game {
                     let PowerVector = Math.atan2(this.players[other].x - this.players[player].x, this.players[other].y - this.players[player].y);
                     this.players[other].direction = (this.players[other].direction + PowerVector) / 2;
                     this.players[player].direction = (this.players[player].direction + PowerVector) / 2;
-                    this.players[other].move(0.5);
-                    this.players[player].move(0.5);
+                    this.players[other].move(0.1);
+                    this.players[player].move(0.1);
                     // ((player.mass - this.ball.mass)*player.velosity + 2*this.ball.mass)/(player.mass + this.ball.mass)*2;
                 }
             }
