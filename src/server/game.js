@@ -33,7 +33,7 @@ class Game {
         const y = Constants.PITCH.FULL_Y / 5 * ((team == true) ? ((this.BLUE_players_count % 3) + 2) : ((this.RED_players_count % 3) + 2));
         //Add player to global players array
         this.players[socket.id] = new Player(socket.id, nickname, x, y, team);
-        console.log(team_name + ':    ' + nickname + ':  connected:    on socket: ( ' + socket.id + ' )     ' + this.ball.x + ' ' + this.ball.y);
+        console.log(team_name + ':    ' + nickname.bold + ':  connected:  on socket: ( ' + socket.id + ' )');
 
     }
 

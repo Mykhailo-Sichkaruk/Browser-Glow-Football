@@ -1,7 +1,7 @@
 module.exports = Object.freeze({
 
     PLAYER: {
-        RADIUS: 20,
+        RADIUS: 10,
         MAX_HP: 100,
         SPEED: 150,
         MASS: 10,
@@ -27,7 +27,7 @@ module.exports = Object.freeze({
     },
 
     BALL: {
-        MASS: 5,
+        MASS: 1,
         RADIUS: 7,
         COLOR: 'white',
     },
@@ -41,5 +41,6 @@ module.exports = Object.freeze({
         MOUSE_INPUT: 'mouse',
         GAME_OVER: 'dead',
         PING: 'ping',
+        DISCONNECT: 'disconnect'
     },
 });
