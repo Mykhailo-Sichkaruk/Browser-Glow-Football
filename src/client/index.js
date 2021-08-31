@@ -7,9 +7,10 @@ let nickname;
 let ping_button = document.getElementById("ping");
 let nickname_form = document.getElementById("nickname_form");
 let start_game_button = document.getElementById("start_game_button");
-let body = document.getElementById("body");
+
+let body = document.getElementById("body"); //Sketch for leaderboard 
 let tbl = document.createElement("table");
-let tblBody = document.createElement("tbody");
+let tblBody = document.createElement("tbody"); 
 
 let current_update;
 let me;

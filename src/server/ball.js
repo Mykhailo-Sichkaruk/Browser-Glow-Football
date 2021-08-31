@@ -10,7 +10,7 @@ class Ball {
         this.mass = Constants.BALL.MASS,
             this.radius = Constants.BALL.RADIUS,
             this.inertion = 0,
-            this.resistance = 1;
+            this.resistance = 0.99;
         this.direction = 0;
         this.velosity = 0;
     }

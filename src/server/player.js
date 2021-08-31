@@ -15,6 +15,8 @@ class Player {
         this.radius = Constants.PLAYER.RADIUS;
         this.hp = Constants.PLAYER.MAX_HP;
         this.state = true;
+        this.gravity = false;
+        this.push = false;
 
         this.fireCooldown = 0;
         this.score = 0;

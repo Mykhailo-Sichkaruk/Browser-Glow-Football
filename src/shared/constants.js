@@ -32,13 +32,19 @@ module.exports = Object.freeze({
         COLOR: 'white',
     },
 
-    SERVER_PING: 33,
+    SERVER_PING: 7,
+
+    PHYSICS: {
+        PUSH_POWER: 8
+    },
 
     MSG_TYPES: {
         JOIN_GAME: 'join_game',
         GAME_UPDATE: 'update',
         INPUT: 'input',
+        INPUT_SPACE: 'input_space',
         MOUSE_INPUT: 'mouse',
+        MOUSE_CLICK: 'mouse_click',
         GAME_OVER: 'dead',
         PING: 'ping',
         DISCONNECT: 'disconnect'

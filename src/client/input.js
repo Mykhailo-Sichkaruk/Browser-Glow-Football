@@ -13,8 +13,18 @@ function MouseInput(e) {
     updateDirection(dir);
 }
 
+function MouseClick(){
+    socket.emit(Constants.MSG_TYPES.MOUSE_CLICK, true);
+    console.log('push')
+} 
+
 function updateDirection(dir) {
     socket.emit(Constants.MSG_TYPES.MOUSE_INPUT, dir);
+}
+
+function Space(res){
+    console.log(res)
+    socket.emit(Constants.MSG_TYPES.INPUT_SPACE, res);
 }
 
 function MoveLeft(dx) {
@@ -40,10 +50,7 @@ function MoveUp(dy) {
 let moveRate = 10;
 
 const controller = {
-    "KeyW": { pressed: false, func: MoveUp },
-    "KeyS": { pressed: false, func: MoveDown },
-    "KeyD": { pressed: false, func: MoveRight },
-    "KeyA": { pressed: false, func: MoveLeft },
+    "Space": { pressed: false, func: Space },
 }
 
 document.addEventListener("keydown", (e) => {
@@ -61,32 +68,17 @@ document.addEventListener("keyup", (e) => {
 export function startInput() {
     setInterval(() => {
         Object.keys(controller).forEach(key => {
-            controller[key].pressed && controller[key].func(moveRate)
+            controller[key].func(controller[key].pressed)
         })
     }, 50);
 }
 
 
 export function InitInput() {
-    document.addEventListener('keypress', (event) => {
-        if (event.code === "KeyS") {
-            // Handle "down"
-            MoveUp(moveRate);
-        } else if (event.code === "KeyW") {
-            // Handle "up"
-            MoveUp(moveRate);
-        } else if (event.code === "KeyA") {
-            // Handle "left"
-            MoveLeft(moveRate);
-        } else if (event.code === "KeyD") {
-            // Handle "right"
-            MoveRight(moveRate);
-        }
-    }, false);
-
 
     mouse = document.getElementById('mouse');
     document.addEventListener('mousemove', MouseInput);
+    document.addEventListener('click', MouseClick);
 
     screenWidth = document.documentElement.clientWidth
     screenHeight = document.documentElement.clientHeight

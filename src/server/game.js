@@ -5,7 +5,7 @@ let Ball = require('./ball');
 
 class Game {
     constructor() {
-        this.sockets = {};
+        this.sockets = {}; 
         this.players = {};
         this.ball = new Ball();
         this.lastUpdateTime = Date.now();
@@ -63,14 +63,20 @@ class Game {
         let i = 0;
 
         for (let socket in this.players) {
-            if (this.IsBallTouch(socket)) {
-                this.PlayerBall(socket);
+            switch (this.IsBallTouch(socket)) {
+                case 1: this.PlayerBall(socket);
+                break;
+                case 2: this.PlayerPullsBall(socket);
+                break;
+                case 3: this.PlayerPushBall(socket);
+                break;
             }
-
-            this.PlayerPlayerColision(socket, i);
+            this.players[socket].push = false;
+            this.PlayerPlayerCollision(socket, i);
 
             i++;
         }
+
     }
 
     PlayerBall(player) {
@@ -79,16 +85,37 @@ class Game {
         this.ball.velosity = ((this.players[player].mass - this.ball.mass) * this.players[player].velosity + 2 * this.ball.mass) / (this.players[player].mass + this.ball.mass) * 2;
     }
 
-    IsBallTouch(player) {
-        let current_distance = (this.ball.x - this.players[player].x) ** 2 + (this.ball.y - this.players[player].y) ** 2;
-
-        if (current_distance <= this.PlayerBall_ColisonDistance)
-            return true;
-        else
-            return false;
+    PlayerPullsBall(socket){
+        this.ball.x = this.players[socket].x + (this.players[socket].radius *Math.sin(this.players[socket].direction));
+        this.ball.y = this.players[socket].y + (this.players[socket].radius *Math.cos(this.players[socket].direction)); 
+        this.ball.direction = this.players[socket].direction;
+        this.ball.velosity  = this.players[socket].velosity;
     }
 
-    PlayerPlayerColision(player, me_index) {
+    PlayerPushBall(socket){
+        this.ball.x = this.players[socket].x + ((this.players[socket].radius + this.ball.radius + 2) *Math.sin(this.players[socket].direction));
+        this.ball.y = this.players[socket].y + ((this.players[socket].radius + this.ball.radius + 2) *Math.cos(this.players[socket].direction)); 
+        this.ball.direction = this.players[socket].direction;
+        this.ball.velosity  = this.players[socket].velosity * Constants.PHYSICS.PUSH_POWER;
+    }
+
+    IsBallTouch(socket) {
+        let current_distance = (this.ball.x - this.players[socket].x) ** 2 + (this.ball.y - this.players[socket].y) ** 2;
+        if (current_distance <= this.PlayerBall_ColisonDistance){
+            if(this.players[socket].gravity == true){
+                if(this.players[socket].push == true)
+                    return 3; //Player Hold the ball and push it in same time
+                else
+                    return 2; //Player pulls the ball
+            }
+                else
+                return 1; //Just collision
+        }
+        else
+            return 0;
+    }
+
+    PlayerPlayerCollision(player, me_index) {
         let i = 0;
         for (let other in this.players) {
             if (i > me_index) {
@@ -135,7 +162,13 @@ class Game {
         this.players[socket.id].direction = dir;
     }
 
+    HandleSpaceKey(socket, res){
+        this.players[socket.id].gravity = res;
+    }
 
+    handleMouseClick(socket, res){
+        this.players[socket.id].push = true;
+    }
 
 }
 

@@ -23,7 +23,9 @@ io.on('connection', socket => {
     socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
     socket.on(Constants.MSG_TYPES.INPUT, handleKeyboardInput);
     socket.on(Constants.MSG_TYPES.MOUSE_INPUT, handleMouseInput);
+    socket.on(Constants.MSG_TYPES.MOUSE_CLICK, handleMouseClick);
     socket.on(Constants.MSG_TYPES.DISCINNECT, onDisconnect);
+    socket.on(Constants.MSG_TYPES.INPUT_SPACE, HandleSpaceKey);
     socket.on(Constants.MSG_TYPES.PING, (msg => {
         io.emit(Constants.MSG_TYPES.PING, msg);
     }));
@@ -44,4 +46,13 @@ function handleKeyboardInput(res) {
 
 function handleMouseInput(res) {
     game.handleMouseInput(this, res);
+}
+
+function HandleSpaceKey(res){
+    game.HandleSpaceKey(this, res);
+
+}
+
+function handleMouseClick(res){
+    game.handleMouseClick(this, res);
 }
