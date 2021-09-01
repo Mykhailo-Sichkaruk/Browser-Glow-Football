@@ -1,7 +1,6 @@
 const Constants = require('../shared/constants');
 import { me } from './index';
 
-let mouse;
 let screenWidth;
 let screenHeight;
 
@@ -13,41 +12,35 @@ function MouseInput(e) {
     updateDirection(dir);
 }
 
-function MouseClick(){
-    socket.emit(Constants.MSG_TYPES.MOUSE_CLICK, true);
-    console.log('push')
-} 
+function RMBclick(e){
+        socket.emit(Constants.MSG_TYPES.RMB_CLICK, true);
+        e.preventDefault();
+}
+
+function MouseClick(e){
+    switch (e.button) {
+        case 0:
+            socket.emit(Constants.MSG_TYPES.LMB_CLICK, true);
+          break;
+        case 1:
+            console.log('MMB');
+          break;
+
+      }
+
+
+}
+ 
+
+
 
 function updateDirection(dir) {
     socket.emit(Constants.MSG_TYPES.MOUSE_INPUT, dir);
 }
 
 function Space(res){
-    console.log(res)
     socket.emit(Constants.MSG_TYPES.INPUT_SPACE, res);
 }
-
-function MoveLeft(dx) {
-    let res = { x: (-dx), y: 0 };
-    socket.emit(Constants.MSG_TYPES.INPUT, res);
-}
-
-function MoveRight(dx) {
-    let res = { x: dx, y: 0 };
-    socket.emit(Constants.MSG_TYPES.INPUT, res);
-}
-
-function MoveDown(dy) {
-    let res = { x: 0, y: dy };
-    socket.emit(Constants.MSG_TYPES.INPUT, res);
-}
-
-function MoveUp(dy) {
-    let res = { x: 0, y: (-dy) };
-    socket.emit(Constants.MSG_TYPES.INPUT, res);
-}
-
-let moveRate = 10;
 
 const controller = {
     "Space": { pressed: false, func: Space },
@@ -76,10 +69,10 @@ export function startInput() {
 
 export function InitInput() {
 
-    mouse = document.getElementById('mouse');
+    let mouse = document.getElementById('mouse');
     document.addEventListener('mousemove', MouseInput);
-    document.addEventListener('click', MouseClick);
-
+    document.addEventListener('mouseup', MouseClick);
+    document.addEventListener('contextmenu', RMBclick, false);
     screenWidth = document.documentElement.clientWidth
     screenHeight = document.documentElement.clientHeight
     X_RATIO = Constants.PITCH.FULL_X / screenWidth

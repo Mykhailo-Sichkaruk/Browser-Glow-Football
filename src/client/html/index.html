@@ -6,11 +6,8 @@
     <title>[game_name]</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="socket.io/socket.io.js">
-    </script>
-    <script>
-        let socket = io();
-    </script>
+    <script src="socket.io/socket.io.js"></script>
+    <script> let socket = io(); </script>
 
     <meta charset="UTF-8">
     <meta name="description" content="Mutiplayer 2D soccer game">
@@ -26,6 +23,8 @@
     <div class="mouse" id="mouse"></div>
     <input type="text" id="nickname_form" class="nickname_form" placeholder="nickname" autofocus>
     <button class="start_game_button" type="button" id="start_game_button">START</button>
+    <div class="score_board" id="score_board"></div>
+    <div class="score_effect" id="score_effect"></div>
 
 </body>
 

@@ -13,10 +13,12 @@ class Player {
         this.mass = Constants.PLAYER.MASS;
         this.velosity = Constants.PLAYER.SPEED;
         this.radius = Constants.PLAYER.RADIUS;
-        this.hp = Constants.PLAYER.MAX_HP;
+
+        //Super Powers
         this.state = true;
         this.gravity = false;
         this.push = false;
+        this.assist = false;
 
         this.fireCooldown = 0;
         this.score = 0;

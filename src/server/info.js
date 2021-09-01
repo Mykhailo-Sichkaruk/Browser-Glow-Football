@@ -23,12 +23,10 @@ io.on('connection', socket => {
     socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
     socket.on(Constants.MSG_TYPES.INPUT, handleKeyboardInput);
     socket.on(Constants.MSG_TYPES.MOUSE_INPUT, handleMouseInput);
-    socket.on(Constants.MSG_TYPES.MOUSE_CLICK, handleMouseClick);
-    socket.on(Constants.MSG_TYPES.DISCINNECT, onDisconnect);
+    socket.on(Constants.MSG_TYPES.LMB_CLICK, handleLMBClick);
+    socket.on(Constants.MSG_TYPES.RMB_CLICK, handleRMBClick);
+    socket.on(Constants.MSG_TYPES.DISCONNECT, onDisconnect);
     socket.on(Constants.MSG_TYPES.INPUT_SPACE, HandleSpaceKey);
-    socket.on(Constants.MSG_TYPES.PING, (msg => {
-        io.emit(Constants.MSG_TYPES.PING, msg);
-    }));
 });
 
 
@@ -53,6 +51,10 @@ function HandleSpaceKey(res){
 
 }
 
-function handleMouseClick(res){
-    game.handleMouseClick(this, res);
+function handleLMBClick(res){
+    game.handleLMBClick(this, res);
+}
+
+function handleRMBClick(res){
+    game.handleRMBClick(this, res);
 }

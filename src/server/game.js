@@ -20,23 +20,6 @@ class Game {
         setInterval(() => { this.update(); }, Constants.SERVER_PING);
     }
 
-
-    addPlayer(socket, nickname) {
-        this.players_count++;
-        const team = this.players_count % 2;
-        const team_name = (team == true) ? ('BLUE'.blue) : ('RED '.red);
-        (team == true) ? (this.BLUE_players_count++) : (this.RED_players_count++);
-        this.sockets[socket.id] = socket;
-
-        // Generate a position to start this player at.
-        const x = Constants.PITCH.FULL_X / 3 + Constants.PITCH.FULL_X / 3 * (!team);
-        const y = Constants.PITCH.FULL_Y / 5 * ((team == true) ? ((this.BLUE_players_count % 3) + 2) : ((this.RED_players_count % 3) + 2));
-        //Add player to global players array
-        this.players[socket.id] = new Player(socket.id, nickname, x, y, team);
-        console.log(team_name + ':    ' + nickname.bold + ':  connected:  on socket: ( ' + socket.id + ' )');
-
-    }
-
     update() {
         //Process colision
         this.colision();
@@ -52,7 +35,11 @@ class Game {
 
     move(dt) {
         //Move ball
-        this.ball.move(dt);
+        let res;
+        if((res = this.ball.move(dt)) == 2)
+            this.goal(true);
+        else if(res == 1)
+            this.goal(false);
         //Move all players
         Object.values(this.players).forEach(function(player) {
             player.move(dt);
@@ -64,14 +51,22 @@ class Game {
 
         for (let socket in this.players) {
             switch (this.IsBallTouch(socket)) {
+                case 0: this.players[socket].velosity = 0;
+                    break;
                 case 1: this.PlayerBall(socket);
-                break;
+                    break;
                 case 2: this.PlayerPullsBall(socket);
-                break;
-                case 3: this.PlayerPushBall(socket);
-                break;
+                    break;
+                case 3: this.PlayerPushBall(socket, Constants.PHYSICS.PUSH_POWER); //Push
+                    break;
+                case 4: this.PlayerPushBall(socket, Constants.PHYSICS.ASSIST_POWER); //Assist
+                    break;
+                case 5: this.players[socket].velosity = Constants.PLAYER.NITRO_VELOSITY;
+                    break;
+                
             }
             this.players[socket].push = false;
+            this.players[socket].assist = false;
             this.PlayerPlayerCollision(socket, i);
 
             i++;
@@ -86,17 +81,18 @@ class Game {
     }
 
     PlayerPullsBall(socket){
+        this.players[socket].velosity = Constants.PLAYER.PULL_SPEED;
         this.ball.x = this.players[socket].x + (this.players[socket].radius *Math.sin(this.players[socket].direction));
         this.ball.y = this.players[socket].y + (this.players[socket].radius *Math.cos(this.players[socket].direction)); 
         this.ball.direction = this.players[socket].direction;
         this.ball.velosity  = this.players[socket].velosity;
     }
 
-    PlayerPushBall(socket){
+    PlayerPushBall(socket, velosity){
         this.ball.x = this.players[socket].x + ((this.players[socket].radius + this.ball.radius + 2) *Math.sin(this.players[socket].direction));
         this.ball.y = this.players[socket].y + ((this.players[socket].radius + this.ball.radius + 2) *Math.cos(this.players[socket].direction)); 
         this.ball.direction = this.players[socket].direction;
-        this.ball.velosity  = this.players[socket].velosity * Constants.PHYSICS.PUSH_POWER;
+        this.ball.velosity  = this.players[socket].velosity * velosity;
     }
 
     IsBallTouch(socket) {
@@ -105,14 +101,20 @@ class Game {
             if(this.players[socket].gravity == true){
                 if(this.players[socket].push == true)
                     return 3; //Player Hold the ball and push it in same time
+                else if(this.players[socket].assist == true)
+                    return 4; //Player assist
                 else
                     return 2; //Player pulls the ball
             }
                 else
                 return 1; //Just collision
         }
-        else
-            return 0;
+        else{
+            if(this.players[socket].gravity == true)
+                return 5; //Player gets Nitro
+            else
+                return 0;
+        }
     }
 
     PlayerPlayerCollision(player, me_index) {
@@ -134,6 +136,59 @@ class Game {
         }
     }
 
+    goal(team){
+        //Set ball to center
+        this.ball.x = Constants.PITCH.FULL_X / 2;
+        this.ball.y = Constants.PITCH.FULL_Y / 2;
+        this.ball.velosity = 0;
+        //Set Players to start
+        let red_number = 1;
+        let blue_number = 1;
+        for(let socket in this.players){
+            //For blue tam
+            if(this.players[socket].team == true && (blue_number == 1 || blue_number == 2)){
+                this.players[socket].x = Constants.PITCH.FULL_X * (1 / 6);
+                this.players[socket].y = Constants.PITCH.FULL_Y / 3 * blue_number;
+                blue_number++;
+            }
+            else if(this.players[socket].team == true && (blue_number == 3)){
+                this.players[socket].x = Constants.PITCH.FULL_X / 3;
+                this.players[socket].y = Constants.PITCH.FULL_Y / 2;
+            }
+            else if(this.players[socket].team == false && (red_number == 1 || red_number == 2)){
+                this.players[socket].x = Constants.PITCH.FULL_X * (5 / 6);
+                this.players[socket].y = Constants.PITCH.FULL_Y / 3 * red_number;
+                red_number++;
+            }
+            else if(this.players[socket].team == false && (red_number == 3)){
+                this.players[socket].x = Constants.PITCH.FULL_X * (2 / 3);
+                this.players[socket].y = Constants.PITCH.FULL_Y * (1 / 2);
+            }
+            this.players[socket].velosity = 0;
+        }
+
+        let res
+        if(team == true){
+            this.RED_score++;
+            res = {
+                blue: this.BLUE_score,
+                red: this.RED_score,
+            }
+        }
+        else{
+            this.BLUE_score++;
+            res = {
+                blue: this.BLUE_score,
+                red: this.RED_score,
+            }
+        }
+
+        Object.keys(this.sockets).forEach(playerID => {
+            const socket = this.sockets[playerID];
+            socket.emit(Constants.MSG_TYPES.GOAL, res);
+        });
+    }
+
     createUpdate() {
 
         return {
@@ -143,10 +198,26 @@ class Game {
         };
     }
 
+    addPlayer(socket, nickname) {
+        this.players_count++;
+        const team = this.players_count % 2;
+        const team_name = (team == true) ? ('BLUE'.blue) : ('RED '.red);
+        (team == true) ? (this.BLUE_players_count++) : (this.RED_players_count++);
+        this.sockets[socket.id] = socket;
+
+        // Generate a position to start this player at.
+        const x = Constants.PITCH.FULL_X / 3 + Constants.PITCH.FULL_X / 3 * (!team);
+        const y = Constants.PITCH.FULL_Y / 5 * ((team == true) ? ((this.BLUE_players_count % 3) + 2) : ((this.RED_players_count % 3) + 2));
+        //Add player to global players array
+        this.players[socket.id] = new Player(socket.id, nickname, x, y, team);
+        console.log(team_name + ':    ' + nickname.bold + ':  connected:  on socket: ( ' + socket.id + ' )');
+
+    }
+
     removePlayer(socket) {
-        this.players_count--;
         delete this.sockets[socket.id];
         delete this.players[socket.id];
+        this.players_count--;
     }
 
     handleKeyboardInput(socket, res) {
@@ -159,15 +230,23 @@ class Game {
     }
 
     handleMouseInput(socket, dir) {
-        this.players[socket.id].direction = dir;
+        if(this.players.hasOwnProperty(`${socket.id}`))
+            this.players[socket.id].direction = dir;
     }
 
     HandleSpaceKey(socket, res){
-        this.players[socket.id].gravity = res;
+        if(this.players.hasOwnProperty(`${socket.id}`))
+            this.players[socket.id].gravity = res;
     }
 
-    handleMouseClick(socket, res){
-        this.players[socket.id].push = true;
+    handleLMBClick(socket, res){
+        if(this.players.hasOwnProperty(`${socket.id}`))
+            this.players[socket.id].push = true;
+    }
+
+    handleRMBClick(socket, res){
+        if(this.players.hasOwnProperty(`${socket.id}`))
+            this.players[socket.id].assist = true;
     }
 
 }

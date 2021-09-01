@@ -100,6 +100,22 @@ canvas {
     padding: 0px;
 }
 
+.score_board{
+    position: absolute;
+    top: 0%;
+    left: 45%;
+    width: 10%;
+    height: 5%;
+    z-index: 4;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(234, 0, 255);
+    font-size: 150%;
+    font-family: monospace;
+    margin: 0px;
+    padding: 0px;
+}
+
 @keyframes gradient {
     0% {
         background-position: 0% 50%;

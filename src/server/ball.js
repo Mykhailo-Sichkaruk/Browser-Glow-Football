@@ -22,14 +22,21 @@ class Ball {
         } else if (this.y - this.radius <= Constants.PITCH.PADDING_WIDTH + Constants.PITCH.OUTLINE_WIDTH) {
             this.direction = Math.PI - this.direction
         } else if (this.x + this.radius >= Constants.PITCH.X + Constants.PITCH.PADDING_WIDTH + Constants.PITCH.OUTLINE_WIDTH) {
-            this.direction = Math.PI * 2 - this.direction
+            if ((this.y >= Constants.PITCH.FULL_Y / 2 - Constants.PITCH.GOAL_WIDTH / 2 ) && (this.y <= Constants.PITCH.FULL_Y / 2 + Constants.PITCH.GOAL_WIDTH / 2 ))
+                return 1;
+            else
+                this.direction = Math.PI * 2 - this.direction;
         } else if (this.x - this.radius <= Constants.PITCH.PADDING_WIDTH + Constants.PITCH.OUTLINE_WIDTH) {
-            this.direction = Math.PI * 2 - this.direction
+            if ((this.y >= Constants.PITCH.FULL_Y / 2 - Constants.PITCH.GOAL_WIDTH / 2 ) && (this.y <= Constants.PITCH.FULL_Y / 2 + Constants.PITCH.GOAL_WIDTH / 2 ))
+                return 2;
+            else
+                this.direction = Math.PI * 2 - this.direction;
         }
         //then move
         this.x -= dt * this.velosity * Math.sin(this.direction);
         this.y -= dt * this.velosity * Math.cos(this.direction);
         this.velosity *= this.resistance;
+        return false;
     }
 }
 

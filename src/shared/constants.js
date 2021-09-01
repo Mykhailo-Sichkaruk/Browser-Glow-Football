@@ -1,15 +1,15 @@
 module.exports = Object.freeze({
+    SERVER_PING: 15,
 
     PLAYER: {
         RADIUS: 10,
-        MAX_HP: 100,
-        SPEED: 150,
         MASS: 10,
-        FIRE_COOLDOWN: 0.25,
+        SPEED: 150,
+        NITRO_VELOSITY: 300,
+        PULL_SPEED: 75,
         RED_COLOR: 'red',
         BLUE_COLOR: 'blue'
     },
-
 
     PITCH: {
         X: 1540,
@@ -20,9 +20,9 @@ module.exports = Object.freeze({
         PADDING_WIDTH: 10,
         OUTLINE_WIDTH: 20,
         GOAL_WIDTH: 220, //WIDTH
-        COLOR: 'green',
+        COLOR: 'rgb(0, 255, 64)',
         CANVAS_BACKGROUND_COLOR: 'white',
-        OUTLINE_COLOR: 'red',
+        OUTLINE_COLOR: 'white',
         CENTRAL_CIRCLE_RADIUS: 160
     },
 
@@ -32,10 +32,9 @@ module.exports = Object.freeze({
         COLOR: 'white',
     },
 
-    SERVER_PING: 7,
-
     PHYSICS: {
-        PUSH_POWER: 8
+        PUSH_POWER: 16,
+        ASSIST_POWER : 8
     },
 
     MSG_TYPES: {
@@ -44,9 +43,11 @@ module.exports = Object.freeze({
         INPUT: 'input',
         INPUT_SPACE: 'input_space',
         MOUSE_INPUT: 'mouse',
-        MOUSE_CLICK: 'mouse_click',
+        LMB_CLICK: 'lmb_click',
+        RMB_CLICK: 'rmb_click',
         GAME_OVER: 'dead',
         PING: 'ping',
-        DISCONNECT: 'disconnect'
+        DISCONNECT: 'disconnect',
+        GOAL: 'goal',
     },
 });
