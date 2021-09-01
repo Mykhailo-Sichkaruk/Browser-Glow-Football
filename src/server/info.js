@@ -18,7 +18,9 @@ server.listen(process.env.PORT || 8080, () =>{
 
     console.log(`Run server on: http://${host}:${port}`)
 });
-app.use(express.static('dist'));
+app.get('/', (req, res) => {
+    res.status(200).send('Hello, world!').end();
+  });
 //console.log('Server running on : '.green + adress_IPv4.white + ':' + `${port}`.cyan);
 
 
