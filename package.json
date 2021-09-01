@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development node src/server/info.js",
     "build": "webpack --mode production",
-    "rew": "webpack --env production",
+    "start": "webpack --env production",
     "ser": "cross-env NODE_ENV=development node src/server/info.js"
   },
   "author": "Mykhailo Sichkaruk",
