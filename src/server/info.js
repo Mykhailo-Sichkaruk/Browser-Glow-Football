@@ -9,12 +9,17 @@ const Constants = require('../shared/constants');
 const Game = require('./game');
 let game = new Game();
 
-let port = 3000;
+let port = 8080;
 let adress_IPv4 = 'localhost';
 //server.listen(3000, '192.168.31.137');
-server.listen(port, adress_IPv4);
+server.listen(process.env.PORT || 8080, () =>{
+    const host = server.address().address;
+    const port = server.address().port;
+
+    console.log(`Run server on: http://${host}:${port}`)
+});
 app.use(express.static('dist'));
-console.log('Server running on : '.green + adress_IPv4.white + ':' + `${port}`.cyan);
+//console.log('Server running on : '.green + adress_IPv4.white + ':' + `${port}`.cyan);
 
 
 io.on('connection', socket => {
