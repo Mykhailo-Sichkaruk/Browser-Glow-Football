@@ -1,14 +1,11 @@
-const express = require('express');
-const uuid = require('uuid/v4');
-const app = express();
-app.get('/', (req, res) => {
-  res
-    .status(200)
-    .send(`Hello, ${uuid()}!`)
-    .end();
-});
+const express = require('express')
+const path = require('path')
+const PORT = process.env.PORT || 5000;
+
 // Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');});
+express()
+  .use(express.static(path.join(__dirname, 'dist')))
+  .set('views', path.join(__dirname, 'dist'))
+  .set('view engine', 'ejs')
+  .get('/', (req, res) => res.render('dist'))
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
