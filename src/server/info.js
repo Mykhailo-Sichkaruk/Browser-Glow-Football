@@ -6,6 +6,6 @@ const PORT = process.env.PORT || 5000;
 express()
   .use(express.static(path.join(__dirname, 'dist')))
   .set('views', path.join(__dirname, 'dist'))
-  .set('view engine', '/index')
+  .set('view engine', '/dist')
   .get('/', (req, res) => res.render('/index'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
