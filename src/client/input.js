@@ -31,9 +31,11 @@ function PushPower() {
         let push_power;
         if (res <= animation_time / 2)
             push_power = (1 - Math.abs(res - animation_time / 4) / (animation_time / 4));
+        else if (res >= animation_time * 2)
+            push_power = 0;
         else
             push_power = (1 - Math.abs(res - (animation_time / 4) * 3) / (animation_time / 4));
-        
+
         socket.emit(Constants.MSG_TYPES.LMB_CLICK, push_power);
         setTimeout(() => {
             push.style.display = "none";

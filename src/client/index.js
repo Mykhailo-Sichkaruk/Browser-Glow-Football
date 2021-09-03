@@ -27,14 +27,12 @@ socket.on(Constants.MSG_TYPES.GAME_UPDATE, function (data) {
 socket.on(Constants.MSG_TYPES.GOAL, function (res) {
     if (res.team_scored == true) {
         score_effect.style.background = "blue";
-        score_effect.style.display = "block";
-        score_effect.style.animation = "goal_effect 1s linear 1";
     }
     else{
         score_effect.style.background = "red";
-        score_effect.style.display = "block";
-        score_effect.style.animation = "goal_effect 1s linear 1";
     }
+    score_effect.style.display = "block";
+    score_effect.style.animation = "goal_effect 1s linear 1";
     setTimeout(() => {
         score_effect.style.display = "none";
     }, 1000)
