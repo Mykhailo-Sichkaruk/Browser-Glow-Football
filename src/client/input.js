@@ -14,53 +14,49 @@ function MouseInput(e) {
     updateDirection(dir);
 }
 
-function RMBclick(e){
-        socket.emit(Constants.MSG_TYPES.RMB_CLICK, true);
-        e.preventDefault();
+function RMBclick(e) {
+    socket.emit(Constants.MSG_TYPES.RMB_CLICK, true);
+    e.preventDefault();
 }
 
-function PushPower(){
-    
+function PushPower() {
     push.style.display = "block";
     line.style.display = "block";
     const animation_time = 500;
-    line.style.animation="push_line 0.5s linear 2";
+    line.style.animation = "push_line 0.5s linear 2";
     let time_start = Date.now();
     document.addEventListener('mouseup', () => {
         line.style.animationPlayState = 'paused';
         let res = Date.now() - time_start;
         let push_power;
-        if(res <= animation_time/2)
-            push_power = (1 - Math.abs(res - animation_time/4)/(animation_time/4));
-        else 
-            push_power = (1 - Math.abs(res - (animation_time/4)*3)/(animation_time/4));
+        if (res <= animation_time / 2)
+            push_power = (1 - Math.abs(res - animation_time / 4) / (animation_time / 4));
+        else
+            push_power = (1 - Math.abs(res - (animation_time / 4) * 3) / (animation_time / 4));
+        
+        socket.emit(Constants.MSG_TYPES.LMB_CLICK, push_power);
         setTimeout(() => {
             push.style.display = "none";
             line.style.display = "none";
         }, 2000);
-            
-        socket.emit(Constants.MSG_TYPES.LMB_CLICK, push_power);
-    },{once : true});
+    }, { once: true });
     //document.removeEventListener('mouseup', );
     // 0 0.125 0.25 0.375 0.5 
 }
 
-function MouseClick(e){
+function MouseClick(e) {
     switch (e.button) {
         case 0:
             PushPower();
-          break;
-      }
+            break;
+    }
 }
- 
-
-
 
 function updateDirection(dir) {
     socket.emit(Constants.MSG_TYPES.MOUSE_INPUT, dir);
 }
 
-function Space(res){
+function Space(res) {
     socket.emit(Constants.MSG_TYPES.INPUT_SPACE, res);
 }
 

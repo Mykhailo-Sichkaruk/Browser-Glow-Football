@@ -110,15 +110,28 @@ canvas {
     padding: 0px;
 }
 
+.score_effect{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: red;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+}
+
 .score_board{
     position: absolute;
     top: 0%;
-    left: 45%;
-    width: 10%;
+    left: 48%;
+    width: 4%;
     height: 3%;
     z-index: 4;
     text-align: center;
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(70, 70, 70);
     color: rgb(234, 0, 255);
     font-size: 150%;
     font-family: monospace;
@@ -126,6 +139,24 @@ canvas {
     padding: 0px;
     display: none;
 }
+
+.blue_score{
+    position: absolute;
+    left: 5%;
+    width: 40%;
+    color: blue;
+    text-size-adjust: 100%;
+}
+
+.red_score{
+    position: absolute;
+    left: 55%;
+    width: 40%;
+    color: red;
+    text-size-adjust: 100%;
+}
+
+
 
 @keyframes gradient {
     0% {
@@ -159,6 +190,19 @@ canvas {
     }
     100% {
         left: 0%;
+    }
+}
+
+
+@keyframes goal_effect {
+    0% {
+        opacity: 0%;
+    }
+    50% {
+        opacity: 100%;
+    }
+    100% {
+        opacity: 0%;
     }
 }
 

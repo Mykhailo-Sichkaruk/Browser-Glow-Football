@@ -2,7 +2,7 @@ module.exports = Object.freeze({
     SERVER_PING: 15,
 
     PLAYER: {
-        RADIUS: 10,
+        RADIUS: 15,
         MASS: 5,
         SPEED: 200,
         NITRO_VELOSITY: 150, //ush veloity
@@ -21,10 +21,10 @@ module.exports = Object.freeze({
         OUTLINE_WIDTH: 20,
         GOAL_WIDTH: 100, //WIDTH
         COLOR: 'rgb(0, 255, 64)',
-        CANVAS_BACKGROUND_COLOR: 'orange',
+        CANVAS_BACKGROUND_COLOR: 'rgb(255, 187, 0)',
         OUTLINE_COLOR: 'white',
         CENTRAL_CIRCLE_RADIUS: 160
-    },
+    }, 
 
     BALL: {
         MASS: 1,
@@ -33,7 +33,7 @@ module.exports = Object.freeze({
     },
 
     PHYSICS: {
-        PUSH_SPEED: 1500,
+        PUSH_SPEED: 2000,
         ASSIST_SPEED : 800,
     },
 

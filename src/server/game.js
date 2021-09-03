@@ -179,6 +179,7 @@ class Game {
         if(team == true){
             this.RED_score++;
             res = {
+                team_scored : false,
                 blue: this.BLUE_score,
                 red: this.RED_score,
             }
@@ -186,6 +187,7 @@ class Game {
         else{
             this.BLUE_score++;
             res = {
+                team_scored : true,
                 blue: this.BLUE_score,
                 red: this.RED_score,
             }
