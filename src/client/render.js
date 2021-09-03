@@ -79,9 +79,15 @@ function drawPitch() {
     //Draw pitch
     roundRect(ctx, (Constants.PITCH.PADDING_WIDTH + Constants.PITCH.OUTLINE_WIDTH), (Constants.PITCH.PADDING_WIDTH + Constants.PITCH.OUTLINE_WIDTH), Constants.PITCH.X, Constants.PITCH.Y, Constants.PITCH.RADIUS, true, false);
     //Draw central circle
+    ctx.strokeStyle = 'white';
     ctx.beginPath();
     ctx.arc(Constants.PITCH.FULL_X / 2, Constants.PITCH.FULL_Y / 2, Constants.PITCH.CENTRAL_CIRCLE_RADIUS, 0, 2 * Math.PI, true)
     ctx.stroke();
+    //Draw central line
+    ctx.beginPath();      
+    ctx.moveTo(Constants.PITCH.FULL_X/2, 0);    
+    ctx.lineTo(Constants.PITCH.FULL_X/2, Constants.PITCH.FULL_Y);  
+    ctx.stroke(); 
     //Erase GOAL SPACE
     ctx.clearRect(GOAL.x11, GOAL.y1, GOAL.x12, GOAL.y2)
     ctx.clearRect(GOAL.x21, GOAL.y1, GOAL.x22, GOAL.y2)

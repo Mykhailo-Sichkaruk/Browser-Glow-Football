@@ -18,6 +18,32 @@ canvas {
     padding: 0px;
 }
 
+.push {
+    position: absolute;
+    top: 95%;
+    left: 40%;
+    width: 20%;
+    height: 5%;
+    z-index: 4;
+    background: linear-gradient(90deg, red 25%, orange 40%, green 50%, orange 60%, red 75%);
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    display: none;
+}
+
+.line{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 2%;
+    height: 100%;
+    background-color: white;
+    color: black;
+    display: none;
+    animation: push 2s linear 2;
+}
+
 .canvass {
     position: absolute;
     top: 0%;
@@ -26,8 +52,6 @@ canvas {
     height: 100%;
     z-index: 1;
     background: radial-gradient(circle, rgba(0, 199, 19, 1) 0%, rgba(2, 255, 26, 1) 50%, rgba(0, 199, 19, 1) 100%);
-    background-size: 500% 500%;
-    animation: func 1s ease infinite;
     display: block;
     margin: 0px;
     padding: 0px;
@@ -86,34 +110,21 @@ canvas {
     padding: 0px;
 }
 
-.mouse {
-    position: absolute;
-    top: 0%;
-    left: 45%;
-    width: 10%;
-    height: 5%;
-    z-index: 4;
-    color: rgb(19, 19, 19);
-    font-size: 150%;
-    font-family: monospace;
-    margin: 0px;
-    padding: 0px;
-}
-
 .score_board{
     position: absolute;
     top: 0%;
     left: 45%;
     width: 10%;
-    height: 5%;
+    height: 3%;
     z-index: 4;
     text-align: center;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgb(0, 0, 0);
     color: rgb(234, 0, 255);
     font-size: 150%;
     font-family: monospace;
     margin: 0px;
     padding: 0px;
+    display: none;
 }
 
 @keyframes gradient {
@@ -138,3 +149,16 @@ canvas {
         background-position: 50% 50%;
     }
 }
+
+@keyframes push_line {
+    0% {
+        left: 0%;
+    }
+    50% {
+        left: 100%;
+    }
+    100% {
+        left: 0%;
+    }
+}
+

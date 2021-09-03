@@ -1,11 +1,60 @@
-const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 5000;
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+const colors = require('colors');
+const Constants = require('../shared/constants');
+const Game = require('./game');
+let game = new Game();
 
-// Start the server
-express()
-  .use(express.static(path.join(__dirname, 'dist')))
-  .set('views', path.join(__dirname, 'dist'))
-  .set('view engine', '/dist')
-  .get('/', (req, res) => res.render('/index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+let port = 3000;
+let adress_IPv4 = 'localhost';
+//server.listen(3000, '192.168.31.137');
+server.listen(port, adress_IPv4);
+app.use(express.static('dist'));
+console.log('Server running on : '.green + adress_IPv4.white + ':' + `${port}`.cyan);
+
+
+io.on('connection', socket => {
+    console.log('Player connected! '.white + socket.id.grey);
+
+    socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
+    socket.on(Constants.MSG_TYPES.INPUT, handleKeyboardInput);
+    socket.on(Constants.MSG_TYPES.MOUSE_INPUT, handleMouseInput);
+    socket.on(Constants.MSG_TYPES.LMB_CLICK, handleLMBClick);
+    socket.on(Constants.MSG_TYPES.RMB_CLICK, handleRMBClick);
+    socket.on(Constants.MSG_TYPES.DISCONNECT, onDisconnect);
+    socket.on(Constants.MSG_TYPES.INPUT_SPACE, HandleSpaceKey);
+});
+
+
+function onDisconnect() {
+    game.removePlayer(this);
+}
+
+function joinGame(username) {
+    game.addPlayer(this, username);
+}
+
+function handleKeyboardInput(res) {
+    game.handleKeyboardInput(this, res);
+}
+
+function handleMouseInput(res) {
+    game.handleMouseInput(this, res);
+}
+
+function HandleSpaceKey(res){
+    game.HandleSpaceKey(this, res);
+
+}
+
+function handleLMBClick(res){
+    game.handleLMBClick(this, res);
+}
+
+function handleRMBClick(res){
+    game.handleRMBClick(this, res);
+}

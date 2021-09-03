@@ -3,9 +3,9 @@ module.exports = Object.freeze({
 
     PLAYER: {
         RADIUS: 10,
-        MASS: 10,
-        SPEED: 150,
-        NITRO_VELOSITY: 300,
+        MASS: 5,
+        SPEED: 200,
+        NITRO_VELOSITY: 150, //ush veloity
         PULL_SPEED: 75,
         RED_COLOR: 'red',
         BLUE_COLOR: 'blue'
@@ -19,9 +19,9 @@ module.exports = Object.freeze({
         RADIUS: 50,
         PADDING_WIDTH: 10,
         OUTLINE_WIDTH: 20,
-        GOAL_WIDTH: 220, //WIDTH
+        GOAL_WIDTH: 100, //WIDTH
         COLOR: 'rgb(0, 255, 64)',
-        CANVAS_BACKGROUND_COLOR: 'white',
+        CANVAS_BACKGROUND_COLOR: 'orange',
         OUTLINE_COLOR: 'white',
         CENTRAL_CIRCLE_RADIUS: 160
     },
@@ -33,8 +33,8 @@ module.exports = Object.freeze({
     },
 
     PHYSICS: {
-        PUSH_POWER: 16,
-        ASSIST_POWER : 8
+        PUSH_SPEED: 1500,
+        ASSIST_SPEED : 800,
     },
 
     MSG_TYPES: {

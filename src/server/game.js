@@ -51,21 +51,21 @@ class Game {
 
         for (let socket in this.players) {
             switch (this.IsBallTouch(socket)) {
-                case 0: this.players[socket].velosity = 0;
+                case 0: this.players[socket].velosity = Constants.PLAYER.SPEED;
                     break;
                 case 1: this.PlayerBall(socket);
                     break;
                 case 2: this.PlayerPullsBall(socket);
                     break;
-                case 3: this.PlayerPushBall(socket, Constants.PHYSICS.PUSH_POWER); //Push
+                case 3: this.PlayerPushBall(socket); //Push
                     break;
-                case 4: this.PlayerPushBall(socket, Constants.PHYSICS.ASSIST_POWER); //Assist
+                case 4: this.PlayerAssistBall(socket); //Assist
                     break;
                 case 5: this.players[socket].velosity = Constants.PLAYER.NITRO_VELOSITY;
                     break;
                 
             }
-            this.players[socket].push = false;
+            this.players[socket].push = 0;
             this.players[socket].assist = false;
             this.PlayerPlayerCollision(socket, i);
 
@@ -92,14 +92,22 @@ class Game {
         this.ball.x = this.players[socket].x + ((this.players[socket].radius + this.ball.radius + 2) *Math.sin(this.players[socket].direction));
         this.ball.y = this.players[socket].y + ((this.players[socket].radius + this.ball.radius + 2) *Math.cos(this.players[socket].direction)); 
         this.ball.direction = this.players[socket].direction;
-        this.ball.velosity  = this.players[socket].velosity * velosity;
+        this.ball.velosity  = this.players[socket].push * Constants.PHYSICS.PUSH_SPEED;
+    }
+
+    PlayerAssistBall(socket){
+        this.ball.x = this.players[socket].x + ((this.players[socket].radius + this.ball.radius + 2) *Math.sin(this.players[socket].direction));
+        this.ball.y = this.players[socket].y + ((this.players[socket].radius + this.ball.radius + 2) *Math.cos(this.players[socket].direction)); 
+        this.ball.direction = this.players[socket].direction;
+        this.ball.velosity  = Constants.PHYSICS.ASSIST_SPEED;
     }
 
     IsBallTouch(socket) {
         let current_distance = (this.ball.x - this.players[socket].x) ** 2 + (this.ball.y - this.players[socket].y) ** 2;
         if (current_distance <= this.PlayerBall_ColisonDistance){
             if(this.players[socket].gravity == true){
-                if(this.players[socket].push == true)
+                
+                if(this.players[socket].push != 0)
                     return 3; //Player Hold the ball and push it in same time
                 else if(this.players[socket].assist == true)
                     return 4; //Player assist
@@ -241,7 +249,7 @@ class Game {
 
     handleLMBClick(socket, res){
         if(this.players.hasOwnProperty(`${socket.id}`))
-            this.players[socket.id].push = true;
+            this.players[socket.id].push = res**2;
     }
 
     handleRMBClick(socket, res){

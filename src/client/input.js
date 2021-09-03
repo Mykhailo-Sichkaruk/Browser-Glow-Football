@@ -6,6 +6,8 @@ let screenHeight;
 
 let X_RATIO;
 let Y_RATIO;
+let line = document.getElementById("line");
+let push = document.getElementById("push");
 
 function MouseInput(e) {
     const dir = Math.atan2(e.clientX * X_RATIO - me.x, e.clientY * Y_RATIO - me.y);
@@ -17,18 +19,38 @@ function RMBclick(e){
         e.preventDefault();
 }
 
+function PushPower(){
+    
+    push.style.display = "block";
+    line.style.display = "block";
+    const animation_time = 500;
+    line.style.animation="push_line 0.5s linear 2";
+    let time_start = Date.now();
+    document.addEventListener('mouseup', () => {
+        line.style.animationPlayState = 'paused';
+        let res = Date.now() - time_start;
+        let push_power;
+        if(res <= animation_time/2)
+            push_power = (1 - Math.abs(res - animation_time/4)/(animation_time/4));
+        else 
+            push_power = (1 - Math.abs(res - (animation_time/4)*3)/(animation_time/4));
+        setTimeout(() => {
+            push.style.display = "none";
+            line.style.display = "none";
+        }, 2000);
+            
+        socket.emit(Constants.MSG_TYPES.LMB_CLICK, push_power);
+    },{once : true});
+    //document.removeEventListener('mouseup', );
+    // 0 0.125 0.25 0.375 0.5 
+}
+
 function MouseClick(e){
     switch (e.button) {
         case 0:
-            socket.emit(Constants.MSG_TYPES.LMB_CLICK, true);
+            PushPower();
           break;
-        case 1:
-            console.log('MMB');
-          break;
-
       }
-
-
 }
  
 
@@ -71,8 +93,9 @@ export function InitInput() {
 
     let mouse = document.getElementById('mouse');
     document.addEventListener('mousemove', MouseInput);
-    document.addEventListener('mouseup', MouseClick);
+    document.addEventListener('mousedown', MouseClick);
     document.addEventListener('contextmenu', RMBclick, false);
+
     screenWidth = document.documentElement.clientWidth
     screenHeight = document.documentElement.clientHeight
     X_RATIO = Constants.PITCH.FULL_X / screenWidth
