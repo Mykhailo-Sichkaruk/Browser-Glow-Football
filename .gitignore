@@ -1,3 +1,6 @@
 node_modules
 dist
 dist/index.js
+dist/index.html
+dist/index.js
+dist/main.css
