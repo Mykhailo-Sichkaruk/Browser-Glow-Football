@@ -16,7 +16,6 @@ server.listen(port, adress_IPv4);
 app.use(express.static('dist'));
 console.log('Server running on : '.green + adress_IPv4.white + ':' + `${port}`.cyan);
 
-
 io.on('connection', socket => {
     console.log('Player connected! '.white + socket.id.grey);
 

@@ -1,5 +1,5 @@
 module.exports = Object.freeze({
-    SERVER_PING: 15,
+    SERVER_PING: 30,
 
     PLAYER: {
         RADIUS: 15,
@@ -23,7 +23,8 @@ module.exports = Object.freeze({
         COLOR: 'rgb(0, 255, 64)',
         CANVAS_BACKGROUND_COLOR: 'rgb(255, 187, 0)',
         OUTLINE_COLOR: 'white',
-        CENTRAL_CIRCLE_RADIUS: 160
+        CENTRAL_CIRCLE_RADIUS: 160,
+        BORDER_LEFT_X: 0,
     }, 
 
     BALL: {

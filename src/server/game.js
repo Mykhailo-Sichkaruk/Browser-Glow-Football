@@ -26,10 +26,8 @@ class Game {
         //Process movement
         this.move((this.lastUpdateTime - Date.now()) / 1000);
         //Send update to all players
-        Object.keys(this.sockets).forEach(playerID => {
-            const socket = this.sockets[playerID];
-            socket.emit(Constants.MSG_TYPES.GAME_UPDATE, this.createUpdate());
-        });
+        sendUpdate();
+        //Save time of last update
         this.lastUpdateTime = Date.now();
     }
 
@@ -72,6 +70,14 @@ class Game {
             i++;
         }
 
+    }
+
+    sendUpdate(){
+        const update  = this.createUpdate()
+        Object.keys(this.sockets).forEach(playerID => {
+            const socket = this.sockets[playerID];
+            socket.emit(Constants.MSG_TYPES.GAME_UPDATE, update);
+        });
     }
 
     PlayerBall(player) {
@@ -132,12 +138,9 @@ class Game {
                 let current_distance = (this.players[other].x - this.players[player].x) ** 2 + (this.players[other].y - this.players[player].y) ** 2;
                 if (current_distance <= (Constants.PLAYER.RADIUS ** 2) * 2) {
                     //Process colision = change directions and speed 
-                    let PowerVector = Math.atan2(this.players[other].x - this.players[player].x, this.players[other].y - this.players[player].y);
-                    this.players[other].direction = (this.players[other].direction + PowerVector) / 2;
-                    this.players[player].direction = (this.players[player].direction + PowerVector) / 2;
-                    this.players[other].move(0.1);
-                    this.players[player].move(0.1);
-                    // ((player.mass - this.ball.mass)*player.velosity + 2*this.ball.mass)/(player.mass + this.ball.mass)*2;
+                    let dir = this.players[other].direction
+                    this.players[other].direction = this.players[player].direction
+                    this.players[player].direction = dir;
                 }
             }
             i++;
@@ -204,7 +207,15 @@ class Game {
         return {
             t: Date.now(),
             ball: this.ball,
-            players: Object.values(this.players),
+            players: Object.values(this.players).map(player => {
+                let res = {
+                    x: player.x,
+                    y: player.y,
+                    socket: player.socket,
+                    team: player.team,
+                }
+                return res;
+            }),
         };
     }
 

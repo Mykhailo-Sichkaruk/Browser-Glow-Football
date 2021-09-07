@@ -1,4 +1,5 @@
 const Constants = require('../shared/constants');
+import { throttle } from 'lodash';
 import { me } from './index';
 
 let screenWidth;
@@ -90,7 +91,7 @@ export function startInput() {
 export function InitInput() {
 
     let mouse = document.getElementById('mouse');
-    document.addEventListener('mousemove', MouseInput);
+    document.addEventListener('mousemove', _.throttle(MouseInput, 100));
     document.addEventListener('mousedown', MouseClick);
     document.addEventListener('contextmenu', RMBclick, false);
 
