@@ -156,6 +156,15 @@ canvas {
     text-size-adjust: 100%;
 }
 
+.instruction_HOLD{
+    position: absolute;
+    left: 55%;
+    width: 40%;
+    z-index: 4;
+    color: red;
+    text-size-adjust: 100%;
+}
+
 
 
 @keyframes gradient {
