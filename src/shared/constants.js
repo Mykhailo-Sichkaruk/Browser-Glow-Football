@@ -1,11 +1,11 @@
 module.exports = Object.freeze({
-    SERVER_PING: 30,
+    SERVER_PING: 20,
 
     PLAYER: {
         RADIUS: 15,
         MASS: 5,
         SPEED: 200,
-        NITRO_VELOSITY: 150, //ush veloity
+        NITRO_VELOSITY: 150, //push veloity
         PULL_SPEED: 75,
         RED_COLOR: 'red',
         BLUE_COLOR: 'blue'

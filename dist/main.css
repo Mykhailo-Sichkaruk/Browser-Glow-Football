@@ -18,6 +18,32 @@ canvas {
     padding: 0px;
 }
 
+.push {
+    position: absolute;
+    top: 95%;
+    left: 40%;
+    width: 20%;
+    height: 5%;
+    z-index: 4;
+    background: linear-gradient(90deg, red 25%, orange 40%, green 50%, orange 60%, red 75%);
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    display: none;
+}
+
+.line{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 2%;
+    height: 100%;
+    background-color: white;
+    color: black;
+    display: none;
+    animation: push 2s linear 2;
+}
+
 .canvass {
     position: absolute;
     top: 0%;
@@ -26,8 +52,6 @@ canvas {
     height: 100%;
     z-index: 1;
     background: radial-gradient(circle, rgba(0, 199, 19, 1) 0%, rgba(2, 255, 26, 1) 50%, rgba(0, 199, 19, 1) 100%);
-    background-size: 500% 500%;
-    animation: func 1s ease infinite;
     display: block;
     margin: 0px;
     padding: 0px;
@@ -86,19 +110,62 @@ canvas {
     padding: 0px;
 }
 
-.mouse {
+.score_effect{
     position: absolute;
     top: 0%;
-    left: 45%;
-    width: 10%;
-    height: 5%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: red;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.score_board{
+    position: absolute;
+    top: 0%;
+    left: 48%;
+    width: 4%;
+    height: 3%;
     z-index: 4;
-    color: rgb(19, 19, 19);
+    text-align: center;
+    background-color: rgb(70, 70, 70);
+    color: rgb(234, 0, 255);
     font-size: 150%;
     font-family: monospace;
     margin: 0px;
     padding: 0px;
+    display: none;
 }
+
+.blue_score{
+    position: absolute;
+    left: 5%;
+    width: 40%;
+    color: blue;
+    text-size-adjust: 100%;
+}
+
+.red_score{
+    position: absolute;
+    left: 55%;
+    width: 40%;
+    color: red;
+    text-size-adjust: 100%;
+}
+
+.instruction_HOLD{
+    position: absolute;
+    left: 55%;
+    width: 40%;
+    z-index: 4;
+    color: red;
+    text-size-adjust: 100%;
+}
+
+
 
 @keyframes gradient {
     0% {
@@ -122,3 +189,30 @@ canvas {
         background-position: 50% 50%;
     }
 }
+
+@keyframes push_line {
+    0% {
+        left: 0%;
+    }
+    50% {
+        left: 100%;
+    }
+    100% {
+        left: 0%;
+    }
+}
+
+
+@keyframes goal_effect {
+    0% {
+        opacity: 0%;
+    }
+    50% {
+        opacity: 100%;
+    }
+    100% {
+        opacity: 0%;
+    }
+}
+
+
