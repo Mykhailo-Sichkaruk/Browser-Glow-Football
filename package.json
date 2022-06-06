@@ -8,7 +8,7 @@
         "dev": "cross-env NODE_ENV=development node src/server/info.js",
         "build": "webpack --mode production",
         "front": "webpack --env production",
-        "start": "cross-env NODE_ENV=development node src/server/info.js"
+        "server": "cross-env NODE_ENV=development node src/server/info.js"
     },
     "author": "Mykhailo Sichkaruk",
     "license": "ISC",
