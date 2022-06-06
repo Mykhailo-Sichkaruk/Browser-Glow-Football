@@ -30,7 +30,7 @@
     "mini-css-extract-plugin": "^2.2.0",
     "ngrok": "^4.1.0",
     "node-polyfill-webpack-plugin": "^1.1.4",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "path-browserify": "^1.0.1",
     "plugin": "^0.0.15",
     "socket.io": "^4.1.3",
