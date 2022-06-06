@@ -9,5 +9,5 @@
 
 - `RMB` - **pass**
 - `LMB` - **shoot** , power is much impressive than with **pass**, but you should get perfect timing by hitting <font color="green">green zone</font>
- which is shown in the bottom of the screen <img src="./power-shot-bar.png" width="200" height="20">
+ which is shown in the bottom of the screen <img src="./power-shot-bar.png" width="200" height="20">  
   
