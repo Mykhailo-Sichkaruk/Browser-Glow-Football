@@ -4,7 +4,7 @@ class Player {
 	constructor(socket, nickname, x, y, team) {
 		this.socket = socket;
 		this.nickname = nickname;
-		this.team = team; //True == 'Blue team' | False == 'Red team'
+		this.team = team; //True == 'Blue team' || False == 'Red team'
 		this.x = x;
 		this.y = y;
 		this.direction = Math.PI / 2;
@@ -13,9 +13,9 @@ class Player {
 		this.radius = Constants.PLAYER.RADIUS;
 
 		//Super Powers
-		this.gravity = false;
+		this.shot = 0;
+		this.pull = false;
 		this.stop = false;
-		this.shot = false;
 		this.assist = false;
 
 		this.push = false;

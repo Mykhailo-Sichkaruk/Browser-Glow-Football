@@ -13,8 +13,7 @@ class Game {
 		this.RED_score = 0;
 		this.BLUE_players_count = 0;
 		this.RED_players_count = 0;
-		this.PlayerBall_ColisonDistance =
-      (Constants.BALL.RADIUS + Constants.PLAYER.RADIUS) ** 2;
+		this.PlayerBall_ColisonDistance = (Constants.BALL.RADIUS + Constants.PLAYER.RADIUS) ** 2;
 		this.PlayerPlayer_ColisonDistance = (Constants.PLAYER.RADIUS * 2) ** 2;
 
 		// Start updating
@@ -64,17 +63,16 @@ class Game {
 				this.playerHoldBall(socket);
 				break;
 			case 3:
-				this.PlayerPushBall(socket); // Push
+				this.playerShotBall(socket); // Shot
 				break;
 			case 4:
-				this.PlayerAssistBall(socket); // Assist
+				this.playerAssistBall(socket); // Assist
 				break;
 			case 5:
 				this.playerPullBall(socket);
 				this.players[socket].velosity = Constants.PLAYER.NITRO_VELOSITY;
 				break;
 			}
-			this.players[socket].push = 0;
 			this.players[socket].assist = false;
 			this.playerPlayerCollision(socket, i);
 
@@ -125,17 +123,26 @@ class Game {
 
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 		
-		if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.y -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballY - playerY)/Math.abs(ballY - playerY);
-			this.ball.x -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballX - playerX)/Math.abs(ballX - playerX);
-		}
-		else if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER * 4) {
-			this.ball.y -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballY - playerY)/Math.abs(ballY - playerY);
-			this.ball.x -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballX - playerX)/Math.abs(ballX - playerX);
+		if (this.players[socket].pull) {
+			
+			if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
+				this.ball.y -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballY - playerY)/Math.abs(ballY - playerY);
+				this.ball.x -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballX - playerX)/Math.abs(ballX - playerX);
+			}
+			else if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER * 4) {
+				this.ball.y -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballY - playerY)/Math.abs(ballY - playerY);
+				this.ball.x -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballX - playerX)/Math.abs(ballX - playerX);
+			}
+		} else if (this.players[socket].push && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
+			this.ball.direction = this.players[socket].direction;
+		} else if (this.players[socket].rotateClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
+			this.ball.direction = this.players[socket].direction + Math.PI/2;
+		} else if (this.players[socket].rotateCounterClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
+			this.ball.direction = this.players[socket].direction - Math.PI/2;
 		}
 	}
 
-	PlayerPushBall(socket) {
+	playerShotBall(socket) {
 		this.ball.x =
       this.players[socket].x +
       (this.players[socket].radius + this.ball.radius + 2) *
@@ -145,10 +152,11 @@ class Game {
       (this.players[socket].radius + this.ball.radius + 2) *
       Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
-		this.ball.velosity = Constants.PHYSICS.PUSH_SPEED;
+		this.ball.velosity = Constants.PHYSICS.SHOT_SPEED;
+		this.players[socket].shot = 0;
 	}
 
-	PlayerAssistBall(socket) {
+	playerAssistBall(socket) {
 		this.ball.x =
       this.players[socket].x +
       (this.players[socket].radius + this.ball.radius + 2) *
@@ -171,10 +179,10 @@ class Game {
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 
 		if (currentDistance <= this.PlayerBall_ColisonDistance) {
-			if (this.players[socket].gravity === true) {
-				if (this.players[socket].push !== 0) {
+			if (this.players[socket].pull) {
+				if (this.players[socket].shot !== 0) {
 					return 3;
-				} // Player Hold the ball and push it in same time
+				} // Player Hold the ball and shots it in same time
 				else if (this.players[socket].assist === true) {
 					return 4;
 				} // Player assist
@@ -185,7 +193,7 @@ class Game {
 				return 1;
 			} // Just collision
 		} else {
-			if (this.players[socket].gravity === true) {
+			if (this.players[socket].pull || this.players[socket].push || this.players[socket].rotateClockwise || this.players[socket].rotateCounterClockwise) {
 				return 5;
 			} // Player gets Nitro
 			else {
@@ -237,8 +245,7 @@ class Game {
 			}
 
 			this.players[socket].velosity = 0;
-			this.players[socket].gravity = false;
-			this.players[socket].push = false;
+			this.players[socket].pull = false;
 			this.players[socket].push = false;
 		}
 
@@ -331,7 +338,7 @@ class Game {
 
 	handleKeySpace(socket, res) {
 		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].gravity = res;
+			this.players[socket.id].pull = res;
 		}
 	}
 	
@@ -340,10 +347,28 @@ class Game {
 			this.players[socket.id].stop = res;
 		}
 	}
+	
+	handleKeyW(socket, res) {
+		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
+			this.players[socket.id].push = res;
+		}
+	}
+	
+	handleKeyA(socket, res) {
+		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
+			this.players[socket.id].rotateClockwise = res;
+		}
+	}
+	
+	handleKeyD(socket, res) {
+		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
+			this.players[socket.id].rotateCounterClockwise = res;
+		}
+	}
 
 	handleLMBClick(socket, res) {
 		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].push = res ** 2;
+			this.players[socket.id].shot = res ** 2;
 		}
 	}
 

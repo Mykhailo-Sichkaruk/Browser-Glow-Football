@@ -34,7 +34,7 @@ module.exports = Object.freeze({
 	},
 
 	PHYSICS: {
-		PUSH_SPEED: 1700,
+		SHOT_SPEED: 1700,
 		ASSIST_SPEED: 800,
 		/*** Distance between Player and Ball where pull power works*/
 		DISTANCE_PLAYER_PULL_POWER: 75 ** 2,

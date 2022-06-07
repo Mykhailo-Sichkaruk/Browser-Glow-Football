@@ -69,9 +69,24 @@ function Shift(res) {
 	socket.emit(Constants.MSG_TYPES.KEY_SHIFT, res);
 }
 
+function KeyW(res) {
+	socket.emit(Constants.MSG_TYPES.KEY_W, res);
+}
+
+function KeyA(res) {
+	socket.emit(Constants.MSG_TYPES.KEY_A, res);
+}
+
+function KeyD(res) {
+	socket.emit(Constants.MSG_TYPES.KEY_D, res);
+}
+
 const controller = {
 	"Space": { pressed: false, func: Space },
 	"ShiftLeft": { pressed: false, func: Shift },
+	"KeyW": { pressed: false, func: KeyW },
+	"KeyA": { pressed: false, func: KeyA },
+	"KeyD": { pressed: false, func: KeyD },
 };
 
 document.addEventListener("keydown", (e) => {
@@ -93,7 +108,6 @@ export function startInput() {
 		});
 	}, 50);
 }
-
 
 export function InitInput() {
 

@@ -1,5 +1,6 @@
 "use strict";
 
+const Constants = require("../shared/constants");
 require("colors");
 const express = require("express");
 const app = express();
@@ -7,7 +8,6 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-const Constants = require("../shared/constants");
 const Game = require("./game");
 let game = new Game();
 
@@ -59,7 +59,7 @@ function handleKeyShift(res){
 }
 
 function handleKeyW(res) {
-	game.HandleKeyW(this, res);
+	game.handleKeyW(this, res);
 }
 
 function handleKeyA(res) {
