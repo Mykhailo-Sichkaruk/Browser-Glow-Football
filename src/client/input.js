@@ -62,11 +62,16 @@ function updateDirection(dir) {
 }
 
 function Space(res) {
-	socket.emit(Constants.MSG_TYPES.INPUT_SPACE, res);
+	socket.emit(Constants.MSG_TYPES.KEY_SPACE, res);
+}
+
+function Shift(res) {
+	socket.emit(Constants.MSG_TYPES.KEY_SHIFT, res);
 }
 
 const controller = {
 	"Space": { pressed: false, func: Space },
+	"ShiftLeft": { pressed: false, func: Shift },
 };
 
 document.addEventListener("keydown", (e) => {

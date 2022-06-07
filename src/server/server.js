@@ -21,15 +21,16 @@ console.log("Server running on : ".green + adress_IPv4.white + ":" + `${port}`.c
 io.on("connection", socket => {
 	console.log("Player connected! ".white + socket.id.grey);
 	socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
-	socket.on(Constants.MSG_TYPES.INPUT, handleKeyboardInput);
+	socket.on(Constants.MSG_TYPES.INPUT, 	   handleKeyboardInput);
 	socket.on(Constants.MSG_TYPES.MOUSE_INPUT, handleMouseInput);
-	socket.on(Constants.MSG_TYPES.LMB_CLICK, handleLMBClick);
-	socket.on(Constants.MSG_TYPES.RMB_CLICK, handleRMBClick);
-	socket.on(Constants.MSG_TYPES.DISCONNECT, onDisconnect);
-	socket.on(Constants.MSG_TYPES.INPUT_SPACE, handleSpaceKey);
-	socket.on(Constants.MSG_TYPES.KEY_W, handleKeyW);
-	socket.on(Constants.MSG_TYPES.KEY_A, handleKeyA);
-	socket.on(Constants.MSG_TYPES.KEY_D, handleKeyD);
+	socket.on(Constants.MSG_TYPES.LMB_CLICK,   handleLMBClick);
+	socket.on(Constants.MSG_TYPES.RMB_CLICK,   handleRMBClick);
+	socket.on(Constants.MSG_TYPES.DISCONNECT,  onDisconnect);
+	socket.on(Constants.MSG_TYPES.KEY_SPACE,   handleKeySpace);
+	socket.on(Constants.MSG_TYPES.KEY_SHIFT,   handleKeyShift);
+	socket.on(Constants.MSG_TYPES.KEY_W, 	   handleKeyW);
+	socket.on(Constants.MSG_TYPES.KEY_A, 	   handleKeyA);
+	socket.on(Constants.MSG_TYPES.KEY_D, 	   handleKeyD);
 });
 
 
@@ -49,24 +50,24 @@ function handleMouseInput(res) {
 	game.handleMouseInput(this, res);
 }
 
-function handleSpaceKey(res){
-	game.handleSpaceKey(this, res);
+function handleKeySpace(res){
+	game.handleKeySpace(this, res);
+}
 
+function handleKeyShift(res){
+	game.handleKeyShift(this, res);
 }
 
 function handleKeyW(res) {
 	game.HandleKeyW(this, res);
-
 }
 
 function handleKeyA(res) {
 	game.handleKeyA(this, res);
-
 }
 
 function handleKeyD(res) {
 	game.handleKeyD(this, res);
-
 }
 
 function handleLMBClick(res){

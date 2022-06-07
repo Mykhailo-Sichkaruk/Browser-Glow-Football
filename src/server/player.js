@@ -14,6 +14,7 @@ class Player {
 
 		//Super Powers
 		this.gravity = false;
+		this.stop = false;
 		this.shot = false;
 		this.assist = false;
 
@@ -25,6 +26,9 @@ class Player {
 	}
 
 	move(dt) {
+		if (this.stop)
+			return;
+		
 		const dy = - dt * this.velosity * Math.cos(this.direction);
 		const dx = - dt * this.velosity * Math.sin(this.direction);
 

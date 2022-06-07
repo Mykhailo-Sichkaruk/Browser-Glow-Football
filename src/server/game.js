@@ -329,9 +329,15 @@ class Game {
 		}
 	}
 
-	handleSpaceKey(socket, res) {
+	handleKeySpace(socket, res) {
 		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
 			this.players[socket.id].gravity = res;
+		}
+	}
+	
+	handleKeyShift(socket, res) {
+		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
+			this.players[socket.id].stop = res;
 		}
 	}
 
