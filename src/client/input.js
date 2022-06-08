@@ -18,7 +18,7 @@ function MouseInput(e) {
 }
 
 function RMBclick(e) {
-	socket.emit(Constants.MSG_TYPES.RMB_CLICK, true);
+	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.ASSIST, res: true });
 	e.preventDefault();
 }
 
@@ -39,14 +39,12 @@ function PushPower() {
 		else
 			push_power = (1 - Math.abs(res - (animation_time / 4) * 3) / (animation_time / 4));
 
-		socket.emit(Constants.MSG_TYPES.LMB_CLICK, push_power);
+		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.SHOT, res: push_power });
 		setTimeout(() => {
 			push.style.display = "none";
 			line.style.display = "none";
 		}, 2000);
 	}, { once: true });
-	//document.removeEventListener('mouseup', );
-	// 0 0.125 0.25 0.375 0.5 
 }
 
 function MouseClick(e) {
@@ -58,35 +56,15 @@ function MouseClick(e) {
 }
 
 function updateDirection(dir) {
-	socket.emit(Constants.MSG_TYPES.MOUSE_INPUT, dir);
-}
-
-function Space(res) {
-	socket.emit(Constants.MSG_TYPES.KEY_SPACE, res);
-}
-
-function Shift(res) {
-	socket.emit(Constants.MSG_TYPES.KEY_SHIFT, res);
-}
-
-function KeyW(res) {
-	socket.emit(Constants.MSG_TYPES.KEY_W, res);
-}
-
-function KeyA(res) {
-	socket.emit(Constants.MSG_TYPES.KEY_A, res);
-}
-
-function KeyD(res) {
-	socket.emit(Constants.MSG_TYPES.KEY_D, res);
+	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.DIRECTION, res: dir });
 }
 
 const controller = {
-	"Space": { pressed: false, func: Space },
-	"ShiftLeft": { pressed: false, func: Shift },
-	"KeyW": { pressed: false, func: KeyW },
-	"KeyA": { pressed: false, func: KeyA },
-	"KeyD": { pressed: false, func: KeyD },
+	"Space": 		{ pressed: false, type: Constants.KEY_TYPE.PULL },
+	"ShiftLeft": 	{ pressed: false, type: Constants.KEY_TYPE.STOP },
+	"KeyW": 		{ pressed: false, type: Constants.KEY_TYPE.PUSH },
+	"KeyA": 		{ pressed: false, type: Constants.KEY_TYPE.ROTATE_CLOCKWISE },
+	"KeyD": 		{ pressed: false, type: Constants.KEY_TYPE.ROTATE_COUNTER_CLOCKWISE },
 };
 
 document.addEventListener("keydown", (e) => {
@@ -103,10 +81,12 @@ document.addEventListener("keyup", (e) => {
 
 export function startInput() {
 	setInterval(() => {
+		let keyStatus = {};
 		Object.keys(controller).forEach(key => {
-			controller[key].func(controller[key].pressed);
+			keyStatus[controller[key].type] = controller[key].pressed;
 		});
-	}, 50);
+		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.KEY, res: keyStatus });
+	}, Constants.GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
 }
 
 export function InitInput() {
@@ -120,7 +100,5 @@ export function InitInput() {
 	screenHeight = document.documentElement.clientHeight;
 	X_RATIO = Constants.PITCH.FULL_X / screenWidth;
 	Y_RATIO = Constants.PITCH.FULL_Y / screenHeight;
-	console.log(screenWidth + " x " + screenHeight);
-	console.log(X_RATIO + " R " + Y_RATIO);
 
 }

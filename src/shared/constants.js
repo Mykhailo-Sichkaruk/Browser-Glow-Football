@@ -25,7 +25,7 @@ module.exports = Object.freeze({
 		OUTLINE_COLOR: "white",
 		CENTRAL_CIRCLE_RADIUS: 160,
 		BORDER_LEFT_X: 0,
-	}, 
+	},
 
 	BALL: {
 		MASS: 1,
@@ -39,28 +39,39 @@ module.exports = Object.freeze({
 		/*** Distance between Player and Ball where pull power works*/
 		DISTANCE_PLAYER_PULL_POWER: 75 ** 2,
 		PLAYER_PULL_POWER: 6,
-		BALL_VELOSITY_ON_ROTATE: 100,
+		BOUNS_BALL_VELOSITY_ON_ROTATE: 10,
+		PITCH_RESISTANCE: 0.99,
 	},
 
 	GAME: {
 		AFTER_GOAL_DELAY_MS: 5000, //ms
+		PING_ON_KEY_STATUS_REFRESHED_MS: 50,
 	},
 
-	MSG_TYPES: {
+	MSG_TYPE: {
+		CONNECTION: "connection",
 		JOIN_GAME: "join_game",
 		GAME_UPDATE: "update",
-		INPUT: "input",
-		MOUSE_INPUT: "mouse",
-		LMB_CLICK: "lmb_click",
-		RMB_CLICK: "rmb_click",
-		KEY_SPACE: "key_space",
-		KEY_SHIFT: "key_shift",
-		KEY_W: "key_w",
-		KEY_A: "key_a",
-		KEY_D: "key_d",
-		GAME_OVER: "dead",
+		GAME_OVER: "game over",
 		PING: "ping",
-		DISCONNECT: "disconnect",
 		GOAL: "goal",
+		INPUT: "input",
+		DISCONNECT: "disconnect",
 	},
+
+	INPUT_TYPE: {
+		KEY: "key",
+		DIRECTION: "direction",
+		SHOT: "shot",
+		ASSIST: "assist",
+	},
+	
+	KEY_TYPE: {
+		PULL: "pull",
+		STOP: "stop",
+		PUSH: "push",
+		ROTATE_CLOCKWISE: "rotateClockwise",
+		ROTATE_COUNTER_CLOCKWISE: "rotateCounterClockwise",
+	},
+
 });

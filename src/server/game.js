@@ -58,7 +58,7 @@ class Game {
 				this.players[socket].velosity = Constants.PLAYER.SPEED;
 				break;
 			case 1:
-				this.playerBall(socket); //Touch
+				this.playerTouchBall(socket); //Touch
 				break;
 			case 2:
 				this.playerHoldBall(socket);
@@ -85,11 +85,11 @@ class Game {
 		const update = this.createUpdate();
 		Object.keys(this.sockets).forEach((playerID) => {
 			const socket = this.sockets[playerID];
-			socket.emit(Constants.MSG_TYPES.GAME_UPDATE, update);
+			socket.emit(Constants.MSG_TYPE.GAME_UPDATE, update);
 		});
 	}
 
-	playerBall(player) {
+	playerTouchBall(player) {
 		const PowerVector = Math.atan2(
 			this.ball.x - this.players[player].x,
 			this.ball.y - this.players[player].y
@@ -136,18 +136,13 @@ class Game {
 			return;
 		}
 		if (this.players[socket].rotateClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
-			if (this.players[socket].push) {
-				this.ball.direction = (Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) - Math.PI / 2 + this.players[socket].direction) / 2;
-				this.ball.velosity = this.players[socket].velosity;
-				return;
-			}
 			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) + Math.PI / 2;
-			this.ball.velosity = Constants.PHYSICS.BALL_VELOSITY_ON_ROTATE; 
+			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE; 
 			return;
 		}
 		if (this.players[socket].rotateCounterClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
 			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) - Math.PI / 2;
-			this.ball.velosity = Constants.PHYSICS.BALL_VELOSITY_ON_ROTATE; 
+			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE; 
 			return;
 		}
 		if (this.players[socket].push && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
@@ -184,6 +179,8 @@ class Game {
       Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
 		this.ball.velosity = Constants.PHYSICS.ASSIST_SPEED;
+
+		this.players[socket].pull = false;
 	}
 
 	isBallTouch(socket, dt) {
@@ -290,7 +287,7 @@ class Game {
 
 		Object.keys(this.sockets).forEach((playerID) => {
 			const socket = this.sockets[playerID];
-			socket.emit(Constants.MSG_TYPES.GOAL, res);
+			socket.emit(Constants.MSG_TYPE.GOAL, res);
 		});
 
 		setTimeout(() => {}, Constants.GAME.AFTER_GOAL_DELAY_MS);
@@ -341,48 +338,9 @@ class Game {
 		this.players_count--;
 	}
 
-	handleKeyboardInput(socket, res) {
-		if (this.players[socket.id]) {
-			this.players[socket.id].Px = this.players[socket.id].x;
-			this.players[socket.id].Py = this.players[socket.id].y;
-			this.players[socket.id].x += res.x;
-			this.players[socket.id].y += res.y;
-		}
-	}
-
 	handleMouseInput(socket, dir) {
 		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
 			this.players[socket.id].direction = dir;
-		}
-	}
-
-	handleKeySpace(socket, res) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].pull = res;
-		}
-	}
-	
-	handleKeyShift(socket, res) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].stop = res;
-		}
-	}
-	
-	handleKeyW(socket, res) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].push = res;
-		}
-	}
-	
-	handleKeyA(socket, res) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].rotateClockwise = res;
-		}
-	}
-	
-	handleKeyD(socket, res) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].rotateCounterClockwise = res;
 		}
 	}
 
@@ -396,6 +354,19 @@ class Game {
 		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
 			this.players[socket.id].assist = true;
 		}
+	}
+
+	handleInput(socket, msg) {
+		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
+			return;
+		
+		if (msg.inputType === Constants.INPUT_TYPE.KEY)
+			for (let key in msg.res) {
+				this.players[socket.id][key] = msg.res[key];	
+			}
+		else
+			this.players[socket.id][msg.inputType] = msg.res;	
+
 	}
 }
 

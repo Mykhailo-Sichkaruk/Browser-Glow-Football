@@ -18,15 +18,15 @@ function ping(current_update_time) {
 	ping_button.innerHTML = (Date.now() - current_update_time) + " ms";
 }
 
-socket.on(Constants.MSG_TYPES.GAME_UPDATE, function (data) {
+socket.on(Constants.MSG_TYPE.GAME_UPDATE, function (data) {
 	current_update = data;
 	findMe(data);
 	requestAnimationFrame(renderUpdate);
 	ping(data.t);
 });
 
-socket.on(Constants.MSG_TYPES.GOAL, function (res) {
-	if (res.team_scored == true) {
+socket.on(Constants.MSG_TYPE.GOAL, function (res) {
+	if (res.team_scored) {
 		score_effect.style.background = "blue";
 	}
 	else{
@@ -55,22 +55,22 @@ function findMe(update) {
 	});
 }
 
-function html_start() {
+function startHtml() {
 	nickname_form.style.display = "none";
 	start_game_button.style.display = "none";
 	score_board.style.display = "block";
 	document.getElementById("canvas").style.background = Constants.PITCH.CANVAS_BACKGROUND_COLOR;
 }
 
-document.getElementById("start_game_button").addEventListener("click", start_game, false);
+document.getElementById("start_game_button").addEventListener("click", startGame, false);
 
 
-function start_game() {
-	html_start();
+function startGame() {
+	startHtml();
 	InitInput();
 	startInput();
 	initCanvas();
-	socket.emit(Constants.MSG_TYPES.JOIN_GAME, nickname_form.value);
+	socket.emit(Constants.MSG_TYPE.JOIN_GAME, nickname_form.value);
 }
 
 export { current_update, me };
