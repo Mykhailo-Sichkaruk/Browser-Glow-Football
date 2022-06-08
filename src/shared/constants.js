@@ -39,6 +39,7 @@ module.exports = Object.freeze({
 		/*** Distance between Player and Ball where pull power works*/
 		DISTANCE_PLAYER_PULL_POWER: 75 ** 2,
 		PLAYER_PULL_POWER: 6,
+		BALL_VELOSITY_ON_ROTATE: 100,
 	},
 
 	GAME: {
