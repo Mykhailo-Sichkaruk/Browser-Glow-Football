@@ -70,7 +70,7 @@ class Game {
 				this.playerAssistBall(socket); // Assist
 				break;
 			case 5:
-				this.playerPullBall(socket);
+				this.playerInterractBall(socket);
 				this.players[socket].velosity = Constants.PLAYER.NITRO_VELOSITY;
 				break;
 			}
@@ -115,7 +115,7 @@ class Game {
 		this.ball.velosity = this.players[socket].velosity;
 	}
 
-	playerPullBall(socket) {
+	playerInterractBall(socket) {
 		const ballY = this.ball.y;
 		const ballX = this.ball.x;
 
@@ -293,6 +293,19 @@ class Game {
 		setTimeout(() => {}, Constants.GAME.AFTER_GOAL_DELAY_MS);
 	}
 
+	handleInput(socket, msg) {
+		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
+			return;
+		
+		if (msg.inputType === Constants.INPUT_TYPE.KEY)
+			for (let key in msg.res) {
+				this.players[socket.id][key] = msg.res[key];	
+			}
+		else
+			this.players[socket.id][msg.inputType] = msg.res;	
+
+	}
+	
 	createUpdate() {
 		return {
 			t: Date.now(),
@@ -338,36 +351,6 @@ class Game {
 		this.players_count--;
 	}
 
-	handleMouseInput(socket, dir) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].direction = dir;
-		}
-	}
-
-	handleLMBClick(socket, res) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].shot = res ** 2;
-		}
-	}
-
-	handleRMBClick(socket) {
-		if (Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`)) {
-			this.players[socket.id].assist = true;
-		}
-	}
-
-	handleInput(socket, msg) {
-		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
-			return;
-		
-		if (msg.inputType === Constants.INPUT_TYPE.KEY)
-			for (let key in msg.res) {
-				this.players[socket.id][key] = msg.res[key];	
-			}
-		else
-			this.players[socket.id][msg.inputType] = msg.res;	
-
-	}
 }
 
 module.exports = Game;

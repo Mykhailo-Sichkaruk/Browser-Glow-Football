@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import "./css/style.css";
-import { startInput, InitInput } from "./input";
+import { initKeyboardInput, initMouseInput } from "./input";
 import { renderUpdate, initCanvas } from "./render";
 
 const Constants = require("../shared/constants");
@@ -67,8 +67,8 @@ document.getElementById("start_game_button").addEventListener("click", startGame
 
 function startGame() {
 	startHtml();
-	InitInput();
-	startInput();
+	initMouseInput();
+	initKeyboardInput();
 	initCanvas();
 	socket.emit(Constants.MSG_TYPE.JOIN_GAME, nickname_form.value);
 }

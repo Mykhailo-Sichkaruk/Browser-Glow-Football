@@ -11,12 +11,10 @@ const io = new Server(server);
 const Game = require("./game");
 let game = new Game();
 
-const port = 3000;
-const adress_IPv4 = "localhost";
 
-server.listen(port, adress_IPv4);
-app.use(express.static("dist"));
-console.log("Server running on : ".green + adress_IPv4.white + ":" + `${port}`.cyan);
+server.listen(Constants.DEVELOP.SERVER_PORT, Constants.DEVELOP.SERVER_ADRESS_IPv4);
+app.use(express.static(Constants.DEVELOP.SITE_FOLDER_NAME));
+console.log("Server running on : ".green + Constants.DEVELOP.SERVER_ADRESS_IPv4.white + ":" + `${Constants.DEVELOP.SERVER_PORT}`.cyan);
 
 io.on(Constants.MSG_TYPE.CONNECTION, socket => {
 	console.log("Player connected! ".white + socket.id.grey);

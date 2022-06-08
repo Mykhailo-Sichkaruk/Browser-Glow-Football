@@ -12,17 +12,17 @@ let Y_RATIO;
 let line = document.getElementById("line");
 let push = document.getElementById("push");
 
-function MouseInput(e) {
+function handleMouseDirection(e) {
 	const dir = Math.atan2(e.clientX * X_RATIO - me.x, e.clientY * Y_RATIO - me.y);
-	updateDirection(dir);
+	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.DIRECTION, res: dir });
 }
 
-function RMBclick(e) {
+function handleRMBclick(e) {
 	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.ASSIST, res: true });
 	e.preventDefault();
 }
 
-function PushPower() {
+function initPushPower() {
 	push.style.display = "block";
 	line.style.display = "block";
 	const animation_time = 500;
@@ -47,16 +47,12 @@ function PushPower() {
 	}, { once: true });
 }
 
-function MouseClick(e) {
+function handleMouseClick(e) {
 	switch (e.button) {
 	case 0:
-		PushPower();
+		initPushPower();
 		break;
 	}
-}
-
-function updateDirection(dir) {
-	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.DIRECTION, res: dir });
 }
 
 const controller = {
@@ -79,7 +75,7 @@ document.addEventListener("keyup", (e) => {
 	}
 });
 
-export function startInput() {
+export function initKeyboardInput() {
 	setInterval(() => {
 		let keyStatus = {};
 		Object.keys(controller).forEach(key => {
@@ -89,12 +85,12 @@ export function startInput() {
 	}, Constants.GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
 }
 
-export function InitInput() {
+export function initMouseInput() {
 
 	let mouse = document.getElementById("mouse");
-	document.addEventListener("mousemove", _.throttle(MouseInput, 100));
-	document.addEventListener("mousedown", MouseClick);
-	document.addEventListener("contextmenu", RMBclick, false);
+	document.addEventListener("mousemove", _.throttle(handleMouseDirection, 100));
+	document.addEventListener("mousedown", handleMouseClick);
+	document.addEventListener("contextmenu", handleRMBclick, false);
 
 	screenWidth = document.documentElement.clientWidth;
 	screenHeight = document.documentElement.clientHeight;

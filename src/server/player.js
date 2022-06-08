@@ -12,8 +12,9 @@ class Player {
 		this.velosity = Constants.PLAYER.SPEED;
 		this.radius = Constants.PLAYER.RADIUS;
 
-		//Super Powers
-		this.shot = 0;
+		/**Number: value of shot power or `0` if there is no shot */
+		this.shot = 0; 
+		/**Boolean: `true` if space pressed and trying to pull the ball */
 		this.pull = false;
 		this.stop = false;
 		this.assist = false;

@@ -74,4 +74,10 @@ module.exports = Object.freeze({
 		ROTATE_COUNTER_CLOCKWISE: "rotateCounterClockwise",
 	},
 
+	DEVELOP: {
+		SERVER_PORT: 3000,
+		SERVER_ADRESS_IPv4: "localhost",
+		SITE_FOLDER_NAME: "dist",
+	},
+
 });
