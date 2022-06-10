@@ -1,17 +1,18 @@
 /* eslint-disable no-undef */
 import "./css/style.css";
+import React from "react";
 import { initKeyboardInput, initMouseInput } from "./input";
 import { renderUpdate, initCanvas } from "./render";
 
 const Constants = require("../shared/constants");
-let ping_button = document.getElementById("ping");
-let nickname_form = document.getElementById("nickname_form");
-let start_game_button = document.getElementById("start_game_button");
-let red_score = document.getElementById("red_score");
-let blue_score = document.getElementById("blue_score");
-let score_board = document.getElementById("score_board");
-let score_effect = document.getElementById("score_effect");
-let current_update;
+const ping_button = document.getElementById("ping");
+const nickname_form = document.getElementById("nickname_form");
+const start_game_button = document.getElementById("start_game_button");
+const red_score = document.getElementById("red_score");
+const blue_score = document.getElementById("blue_score");
+const score_board = document.getElementById("score_board");
+const score_effect = document.getElementById("score_effect");
+let currentUpdate;
 let me;
 
 function ping(current_update_time) {
@@ -19,7 +20,7 @@ function ping(current_update_time) {
 }
 
 socket.on(Constants.MSG_TYPE.GAME_UPDATE, function (data) {
-	current_update = data;
+	currentUpdate = data;
 	findMe(data);
 	requestAnimationFrame(renderUpdate);
 	ping(data.t);
@@ -29,7 +30,7 @@ socket.on(Constants.MSG_TYPE.GOAL, function (res) {
 	if (res.team_scored) {
 		score_effect.style.background = "blue";
 	}
-	else{
+	else {
 		score_effect.style.background = "red";
 	}
 	score_effect.style.display = "block";
@@ -73,4 +74,33 @@ function startGame() {
 	socket.emit(Constants.MSG_TYPE.JOIN_GAME, nickname_form.value);
 }
 
-export { current_update, me };
+
+class Ping extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			time: 1,
+		};
+	}
+
+	componentDidMount() {
+		this.timerID = setInterval(
+			() => this.ping(),
+			1000);
+	}
+
+	ping() {
+
+	}
+
+	render() {
+		return (
+			<div>
+				<h1>Hello, world!</h1>
+				<h2>It is me.</h2>
+			</div>
+		);
+	}
+}
+
+export { currentUpdate as current_update, me };
