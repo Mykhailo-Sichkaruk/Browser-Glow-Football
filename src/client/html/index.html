@@ -3,11 +3,13 @@
 
 
 <head>
-    <title>[game_name]</title>
+    <title>Glow-Football</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="socket.io/socket.io.js"></script>
     <script> let socket = io(); </script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 
     <meta charset="UTF-8">
     <meta name="description" content="Mutiplayer 2D soccer game">
@@ -17,9 +19,9 @@
 
 
 <body>
+    <div id="root"></div>
 
     <canvas id="canvas"></canvas>
-    <div class="ping" id="ping"></div>
     <div class="mouse" id="mouse"></div>
     <input type="text" id="nickname_form" class="nickname_form" placeholder="nickname" autofocus>
     <button class="start_game_button" type="button" id="start_game_button">START</button>
@@ -32,7 +34,8 @@
     <div class="push" id="push" id="push"> <span class="line" id="line"></span></div>
     <div class="score_effect" id="score_effect"></div>
 
-    <div class="instruction_HOLD" id="instruction_HOLD" style="display:none"> Hold "Space" key and touch the ball to attract it. <img src="./accets/Hold_1.png"></div>
+    <div class="instruction_HOLD" id="instruction_HOLD" style="display:none"> Hold "Space" key and touch the ball to
+        attract it. <img src="./accets/Hold_1.png"></div>
     <div class="instruction_RBM">Right Mouse Button</div>
 </body>
 

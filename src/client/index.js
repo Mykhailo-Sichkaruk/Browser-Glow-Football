@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 import "./css/style.css";
 import React from "react";
+import ReactDOM from "react-dom";
 import { initKeyboardInput, initMouseInput } from "./input";
 import { renderUpdate, initCanvas } from "./render";
 
 const Constants = require("../shared/constants");
-const ping_button = document.getElementById("ping");
 const nickname_form = document.getElementById("nickname_form");
 const start_game_button = document.getElementById("start_game_button");
 const red_score = document.getElementById("red_score");
@@ -14,17 +14,94 @@ const score_board = document.getElementById("score_board");
 const score_effect = document.getElementById("score_effect");
 let currentUpdate;
 let me;
-
-function ping(current_update_time) {
-	ping_button.innerHTML = (Date.now() - current_update_time) + " ms";
-}
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
 socket.on(Constants.MSG_TYPE.GAME_UPDATE, function (data) {
 	currentUpdate = data;
 	findMe(data);
 	requestAnimationFrame(renderUpdate);
-	ping(data.t);
+	pingCounter(data.t);
 });
+
+class Ping extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+			<div className="ping">
+				{this.props.time + "ms"} 
+			</div>
+		);
+	}
+}
+
+class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.child = React.createRef();
+		this.state = {
+			lastUpdateTime: 0,
+			myData: props.myData,
+			currentUpdate: props.currentUpdate,
+		};
+
+
+
+	}
+
+	update(currentUpdate) {
+		//this.findMe(data);
+		//requestAnimationFrame(renderUpdate);
+		//this.setState({ currentUpdate });
+	}
+
+	findMe(update) { 
+		for(let player in update.players) {
+			if (update.players[ player ].socket === socket.id) {
+				//me = update.players[ player ];
+				this.setState({ myData: update.players[player] });
+				break;
+			}
+		}
+	}
+
+	render() {
+		<Ping time="100000"/>;
+	}
+
+}
+
+
+const pingCounterFabric = () => {
+	let pingSum = 0;
+	let pingCount = 0;
+	let unstablePing = false;
+
+	return (updateSentTime) => {
+		const ping = Date.now() - updateSentTime;
+		pingSum += ping;
+		
+		if (ping >= 150)
+			unstablePing = true;
+		
+		if (pingCount++ >= Constants.SERVER_PING) {
+			pingSum /= pingCount;
+			root.render(<Ping time={pingSum.toFixed(0)} />);
+			pingCount = 0;
+			pingSum = 0;
+		}	
+
+		
+	};
+};
+
+
+const pingCounter = pingCounterFabric();
+
+
+
 
 socket.on(Constants.MSG_TYPE.GOAL, function (res) {
 	if (res.team_scored) {
@@ -37,7 +114,7 @@ socket.on(Constants.MSG_TYPE.GOAL, function (res) {
 	score_effect.style.animation = "goal_effect 1s linear 1";
 	setTimeout(() => {
 		score_effect.style.display = "none";
-	}, 1000);
+	}, Constants.GAME.GOAL_EFFECT_DURATION);
 
 	blue_score.innerHTML = res.blue;
 	red_score.innerHTML = res.red;
@@ -75,32 +152,5 @@ function startGame() {
 }
 
 
-class Ping extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			time: 1,
-		};
-	}
-
-	componentDidMount() {
-		this.timerID = setInterval(
-			() => this.ping(),
-			1000);
-	}
-
-	ping() {
-
-	}
-
-	render() {
-		return (
-			<div>
-				<h1>Hello, world!</h1>
-				<h2>It is me.</h2>
-			</div>
-		);
-	}
-}
 
 export { currentUpdate as current_update, me };
