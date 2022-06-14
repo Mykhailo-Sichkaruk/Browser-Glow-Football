@@ -2,6 +2,11 @@ import { current_update } from "./index.js";
 const Constants = require("../shared/constants");
 
 const canvas = document.getElementById("canvas");
+
+//
+const union = (a, b) => Array.from(new Set([...a, ...b]));
+//
+
 let ctx;
 
 function initCanvas() {
@@ -24,9 +29,11 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 	if (typeof stroke === "undefined") {
 		stroke = true;
 	}
+	
 	if (typeof radius === "undefined") {
 		radius = 5;
 	}
+
 	if (typeof radius === "number") {
 		radius = { tl: radius, tr: radius, br: radius, bl: radius };
 	} else {
@@ -46,22 +53,33 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 	ctx.lineTo(x, y + radius.tl);
 	ctx.quadraticCurveTo(x, y, x + radius.tl, y);
 	ctx.closePath();
+	
 	if (fill) {
 		ctx.fill();
 	}
+	
 	if (stroke) {
 		ctx.stroke();
 	}
 
 }
 
+function drawConn(ctx, obj1, obj2) {
+	ctx.beginPath();      
+	ctx.moveTo(obj1.x, obj1.y);
+	ctx.lineTo(obj2.x, obj2.y);
+	ctx.stroke();
+}
+
 function drawCircle(ctx, x, y, radius, fill, stroke, strokeWidth) {
 	ctx.beginPath();
 	ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+
 	if (fill) {
 		ctx.fillStyle = fill;
 		ctx.fill();
 	}
+	
 	if (stroke) {
 		ctx.lineWidth = strokeWidth;
 		ctx.strokeStyle = stroke;
@@ -94,6 +112,9 @@ function drawPitch() {
 
 }
 
+
+
+
 function renderUpdate() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear screen
 	//////////////////////////////////////////////////////////////////
@@ -109,6 +130,18 @@ function renderUpdate() {
 		drawCircle(ctx, p.x, p.y, Constants.PLAYER.RADIUS, (p.team == true) ? (Constants.PLAYER.BLUE_COLOR) : (Constants.PLAYER.RED_COLOR), "red", 1);
 	});
 
+
+
+	function pairs(arr, func) {
+		for (var i = 0; i < arr.length - 1; i++) {
+			for (var j = i; j < arr.length - 1; j++) {
+				func([arr[i], arr[j+1]]);
+			}
+		}
+	}
+
+	let obcts = union(current_update.players, [current_update.ball, ]);
+	pairs(obcts, function(pair) {drawConn(ctx, pair[0], pair[1]);});
 }
 
 
