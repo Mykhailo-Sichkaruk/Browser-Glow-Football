@@ -14,7 +14,8 @@ let push = document.getElementById("push");
 
 function handleMouseDirection(e) {
 	const dir = Math.atan2(e.clientX * X_RATIO - me.x, e.clientY * Y_RATIO - me.y);
-	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.DIRECTION, res: dir });
+	if ( ((e.clientX * X_RATIO - me.x)**2 + (e.clientY  * Y_RATIO -me.y)**2) >= Constants.PLAYER.RADIUS ** 2)
+		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.DIRECTION, res: dir });
 }
 
 function handleRMBclick(e) {
@@ -64,31 +65,49 @@ const controller = {
 };
 
 document.addEventListener("keydown", (e) => {
+	let keyStatus = {};
+	keyStatus[controller[e.code].type] = true;
+	
+	if (!controller[e.code].pressed)
+		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.KEY, res: keyStatus });
+	
 	if (controller[e.code]) {
 		controller[e.code].pressed = true;
 	} else
 		console.log(e.code);
 });
+
 document.addEventListener("keyup", (e) => {
 	if (controller[e.code]) {
 		controller[e.code].pressed = false;
+
+		let keyStatus = {};
+		keyStatus[controller[e.code].type] = false;
+		
+		if (!controller[e.code].pressed)
+			socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.KEY, res: keyStatus });
 	}
 });
 
 export function initKeyboardInput() {
-	setInterval(() => {
-		let keyStatus = {};
-		Object.keys(controller).forEach(key => {
-			keyStatus[controller[key].type] = controller[key].pressed;
-		});
-		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.KEY, res: keyStatus });
-	}, Constants.GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
+	// setInterval(() => {
+	// 	let keyStatus = {};
+	// 	let isImportant = false;
+
+	// 	Object.keys(controller).forEach(key => {
+	// 		keyStatus[controller[key].type] = controller[key].pressed;
+	// 		isImportant += controller[key].pressed;
+	// 	});
+
+	// 	if (isImportant)
+	// 		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.KEY, res: keyStatus });
+	// }, Constants.GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
 }
 
 export function initMouseInput() {
 
 	let mouse = document.getElementById("mouse");
-	document.addEventListener("mousemove", _.throttle(handleMouseDirection, 100));
+	document.addEventListener("mousemove", _.throttle(handleMouseDirection, 10));
 	document.addEventListener("mousedown", handleMouseClick);
 	document.addEventListener("contextmenu", handleRMBclick, false);
 
