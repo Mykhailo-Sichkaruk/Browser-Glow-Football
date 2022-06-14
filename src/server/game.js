@@ -116,6 +116,7 @@ class Game {
 	}
 
 	playerInterractBall(socket) {
+
 		const ballY = this.ball.y;
 		const ballX = this.ball.x;
 
@@ -124,26 +125,21 @@ class Game {
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 		
 		if (this.players[socket].pull) {
-			
+
 			if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
-				this.ball.y -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballY - playerY)/Math.abs(ballY - playerY);
-				this.ball.x -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballX - playerX)/Math.abs(ballX - playerX);
+				let ball_player_d = Math.atan2(this.players[socket].x - this.ball.x, this.players[socket].y - this.ball.y);
+				this.ball.direction = (ball_player_d + this.ball.direction)/2 ;
+				this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_PULL;
 			}
-			else if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER * 4) {
-				this.ball.y -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballY - playerY)/Math.abs(ballY - playerY);
-				this.ball.x -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballX - playerX)/Math.abs(ballX - playerX);
-			}
-			return;
+
 		}
 		if (this.players[socket].rotateClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) + Math.PI / 2;
-			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE; 
-			return;
+			this.ball.direction = Math.atan2(this.players[socket].x - this.ball.x, this.players[socket].y - this.ball.y) + Math.PI / 2.1;
+			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE;
 		}
 		if (this.players[socket].rotateCounterClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) - Math.PI / 2;
-			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE; 
-			return;
+			this.ball.direction = Math.atan2(this.players[socket].x - this.ball.x, this.players[socket].y - this.ball.y) - Math.PI / 2.1;
+			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE;
 		}
 		if (this.players[socket].push && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
 			this.ball.direction = this.players[socket].direction;
@@ -208,7 +204,7 @@ class Game {
 			} // Just collision
 		} else {
 			if (currentDistance <= this.playerBallHoldDistance && this.players[socket].pull){
-				return 2;
+				return 5;
 			}
 			else if (this.players[socket].pull || this.players[socket].push || this.players[socket].rotateClockwise || this.players[socket].rotateCounterClockwise) {
 				return 5;
