@@ -37,9 +37,10 @@ module.exports = Object.freeze({
 		SHOT_SPEED: 1700,
 		ASSIST_SPEED: 800,
 		/*** Distance between Player and Ball where pull power works*/
-		DISTANCE_PLAYER_PULL_POWER: 75 ** 2,
+		DISTANCE_PLAYER_PULL_POWER: 100 ** 2,
 		PLAYER_PULL_POWER: 6,
-		BOUNS_BALL_VELOSITY_ON_ROTATE: 10,
+		BOUNS_BALL_VELOSITY_ON_ROTATE: 5,
+		BOUNS_BALL_VELOSITY_ON_PULL: 2, 
 		PITCH_RESISTANCE: 0.99,
 	},
 
@@ -76,7 +77,7 @@ module.exports = Object.freeze({
 
 	DEVELOP: {
 		SERVER_PORT: 3000,
-		SERVER_ADRESS_IPv4: "localhost",
+		SERVER_ADRESS_IPv4: "0.0.0.0",
 		SITE_FOLDER_NAME: "dist",
 	},
 

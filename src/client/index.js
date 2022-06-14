@@ -12,9 +12,10 @@ const red_score = document.getElementById("red_score");
 const blue_score = document.getElementById("blue_score");
 const score_board = document.getElementById("score_board");
 const score_effect = document.getElementById("score_effect");
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
 let currentUpdate;
 let me;
-const root = ReactDOM.createRoot(document.getElementById("root"));
 
 socket.on(Constants.MSG_TYPE.GAME_UPDATE, function (data) {
 	currentUpdate = data;
@@ -107,11 +108,14 @@ socket.on(Constants.MSG_TYPE.GOAL, function (res) {
 	if (res.team_scored) {
 		score_effect.style.background = "blue";
 	}
+	
 	else {
 		score_effect.style.background = "red";
 	}
+
 	score_effect.style.display = "block";
 	score_effect.style.animation = "goal_effect 1s linear 1";
+	
 	setTimeout(() => {
 		score_effect.style.display = "none";
 	}, Constants.GAME.GOAL_EFFECT_DURATION);

@@ -13,6 +13,8 @@ class Ball {
 		this.resistance = Constants.PHYSICS.PITCH_RESISTANCE;
 		this.direction = 0;
 		this.velosity = 0;
+
+		// this.v2d = {x: 0, y: 0}
 	}
 
 	move(dt) {
