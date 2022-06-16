@@ -1,6 +1,8 @@
+require ( "../shared/const");
 const Constants = require("../shared/constants");
 const Player = require("./player");
 const Ball = require("./ball");
+const perf_hooks = require("perf_hooks");
 
 class Game {
 	constructor() {
@@ -17,6 +19,15 @@ class Game {
 		this.playerBallHoldDistance = this.playerBallColisonDistance * 4;
 		this.playerPlayerColisonDistance = (Constants.PLAYER.RADIUS * 2) ** 2;
 
+
+		this.performance = {
+			update: {
+				sum: 0,
+				avg: 0,
+				max: 0,
+				counter: 0,
+			},
+		};
 		// Start updating
 		setInterval(() => {
 			this.update();
@@ -24,7 +35,9 @@ class Game {
 	}
 
 	update() {
-		const dt = (this.lastUpdateTime - Date.now()) / 1000;
+		const start = perf_hooks.performance.now();
+
+		const dt = (Date.now() - this.lastUpdateTime) / 1000;
 		// Process colision
 		this.colision(dt);
 		// Process movement
@@ -33,6 +46,9 @@ class Game {
 		this.sendUpdate();
 		// Save time of last update
 		this.lastUpdateTime = Date.now();
+		
+		const end = perf_hooks.performance.now();
+		this.performanceAddtime(end - start);
 	}
 
 	move(dt) {
@@ -160,11 +176,11 @@ class Game {
 	}
 
 	isBallTouch(socket, dt) {
-		const ballY = this.ball.x - dt * this.ball.velosity * Math.cos(this.ball.direction);
-		const ballX = this.ball.y - dt * this.ball.velosity * Math.sin(this.ball.direction);
+		const ballY = this.ball.x + dt * this.ball.velosity * Math.cos(this.ball.direction);
+		const ballX = this.ball.y + dt * this.ball.velosity * Math.sin(this.ball.direction);
 
-		const playerY = this.players[socket].x - dt * this.players[socket].velosity * Math.cos(this.players[socket].direction);
-		const playerX = this.players[socket].y - dt * this.players[socket].velosity * Math.sin(this.players[socket].direction);
+		const playerY = this.players[socket].x + dt * this.players[socket].velosity * Math.cos(this.players[socket].direction);
+		const playerX = this.players[socket].y + dt * this.players[socket].velosity * Math.sin(this.players[socket].direction);
 
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 
@@ -311,13 +327,30 @@ class Game {
 	}
 
 	removePlayer(socket) {
-		if (this.players[ socket.id ].team === true)
+		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
+			return;
+		
+		if (this.players[socket.id].team === true)
 			this.bluePlayersCount--;
+		else
+			this.redPlayersCount--;
+		
 		delete this.sockets[ socket.id ];
 		delete this.players[ socket.id ];
 		this.players_count--;
 	}
 	
+	performanceAddtime(time) {
+		this.performance.update.sum += time;
+		
+		if (this.performance.update.counter++ >= 1000 / Constants.SERVER_PING) {
+			this.performance.update.avg = this.performance.update.sum / this.performance.update.counter;
+			this.performance.update.sum = 0;
+			this.performance.update.counter = 0;
+			process.stdout.write("\r\x1b[K");
+			process.stdout.write("Update: " + this.performance.update.avg.toFixed(2) + "ms");
+		}
+	}
 }
 
 module.exports = Game;

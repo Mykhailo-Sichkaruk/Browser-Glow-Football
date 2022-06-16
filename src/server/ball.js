@@ -17,8 +17,8 @@ class Ball {
 
 	move(dt) {
         
-		const dy = - dt * this.velosity * Math.cos(this.direction);
-		const dx = - dt * this.velosity * Math.sin(this.direction);
+		const dy = + dt * this.velosity * Math.cos(this.direction);
+		const dx = + dt * this.velosity * Math.sin(this.direction);
 
 		//Check if ball hits the border then change direction
 		if        (this.y + this.radius + dy >= BORDER_BOTTOM) {
@@ -37,8 +37,8 @@ class Ball {
 				this.direction = Math.PI * 2 - this.direction;
 		}
 		//Then move
-		this.x += - dt * this.velosity * Math.sin(this.direction);
-		this.y += - dt * this.velosity * Math.cos(this.direction);
+		this.x += + dt * this.velosity * Math.sin(this.direction);
+		this.y += + dt * this.velosity * Math.cos(this.direction);
 		//Apply resistance to velosity
 		this.velosity *= this.resistance;
 		return false; //False for Ball not touching the border or goal
