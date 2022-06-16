@@ -1,4 +1,3 @@
-require ( "../shared/const");
 const Constants = require("../shared/constants");
 const Player = require("./player");
 const Ball = require("./ball");
@@ -29,9 +28,10 @@ class Game {
 			},
 		};
 		// Start updating
-		setInterval(() => {
+		this.interval = setInterval(() => {
 			this.update();
-		}, Constants.SERVER_PING);
+		}
+		, Constants.SERVER_PING);
 	}
 
 	update() {
@@ -273,14 +273,24 @@ class Game {
 			};
 		}
 
-		this.sendUpdate();
-
+		
 		Object.keys(this.sockets).forEach((playerID) => {
 			const socket = this.sockets[playerID];
 			socket.emit(Constants.MSG_TYPE.GOAL, res);
 		});
+		
+		this.sendUpdate();
+		this.pause(Constants.GAME.AFTER_GOAL_DELAY_MS); // Wait for players to see the goal
+	}
 
-		setTimeout(() => {}, Constants.GAME.AFTER_GOAL_DELAY_MS);
+	pause(delay) {
+		clearInterval(this.interval);
+		setTimeout(() => {
+			this.lastUpdateTime = Date.now();
+			this.interval = setInterval(() => {
+				this.update();
+			}, Constants.SERVER_PING);
+		}, delay);
 	}
 
 	handleInput(socket, msg) {
@@ -350,7 +360,7 @@ class Game {
 			process.stdout.write("\r\x1b[K");
 			process.stdout.write("Update: " + this.performance.update.avg.toFixed(2) + "ms");
 		}
-	}
+	} 
 }
 
 module.exports = Game;
