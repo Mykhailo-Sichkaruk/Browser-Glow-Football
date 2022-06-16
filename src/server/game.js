@@ -90,27 +90,15 @@ class Game {
 	}
 
 	playerTouchBall(player) {
-		const PowerVector = Math.atan2(
-			this.ball.x - this.players[player].x,
-			this.ball.y - this.players[player].y
-		);
+		const PowerVector = Math.atan2(this.ball.x - this.players[player].x, this.ball.y - this.players[player].y);
 		this.ball.direction = PowerVector;
-		this.ball.velosity =
-      (((this.players[player].mass - this.ball.mass) *
-        this.players[player].velosity +
-        2 * this.ball.mass) /
-        (this.players[player].mass + this.ball.mass)) *
-      2;
+		this.ball.velosity =(((this.players[player].mass - this.ball.mass) *  this.players[player].velosity +  2 * this.ball.mass) /  (this.players[player].mass + this.ball.mass)) *2;
 	}
 
 	playerHoldBall(socket) {
 		this.players[socket].velosity = Constants.PLAYER.PULL_SPEED;
-		this.ball.x =
-      this.players[socket].x +
-      this.players[socket].radius * Math.sin(this.players[socket].direction);
-		this.ball.y =
-      this.players[socket].y +
-      this.players[socket].radius * Math.cos(this.players[socket].direction);
+		this.ball.x = this.players[socket].x + this.players[socket].radius * Math.sin(this.players[socket].direction);
+		this.ball.y = this.players[socket].y + this.players[socket].radius * Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
 		this.ball.velosity = this.players[socket].velosity;
 	}
@@ -152,14 +140,8 @@ class Game {
 	}
 
 	playerShotBall(socket) {
-		this.ball.x =
-      this.players[socket].x +
-      (this.players[socket].radius + this.ball.radius + 2) *
-      Math.sin(this.players[socket].direction);
-		this.ball.y =
-      this.players[socket].y +
-      (this.players[socket].radius + this.ball.radius + 2) *
-      Math.cos(this.players[socket].direction);
+		this.ball.x = this.players[socket].x + (this.players[socket].radius + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
+		this.ball.y = this.players[socket].y + (this.players[socket].radius + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
 		this.ball.velosity = Constants.PHYSICS.SHOT_SPEED;
 		this.players[socket].shot = 0;
@@ -169,14 +151,8 @@ class Game {
 	}
 
 	playerAssistBall(socket) {
-		this.ball.x =
-      this.players[socket].x +
-      (this.players[socket].radius + this.ball.radius + 2) *
-      Math.sin(this.players[socket].direction);
-		this.ball.y =
-      this.players[socket].y +
-      (this.players[socket].radius + this.ball.radius + 2) *
-      Math.cos(this.players[socket].direction);
+		this.ball.x = this.players[socket].x + (this.players[socket].radius + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
+		this.ball.y = this.players[socket].y + (this.players[socket].radius + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
 		this.ball.velosity = Constants.PHYSICS.ASSIST_SPEED;
 
@@ -223,9 +199,7 @@ class Game {
 		let i = 0;
 		for (const other in this.players) {
 			if (i > me_index) {
-				const current_distance =
-          (this.players[other].x - this.players[player].x) ** 2 +
-          (this.players[other].y - this.players[player].y) ** 2;
+				const current_distance = (this.players[other].x - this.players[player].x) ** 2 + (this.players[other].y - this.players[player].y) ** 2;
 				if (current_distance <= Constants.PLAYER.RADIUS ** 2 * 2) {
 					// Process colision = change directions and speed
 					const dir = this.players[other].direction;
@@ -330,27 +304,20 @@ class Game {
 
 		// Generate a position to start this player at.
 		const x = Constants.PITCH.FULL_X / 3 + (Constants.PITCH.FULL_X / 3) * !team;
-		const y =
-      (Constants.PITCH.FULL_Y / 5) *
-      (team === true ? (this.bluePlayersCount % 3) + 2 : (this.redPlayersCount % 3) + 2);
+		const y = (Constants.PITCH.FULL_Y / 5) * (team === true ? (this.bluePlayersCount % 3) + 2 : (this.redPlayersCount % 3) + 2);
 		// Add player to global players array
 		this.players[socket.id] = new Player(socket.id, nickname, x, y, team);
-		console.log(
-			team_name +
-      ":    " +
-      nickname.bold +
-      ":  connected:  on socket: ( " +
-      socket.id +
-      " )"
-		);
+		console.log(team_name + ":    " + nickname.bold + ":  connected:  on socket: ( " + socket.id + " )");
 	}
 
 	removePlayer(socket) {
-		delete this.sockets[socket.id];
-		delete this.players[socket.id];
+		if (this.players[ socket.id ].team === true)
+			this.bluePlayersCount--;
+		delete this.sockets[ socket.id ];
+		delete this.players[ socket.id ];
 		this.players_count--;
 	}
-
+	
 }
 
 module.exports = Game;
