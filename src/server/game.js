@@ -1,23 +1,24 @@
 const {PLAYER, PITCH, BALL, GAME, MESSAGE, INPUT_TYPE} = require("../shared/constants");
 const Player = require("./player");
 const Ball = require("./ball");
+const Team = require("./team");
 const perf_hooks = require("perf_hooks");
 
 class Game {
-	constructor() {
+	constructor () {
+		/**Save all connections/sockets. Used to send update*/
 		this.sockets = {};
+		/**Save all Players instances of current game */
 		this.players = {};
+		/**Save ball instance of current game */
 		this.ball = new Ball();
+		/**Timestamp of last update. Used to calculare difference in time between previous and next ticks*/
 		this.lastUpdateTime = Date.now();
-		this.players_count = 0;
-		this.blueScore = 0;
-		this.redScore = 0;
-		this.bluePlayersCount = 0;
-		this.redPlayersCount = 0;
-		this.playerBallColisonDistance = (BALL.RADIUS + PLAYER.RADIUS) ** 2;
-		this.playerBallHoldDistance = this.playerBallColisonDistance * 4;
-		this.playerPlayerColisonDistance = (PLAYER.RADIUS * 2) ** 2;
-
+		/**Teams in game. */
+		this.team = {
+			blue: new Team(false),
+			red: new Team(true),
+		};
 
 		this.performance = {
 			update: {
@@ -184,7 +185,7 @@ class Game {
 
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 
-		if (currentDistance <= this.playerBallColisonDistance) {
+		if (currentDistance <= PLAYER.PLAYER_BALL_COLLISION_DISTANCE) {
 			if (this.players[socket].pull) {
 				if (this.players[socket].shot !== 0) {
 					return 3;
@@ -199,7 +200,7 @@ class Game {
 				return 1;
 			} // Just collision
 		} else {
-			if (currentDistance <= this.playerBallHoldDistance && this.players[socket].pull){
+			if (currentDistance <= PLAYER.PLAYER_BALL_HOLD_DISTANCE && this.players[socket].pull){
 				return 2;
 			}
 			else if (this.players[socket].pull || this.players[socket].push || this.players[socket].rotateClockwise || this.players[socket].rotateCounterClockwise) {
@@ -258,18 +259,18 @@ class Game {
 
 		let res;
 		if (team === true) {
-			this.redScore++;
+			this.team.red.addScore();
 			res = {
-				team_scored: false,
-				blue: this.blueScore,
-				red: this.redScore,
+				redTeamScored: false,
+				blue: this.team.blue.getScore(),
+				red: this.team.red.getScore(),
 			};
 		} else {
-			this.blueScore++;
+			this.team.blue.addScore();
 			res = {
-				team_scored: true,
-				blue: this.blueScore,
-				red: this.redScore,
+				redTeamScored: true,
+				blue: this.team.blue.getScore(),
+				red: this.team.red.getScore(),
 			};
 		}
 
@@ -280,7 +281,7 @@ class Game {
 		});
 		
 		this.sendUpdate();
-		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Wait for players to see the goal
+		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
 	}
 
 	pause(delay) {
@@ -322,32 +323,32 @@ class Game {
 	}
 
 	addPlayer(socket, nickname) {
-		this.players_count++;
-		const team = this.players_count % 2;
-		const team_name = team === true ? "BLUE".blue : "RED ".red;
-		team === true ? this.bluePlayersCount++ : this.redPlayersCount++;
-		this.sockets[socket.id] = socket;
-
-		// Generate a position to start this player at.
-		const x = PITCH.FULL_X / 3 + (PITCH.FULL_X / 3) * !team;
-		const y = (PITCH.FULL_Y / 5) * (team === true ? (this.bluePlayersCount % 3) + 2 : (this.redPlayersCount % 3) + 2);
+		const team = Object.keys(this.players).length % 2;
+		if(team)
+			this.team.blue.addPlayer();
+		else
+			this.team.red.addPlayer();
+		
+			
 		// Add player to global players array
-		this.players[socket.id] = new Player(socket.id, nickname, x, y, team);
-		console.log(team_name + ":    " + nickname.bold + ":  connected:  on socket: ( " + socket.id + " )");
+		this.players[socket.id] = new Player(socket.id, nickname, 0, 0, team);
+		this.sockets[socket.id] = socket;
+		
+		const teamName = team ? "BLUE".blue : "RED ".red;
+		console.log(teamName + ":    " + nickname.bold + ":  connected on socket: " + socket.id);
 	}
 
 	removePlayer(socket) {
 		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
 			return;
 		
-		if (this.players[socket.id].team === true)
-			this.bluePlayersCount--;
+		if (this.players[socket.id].team)
+			this.team.blue.removePlayer();
 		else
-			this.redPlayersCount--;
+			this.team.red.removePlayer();
 		
 		delete this.sockets[ socket.id ];
 		delete this.players[ socket.id ];
-		this.players_count--;
 	}
 	
 	performanceAddtime(time) {
