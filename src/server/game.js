@@ -1,4 +1,4 @@
-const Constants = require("../shared/constants");
+const {PLAYER, PITCH, BALL, GAME, MESSAGE, INPUT_TYPE} = require("../shared/constants");
 const Player = require("./player");
 const Ball = require("./ball");
 const perf_hooks = require("perf_hooks");
@@ -14,9 +14,9 @@ class Game {
 		this.redScore = 0;
 		this.bluePlayersCount = 0;
 		this.redPlayersCount = 0;
-		this.playerBallColisonDistance = (Constants.BALL.RADIUS + Constants.PLAYER.RADIUS) ** 2;
+		this.playerBallColisonDistance = (BALL.RADIUS + PLAYER.RADIUS) ** 2;
 		this.playerBallHoldDistance = this.playerBallColisonDistance * 4;
-		this.playerPlayerColisonDistance = (Constants.PLAYER.RADIUS * 2) ** 2;
+		this.playerPlayerColisonDistance = (PLAYER.RADIUS * 2) ** 2;
 
 
 		this.performance = {
@@ -31,7 +31,7 @@ class Game {
 		this.interval = setInterval(() => {
 			this.update();
 		}
-		, Constants.SERVER_PING);
+		, GAME.SERVER_PING);
 	}
 
 	update() {
@@ -71,7 +71,7 @@ class Game {
 		for (const socket in this.players) {
 			switch (this.isBallTouch(socket, dt)) {
 			case 0:
-				this.players[socket].velosity = Constants.PLAYER.SPEED;
+				this.players[socket].speed = PLAYER.SPEED_DEFAULT;
 				break;
 			case 1:
 				this.playerTouchBall(socket); //Touch
@@ -87,7 +87,7 @@ class Game {
 				break;
 			case 5:
 				this.playerInterractBall(socket);
-				this.players[socket].velosity = Constants.PLAYER.NITRO_VELOSITY;
+				this.players[socket].speed = PLAYER.SPEED_ON_FORCE_ACTION;
 				break;
 			}
 			this.players[socket].assist = false;
@@ -101,22 +101,22 @@ class Game {
 		const update = this.createUpdate();
 		Object.keys(this.sockets).forEach((playerID) => {
 			const socket = this.sockets[playerID];
-			socket.emit(Constants.MSG_TYPE.GAME_UPDATE, update);
+			socket.emit(MESSAGE.GAME_UPDATE, update);
 		});
 	}
 
 	playerTouchBall(player) {
 		const PowerVector = Math.atan2(this.ball.x - this.players[player].x, this.ball.y - this.players[player].y);
 		this.ball.direction = PowerVector;
-		this.ball.velosity =(((this.players[player].mass - this.ball.mass) *  this.players[player].velosity +  2 * this.ball.mass) /  (this.players[player].mass + this.ball.mass)) *2;
+		this.ball.speed =(((this.players[player].mass - this.ball.mass) *  this.players[player].speed +  2 * this.ball.mass) /  (this.players[player].mass + this.ball.mass)) *2;
 	}
 
 	playerHoldBall(socket) {
-		this.players[socket].velosity = Constants.PLAYER.PULL_SPEED;
-		this.ball.x = this.players[socket].x + this.players[socket].radius * Math.sin(this.players[socket].direction);
-		this.ball.y = this.players[socket].y + this.players[socket].radius * Math.cos(this.players[socket].direction);
+		this.players[socket].speed = PLAYER.SPEED_ON_HOLD;
+		this.ball.x = this.players[socket].x + PLAYER.RADIUS * Math.sin(this.players[socket].direction);
+		this.ball.y = this.players[socket].y + PLAYER.RADIUS * Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
-		this.ball.velosity = this.players[socket].velosity;
+		this.ball.speed = this.players[socket].speed;
 	}
 
 	playerInterractBall(socket) {
@@ -129,37 +129,37 @@ class Game {
 		
 		if (this.players[socket].pull) {
 			
-			if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
-				this.ball.y -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballY - playerY)/Math.abs(ballY - playerY);
-				this.ball.x -= Constants.PHYSICS.PLAYER_PULL_POWER * (ballX - playerX)/Math.abs(ballX - playerX);
+			if (currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
+				this.ball.y -= PLAYER.PULL_FORCE * (ballY - playerY)/Math.abs(ballY - playerY);
+				this.ball.x -= PLAYER.PULL_FORCE * (ballX - playerX)/Math.abs(ballX - playerX);
 			}
-			else if (currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER * 4) {
-				this.ball.y -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballY - playerY)/Math.abs(ballY - playerY);
-				this.ball.x -= (Constants.PHYSICS.PLAYER_PULL_POWER / 2) * (ballX - playerX)/Math.abs(ballX - playerX);
+			else if (currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER * 4) {
+				this.ball.y -= (PLAYER.PULL_FORCE / 2) * (ballY - playerY)/Math.abs(ballY - playerY);
+				this.ball.x -= (PLAYER.PULL_FORCE / 2) * (ballX - playerX)/Math.abs(ballX - playerX);
 			}
 			return;
 		}
-		if (this.players[socket].rotateClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
+		if (this.players[socket].rotateClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
 			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) + Math.PI / 2;
-			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE; 
+			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE; 
 			return;
 		}
-		if (this.players[socket].rotateCounterClockwise && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
+		if (this.players[socket].rotateCounterClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
 			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) - Math.PI / 2;
-			this.ball.velosity += Constants.PHYSICS.BOUNS_BALL_VELOSITY_ON_ROTATE; 
+			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE; 
 			return;
 		}
-		if (this.players[socket].push && currentDistance <= Constants.PHYSICS.DISTANCE_PLAYER_PULL_POWER) {
+		if (this.players[socket].push && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
 			this.ball.direction = this.players[socket].direction;
-			this.ball.velosity = this.players[socket].velosity;
+			this.ball.speed = this.players[socket].speed;
 		}
 	}
 
 	playerShotBall(socket) {
-		this.ball.x = this.players[socket].x + (this.players[socket].radius + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
-		this.ball.y = this.players[socket].y + (this.players[socket].radius + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
+		this.ball.x = this.players[socket].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
+		this.ball.y = this.players[socket].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
-		this.ball.velosity = Constants.PHYSICS.SHOT_SPEED;
+		this.ball.speed = PLAYER.SHOT_FORCE;
 		this.players[socket].shot = 0;
 		this.players[socket].pull = false;
 		this.players[socket].push = false;
@@ -167,20 +167,20 @@ class Game {
 	}
 
 	playerAssistBall(socket) {
-		this.ball.x = this.players[socket].x + (this.players[socket].radius + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
-		this.ball.y = this.players[socket].y + (this.players[socket].radius + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
+		this.ball.x = this.players[socket].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
+		this.ball.y = this.players[socket].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
-		this.ball.velosity = Constants.PHYSICS.ASSIST_SPEED;
+		this.ball.speed = PLAYER.ASSIST_FORCE;
 
 		this.players[socket].pull = false;
 	}
 
 	isBallTouch(socket, dt) {
-		const ballY = this.ball.x + dt * this.ball.velosity * Math.cos(this.ball.direction);
-		const ballX = this.ball.y + dt * this.ball.velosity * Math.sin(this.ball.direction);
+		const ballY = this.ball.x + dt * this.ball.speed * Math.cos(this.ball.direction);
+		const ballX = this.ball.y + dt * this.ball.speed * Math.sin(this.ball.direction);
 
-		const playerY = this.players[socket].x + dt * this.players[socket].velosity * Math.cos(this.players[socket].direction);
-		const playerX = this.players[socket].y + dt * this.players[socket].velosity * Math.sin(this.players[socket].direction);
+		const playerY = this.players[socket].x + dt * this.players[socket].speed * Math.cos(this.players[socket].direction);
+		const playerX = this.players[socket].y + dt * this.players[socket].speed * Math.sin(this.players[socket].direction);
 
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 
@@ -216,7 +216,7 @@ class Game {
 		for (const other in this.players) {
 			if (i > me_index) {
 				const current_distance = (this.players[other].x - this.players[player].x) ** 2 + (this.players[other].y - this.players[player].y) ** 2;
-				if (current_distance <= Constants.PLAYER.RADIUS ** 2 * 2) {
+				if (current_distance <= PLAYER.RADIUS ** 2 * 2) {
 					// Process colision = change directions and speed
 					const dir = this.players[other].direction;
 					this.players[other].direction = this.players[player].direction;
@@ -229,9 +229,9 @@ class Game {
 
 	goal(team) {
 		// Set ball to center
-		this.ball.x = Constants.PITCH.FULL_X / 2;
-		this.ball.y = Constants.PITCH.FULL_Y / 2;
-		this.ball.velosity = 0;
+		this.ball.x = PITCH.FULL_X / 2;
+		this.ball.y = PITCH.FULL_Y / 2;
+		this.ball.speed = 0;
 		// Set Players to start
 		let red_number = 1;
 		let blue_number = 1;
@@ -240,18 +240,18 @@ class Game {
 			// For blue tam
 			if (this.players[socket].team) {
 				this.players[socket].x =
-          (Constants.PITCH.FULL_X / 2) * (blue_number / 3);
-				this.players[socket].y = Constants.PITCH.FULL_Y / 2;
+          (PITCH.FULL_X / 2) * (blue_number / 3);
+				this.players[socket].y = PITCH.FULL_Y / 2;
 				blue_number++;
 			} else if (!this.players[socket].team) {
 				this.players[socket].x =
-          Constants.PITCH.FULL_X / 2 +
-          (Constants.PITCH.FULL_X / 2) * (red_number / 3);
-				this.players[socket].y = Constants.PITCH.FULL_Y / 2;
+          PITCH.FULL_X / 2 +
+          (PITCH.FULL_X / 2) * (red_number / 3);
+				this.players[socket].y = PITCH.FULL_Y / 2;
 				red_number++;
 			}
 
-			this.players[socket].velosity = 0;
+			this.players[socket].speed = 0;
 			this.players[socket].pull = false;
 			this.players[socket].push = false;
 		}
@@ -276,11 +276,11 @@ class Game {
 		
 		Object.keys(this.sockets).forEach((playerID) => {
 			const socket = this.sockets[playerID];
-			socket.emit(Constants.MSG_TYPE.GOAL, res);
+			socket.emit(MESSAGE.GOAL, res);
 		});
 		
 		this.sendUpdate();
-		this.pause(Constants.GAME.AFTER_GOAL_DELAY_MS); // Wait for players to see the goal
+		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Wait for players to see the goal
 	}
 
 	pause(delay) {
@@ -289,7 +289,7 @@ class Game {
 			this.lastUpdateTime = Date.now();
 			this.interval = setInterval(() => {
 				this.update();
-			}, Constants.SERVER_PING);
+			}, GAME.SERVER_PING);
 		}, delay);
 	}
 
@@ -297,7 +297,7 @@ class Game {
 		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
 			return;
 		
-		if (msg.inputType === Constants.INPUT_TYPE.KEY)
+		if (msg.inputType === INPUT_TYPE.KEY)
 			for (let key in msg.res) {
 				this.players[socket.id][key] = msg.res[key];	
 			}
@@ -329,8 +329,8 @@ class Game {
 		this.sockets[socket.id] = socket;
 
 		// Generate a position to start this player at.
-		const x = Constants.PITCH.FULL_X / 3 + (Constants.PITCH.FULL_X / 3) * !team;
-		const y = (Constants.PITCH.FULL_Y / 5) * (team === true ? (this.bluePlayersCount % 3) + 2 : (this.redPlayersCount % 3) + 2);
+		const x = PITCH.FULL_X / 3 + (PITCH.FULL_X / 3) * !team;
+		const y = (PITCH.FULL_Y / 5) * (team === true ? (this.bluePlayersCount % 3) + 2 : (this.redPlayersCount % 3) + 2);
 		// Add player to global players array
 		this.players[socket.id] = new Player(socket.id, nickname, x, y, team);
 		console.log(team_name + ":    " + nickname.bold + ":  connected:  on socket: ( " + socket.id + " )");
@@ -353,7 +353,7 @@ class Game {
 	performanceAddtime(time) {
 		this.performance.update.sum += time;
 		
-		if (this.performance.update.counter++ >= 1000 / Constants.SERVER_PING) {
+		if (this.performance.update.counter++ >= 1000 / GAME.SERVER_PING) {
 			this.performance.update.avg = this.performance.update.sum / this.performance.update.counter;
 			this.performance.update.sum = 0;
 			this.performance.update.counter = 0;

@@ -1,6 +1,6 @@
 "use strict";
 
-const Constants = require("../shared/constants");
+const {DEVELOP, MESSAGE, } = require("../shared/constants");
 require("colors");
 const express = require("express");
 const app = express();
@@ -12,19 +12,19 @@ const Game = require("./game");
 let game = new Game();
 
 
-server.listen(Constants.DEVELOP.SERVER_PORT, Constants.DEVELOP.SERVER_ADRESS_IPv4);
-app.use(express.static(Constants.DEVELOP.SITE_FOLDER_NAME));
-console.log("Server running on : ".green + Constants.DEVELOP.SERVER_ADRESS_IPv4.white + ":" + `${Constants.DEVELOP.SERVER_PORT}`.cyan);
+server.listen(DEVELOP.SERVER_PORT, DEVELOP.SERVER_ADRESS_IPv4);
+app.use(express.static(DEVELOP.SITE_FOLDER_NAME));
+console.log("Server running on : ".green + DEVELOP.SERVER_ADRESS_IPv4.white + ":" + `${DEVELOP.SERVER_PORT}`.cyan);
 
-io.on(Constants.MSG_TYPE.CONNECTION, socket => {
+io.on(MESSAGE.CONNECTION, socket => {
 	console.log("Player connected! ".white + socket.id.grey);
-	socket.on(Constants.MSG_TYPE.JOIN_GAME, 	joinGame);
-	socket.on(Constants.MSG_TYPE.DISCONNECT,  	onDisconnect);
-	socket.on(Constants.MSG_TYPE.INPUT,  		handleInput);
+	socket.on(MESSAGE.JOIN_GAME, 	joinGame);
+	socket.on(MESSAGE.DISCONNECT,  	disconnect);
+	socket.on(MESSAGE.INPUT,  		handleInput);
 });
 
 
-function onDisconnect() {
+function disconnect() {
 	game.removePlayer(this);
 }
 

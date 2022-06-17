@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-const Constants = require("../shared/constants");
+const {PLAYER, BALL, PITCH, KEY_TYPE, INPUT_TYPE, GAME, MESSAGE} = require("../shared/constants");
 import { throttle } from "lodash";
 import { me } from "./index";
 
@@ -14,11 +14,11 @@ let push = document.getElementById("push");
 
 function handleMouseDirection(e) {
 	const dir = Math.atan2(e.clientX * X_RATIO - me.x, e.clientY * Y_RATIO - me.y);
-	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.DIRECTION, res: dir });
+	socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.DIRECTION, res: dir });
 }
 
 function handleRMBclick(e) {
-	socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.ASSIST, res: true });
+	socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.ASSIST, res: true });
 	e.preventDefault();
 }
 
@@ -39,7 +39,7 @@ function initPushPower() {
 		else
 			push_power = (1 - Math.abs(res - (animation_time / 4) * 3) / (animation_time / 4));
 
-		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.SHOT, res: push_power });
+		socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.SHOT, res: push_power });
 		setTimeout(() => {
 			push.style.display = "none";
 			line.style.display = "none";
@@ -56,11 +56,11 @@ function handleMouseClick(e) {
 }
 
 const controller = {
-	"Space": 		{ pressed: false, type: Constants.KEY_TYPE.PULL },
-	"ShiftLeft": 	{ pressed: false, type: Constants.KEY_TYPE.STOP },
-	"KeyW": 		{ pressed: false, type: Constants.KEY_TYPE.PUSH },
-	"KeyA": 		{ pressed: false, type: Constants.KEY_TYPE.ROTATE_CLOCKWISE },
-	"KeyD": 		{ pressed: false, type: Constants.KEY_TYPE.ROTATE_COUNTER_CLOCKWISE },
+	"Space": 		{ pressed: false, type:  KEY_TYPE.PULL },
+	"ShiftLeft": 	{ pressed: false, type:  KEY_TYPE.STOP },
+	"KeyW": 		{ pressed: false, type:  KEY_TYPE.PUSH },
+	"KeyA": 		{ pressed: false, type:  KEY_TYPE.ROTATE_CLOCKWISE },
+	"KeyD": 		{ pressed: false, type:  KEY_TYPE.ROTATE_COUNTER_CLOCKWISE },
 };
 
 document.addEventListener("keydown", (e) => {
@@ -81,8 +81,8 @@ export function initKeyboardInput() {
 		Object.keys(controller).forEach(key => {
 			keyStatus[controller[key].type] = controller[key].pressed;
 		});
-		socket.emit(Constants.MSG_TYPE.INPUT, { inputType: Constants.INPUT_TYPE.KEY, res: keyStatus });
-	}, Constants.GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
+		socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.KEY, res: keyStatus });
+	},  GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
 }
 
 export function initMouseInput() {
@@ -94,7 +94,7 @@ export function initMouseInput() {
 
 	screenWidth = document.documentElement.clientWidth;
 	screenHeight = document.documentElement.clientHeight;
-	X_RATIO = Constants.PITCH.FULL_X / screenWidth;
-	Y_RATIO = Constants.PITCH.FULL_Y / screenHeight;
+	X_RATIO =  PITCH.FULL_X / screenWidth;
+	Y_RATIO =  PITCH.FULL_Y / screenHeight;
 
 }

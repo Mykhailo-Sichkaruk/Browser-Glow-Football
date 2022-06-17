@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { initKeyboardInput, initMouseInput } from "./input";
 import { renderUpdate, initCanvas } from "./render";
 
-const Constants = require("../shared/constants");
+const {MESSAGE, PITCH} = require("../shared/constants");
 const nickname_form = document.getElementById("nickname_form");
 const start_game_button = document.getElementById("start_game_button");
 const red_score = document.getElementById("red_score");
@@ -15,8 +15,10 @@ const score_effect = document.getElementById("score_effect");
 let currentUpdate;
 let me;
 const root = ReactDOM.createRoot(document.getElementById("root"));
+document.getElementById("start_game_button").addEventListener("click", startGame, false);
 
-socket.on(Constants.MSG_TYPE.GAME_UPDATE, function (data) {
+
+socket.on(MESSAGE.GAME_UPDATE, function (data) {
 	currentUpdate = data;
 	findMe(data);
 	requestAnimationFrame(renderUpdate);
@@ -50,13 +52,6 @@ class App extends React.Component {
 
 
 	}
-
-	update(currentUpdate) {
-		//this.findMe(data);
-		//requestAnimationFrame(renderUpdate);
-		//this.setState({ currentUpdate });
-	}
-
 	findMe(update) { 
 		for(let player in update.players) {
 			if (update.players[ player ].socket === socket.id) {
@@ -77,7 +72,6 @@ class App extends React.Component {
 const pingCounterFabric = () => {
 	let pingSum = 0;
 	let pingCount = 0;
-	let unstablePing = false;
 
 	return (updateSentTime) => {
 		const ping = Date.now() - updateSentTime;
@@ -103,7 +97,7 @@ const pingCounter = pingCounterFabric();
 
 
 
-socket.on(Constants.MSG_TYPE.GOAL, function (res) {
+socket.on(Constants.MESSAGE.GOAL, function (res) {
 	if (res.team_scored) {
 		score_effect.style.background = "blue";
 	}
@@ -137,10 +131,9 @@ function startHtml() {
 	nickname_form.style.display = "none";
 	start_game_button.style.display = "none";
 	score_board.style.display = "block";
-	document.getElementById("canvas").style.background = Constants.PITCH.CANVAS_BACKGROUND_COLOR;
+	document.getElementById("canvas").style.background = PITCH.CANVAS_BACKGROUND_COLOR;
 }
 
-document.getElementById("start_game_button").addEventListener("click", startGame, false);
 
 
 function startGame() {
@@ -148,7 +141,7 @@ function startGame() {
 	initMouseInput();
 	initKeyboardInput();
 	initCanvas();
-	socket.emit(Constants.MSG_TYPE.JOIN_GAME, nickname_form.value);
+	socket.emit(MESSAGE.JOIN_GAME, nickname_form.value);
 }
 
 
