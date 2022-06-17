@@ -1,4 +1,4 @@
-import { current_update } from "./index.js";
+import { currentUpdate } from "./index.js";
 const {PLAYER, BALL, PITCH} = require("../shared/constants");
 
 const canvas = document.getElementById("canvas");
@@ -102,10 +102,10 @@ function renderUpdate() {
 	drawPitch();
 
 	//Draw ball
-	drawCircle(ctx, current_update.ball.x, current_update.ball.y,  BALL.RADIUS,  BALL.COLOR, "black", 1);
+	drawCircle(ctx, currentUpdate.ball.x, currentUpdate.ball.y,  BALL.RADIUS,  BALL.COLOR, "black", 1);
 
 	//Draw every player
-	current_update.players.forEach(p => {
+	currentUpdate.players.forEach(p => {
 		drawCircle(ctx, p.x, p.y,  PLAYER.RADIUS, (p.team == true) ? ( PLAYER.BLUE_COLOR) : ( PLAYER.RED_COLOR), "red", 1);
 	});
 

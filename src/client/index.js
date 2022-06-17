@@ -12,11 +12,31 @@ const red_score = document.getElementById("red_score");
 const blue_score = document.getElementById("blue_score");
 const score_board = document.getElementById("score_board");
 const score_effect = document.getElementById("score_effect");
-let currentUpdate;
-let me;
 const root = ReactDOM.createRoot(document.getElementById("root"));
 document.getElementById("start_game_button").addEventListener("click", startGame, false);
+let currentUpdate;
+let me;
 
+const pingCounterFabric = () => {
+	let pingSum = 0;
+	let pingCount = 0;
+
+	return (updateSentTime) => {
+		const ping = Date.now() - updateSentTime;
+		pingSum += ping;
+				
+		if (pingCount++ >= GAME.SERVER_PING) {
+			pingSum /= pingCount;
+			root.render(<Ping time={pingSum.toFixed(0)} />);
+			pingCount = 0;
+			pingSum = 0;
+		}	
+
+		
+	};
+};
+
+const pingCounter = pingCounterFabric();
 
 socket.on(MESSAGE.GAME_UPDATE, function (data) {
 	currentUpdate = data;
@@ -68,35 +88,6 @@ class App extends React.Component {
 
 }
 
-
-const pingCounterFabric = () => {
-	let pingSum = 0;
-	let pingCount = 0;
-
-	return (updateSentTime) => {
-		const ping = Date.now() - updateSentTime;
-		pingSum += ping;
-		
-		if (ping >= 150)
-			unstablePing = true;
-		
-		if (pingCount++ >= Constants.SERVER_PING) {
-			pingSum /= pingCount;
-			root.render(<Ping time={pingSum.toFixed(0)} />);
-			pingCount = 0;
-			pingSum = 0;
-		}	
-
-		
-	};
-};
-
-
-const pingCounter = pingCounterFabric();
-
-
-
-
 socket.on(MESSAGE.GOAL, function (res) {
 	if (res.redTeamScored) {
 		score_effect.style.background = "blue";
@@ -130,8 +121,6 @@ function startHtml() {
 	document.getElementById("canvas").style.background = PITCH.CANVAS_BACKGROUND_COLOR;
 }
 
-
-
 function startGame() {
 	startHtml();
 	initMouseInput();
@@ -142,4 +131,4 @@ function startGame() {
 
 
 
-export { currentUpdate as current_update, me };
+export { currentUpdate, me };
