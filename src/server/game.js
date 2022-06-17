@@ -2,6 +2,7 @@ const {PLAYER, PITCH, BALL, GAME, MESSAGE, INPUT_TYPE} = require("../shared/cons
 const Player = require("./player");
 const Ball = require("./ball");
 const Team = require("./team");
+const Perfprmance = require("./performance");
 const perf_hooks = require("perf_hooks");
 
 /**
@@ -23,14 +24,7 @@ class Game {
 			red: new Team(true),
 		};
 
-		this.performance = {
-			update: {
-				sum: 0,
-				avg: 0,
-				max: 0,
-				counter: 0,
-			},
-		};
+		this.performance = new Perfprmance();
 		// Start updating
 		this.interval = setInterval(() => {
 			this.update();
@@ -39,7 +33,7 @@ class Game {
 	}
 
 	/**
-	 * Ticks of the game. Startet in constructor, can be paused with this.pause(delay) method
+	 * Ticks of the game. Started in constructor, can be paused with this.pause(delay) method
 	 */
 	update() {
 		const start = perf_hooks.performance.now();
@@ -53,9 +47,8 @@ class Game {
 		this.sendUpdate();
 		// Save time of last update
 		this.lastUpdateTime = Date.now();
-		
-		const end = perf_hooks.performance.now();
-		this.performanceAddtime(end - start);
+		// Save performance
+		this.performance.addPing(perf_hooks.performance.now() - start);
 	}
 
 	/**
@@ -449,18 +442,7 @@ class Game {
 		delete this.sockets[ socket.id ];
 		delete this.players[ socket.id ];
 	}
-	
-	performanceAddtime(time) {
-		this.performance.update.sum += time;
-		
-		if (this.performance.update.counter++ >= 1000 / GAME.SERVER_PING) {
-			this.performance.update.avg = this.performance.update.sum / this.performance.update.counter;
-			this.performance.update.sum = 0;
-			this.performance.update.counter = 0;
-			process.stdout.write("\r\x1b[K");
-			process.stdout.write("Update: " + this.performance.update.avg.toFixed(2) + "ms");
-		}
-	} 
+
 }
 
 module.exports = Game;
