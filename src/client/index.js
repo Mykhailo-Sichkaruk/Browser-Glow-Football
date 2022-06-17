@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { initKeyboardInput, initMouseInput } from "./input";
 import { renderUpdate, initCanvas } from "./render";
 
-const {MESSAGE, PITCH} = require("../shared/constants");
+const {MESSAGE, PITCH, GAME} = require("../shared/constants");
 const nickname_form = document.getElementById("nickname_form");
 const start_game_button = document.getElementById("start_game_button");
 const red_score = document.getElementById("red_score");
@@ -97,8 +97,8 @@ const pingCounter = pingCounterFabric();
 
 
 
-socket.on(Constants.MESSAGE.GOAL, function (res) {
-	if (res.team_scored) {
+socket.on(MESSAGE.GOAL, function (res) {
+	if (res.redTeamScored) {
 		score_effect.style.background = "blue";
 	}
 	else {
@@ -108,23 +108,19 @@ socket.on(Constants.MESSAGE.GOAL, function (res) {
 	score_effect.style.animation = "goal_effect 1s linear 1";
 	setTimeout(() => {
 		score_effect.style.display = "none";
-	}, Constants.GAME.GOAL_EFFECT_DURATION);
+	}, GAME.AFTER_GOAL_DELAY_MS);
 
 	blue_score.innerHTML = res.blue;
 	red_score.innerHTML = res.red;
 });
 
 function findMe(update) {
-	update.players.forEach(player => {
-		if (player.socket == socket.id) {
-			let res = {
-				x: player.x,
-				y: player.y
-			};
-			me = res;
-			return;
+	for(let player in update.players) {
+		if (update.players[ player ].socket === socket.id) {
+			me = update.players[ player ];
+			break;
 		}
-	});
+	}
 }
 
 function startHtml() {
