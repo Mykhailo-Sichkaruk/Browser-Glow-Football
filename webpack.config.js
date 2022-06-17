@@ -61,5 +61,8 @@ module.exports = {
 	externals: {
 		"react": "React"
 	},
-
+	// Uncomment lines below to disable minimization of names in front-end code. Helpful for debugging.
+	// optimization: {
+	// 	minimize: false
+	// },
 };
