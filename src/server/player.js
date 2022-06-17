@@ -4,8 +4,11 @@ class Player {
 	constructor (socket, nickname, x, y, team) {
 		this.socket = socket;
 		this.nickname = nickname;
-		this.x = x;
-		this.y = y;
+		if (x <= PITCH.RIGHT_BORDER && x >= PITCH.LEFT_BORDER && y <= PITCH.BOTTOM_BORDER && y >= PITCH.TOP_BORDER) {
+			this.x = x;
+			this.y = y;
+		} else
+			this.setGoalkeeperPosition();
 		/** True == 'Blue team' || False == 'Red team'*/
 		this.team = team;
 		/**Direction in Radians: 3.14 = PI */
@@ -54,7 +57,7 @@ class Player {
 		this.x += dt * this.speed * Math.sin(this.direction);
 		this.y += dt * this.speed * Math.cos(this.direction);
 	}
-	
+
 	setGoalkeeperPosition() {
 		this.y = PITCH.Y / 2;
 		if (this.team === GAME.LEFT_TEAM) {
