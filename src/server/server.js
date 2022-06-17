@@ -11,11 +11,13 @@ const io = new Server(server);
 const Game = require("./game");
 let game = new Game();
 
-
+// Start Websoket server
 server.listen(DEVELOP.SERVER_PORT, DEVELOP.SERVER_ADRESS_IPv4);
+// Start hosting game on webpage
 app.use(express.static(DEVELOP.SITE_FOLDER_NAME));
 console.log("Server running on : ".green + DEVELOP.SERVER_ADRESS_IPv4.white + ":" + `${DEVELOP.SERVER_PORT}`.cyan);
 
+// Set server to listen for messages from clients
 io.on(MESSAGE.CONNECTION, socket => {
 	console.log("Player connected! ".white + socket.id.grey);
 	socket.on(MESSAGE.JOIN_GAME, 	joinGame);

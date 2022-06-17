@@ -4,9 +4,12 @@ const Ball = require("./ball");
 const Team = require("./team");
 const perf_hooks = require("perf_hooks");
 
+/**
+ * Defines game state and behavior.
+ */
 class Game {
 	constructor () {
-		/**Save all connections/sockets. Used to send update*/
+		/**Save all connections/sockets. Used to send updates*/
 		this.sockets = {};
 		/**Save all Players instances of current game */
 		this.players = {};
@@ -35,12 +38,15 @@ class Game {
 		, GAME.SERVER_PING);
 	}
 
+	/**
+	 * Ticks of the game. Startet in constructor, can be paused with this.pause(delay) method
+	 */
 	update() {
 		const start = perf_hooks.performance.now();
 
 		const dt = (Date.now() - this.lastUpdateTime) / 1000;
 		// Process colision
-		this.colision(dt);
+		this.collision(dt);
 		// Process movement
 		this.move(dt);
 		// Send update to all players
@@ -52,13 +58,17 @@ class Game {
 		this.performanceAddtime(end - start);
 	}
 
+	/**
+	 * Moves all movable entities on the pitch 
+	 * @param {number} dt miliseconds since last update 
+	 */
 	move(dt) {
 		// Move ball
 		let res;
 		if ((res = this.ball.move(dt)) === 2) {
-			this.goal(true);
+			this.onGoal(true);
 		} else if (res === 1) {
-			this.goal(false);
+			this.onGoal(false);
 		}
 		// Move all players
 		Object.values(this.players).forEach(function (player) {
@@ -66,7 +76,11 @@ class Game {
 		});
 	}
 
-	colision(dt) {
+	/**
+	 * Proceess every collision in the game by comparing every pair of entity
+	 * @param {number} dt miliseconds since last update 
+	 */
+	collision(dt) {
 		let i = 0;
 
 		for (const socket in this.players) {
@@ -81,7 +95,7 @@ class Game {
 				this.playerHoldBall(socket);
 				break;
 			case 3: // Player Hold the ball and shots it in same time
-				this.playerShotBall(socket); 
+				this.playerKickBall(socket); 
 				break;
 			case 4:	// Player assist
 				this.playerAssistBall(socket); 
@@ -98,6 +112,9 @@ class Game {
 		}
 	}
 
+	/**
+	 * Sends current state to all sockets in this.sockets object
+	 */
 	sendUpdate() {
 		const update = this.createUpdate();
 		Object.keys(this.sockets).forEach((playerID) => {
@@ -106,32 +123,49 @@ class Game {
 		});
 	}
 
-	playerTouchBall(player) {
-		const PowerVector = Math.atan2(this.ball.x - this.players[player].x, this.ball.y - this.players[player].y);
+	/**
+	 * Change ball direction and speed when player touches ball
+	 * @param {number} id 
+	 */
+	playerTouchBall(id) {
+		const PowerVector = Math.atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y);
 		this.ball.direction = PowerVector;
-		this.ball.speed =(((this.players[player].mass - this.ball.mass) *  this.players[player].speed +  2 * this.ball.mass) /  (this.players[player].mass + this.ball.mass)) *2;
+		this.ball.speed =(((this.players[id].mass - this.ball.mass) *  this.players[id].speed +  2 * this.ball.mass) /  (this.players[id].mass + this.ball.mass)) *2;
 	}
 
-	playerHoldBall(socket) {
-		this.players[socket].hold = true;
-		this.players[socket].speed = PLAYER.SPEED_ON_HOLD;
-		this.ball.x = this.players[socket].x + PLAYER.RADIUS * Math.sin(this.players[socket].direction);
-		this.ball.y = this.players[socket].y + PLAYER.RADIUS * Math.cos(this.players[socket].direction);
-		this.ball.direction = this.players[socket].direction;
-		this.ball.speed = this.players[socket].speed;
+	/**
+	 * Change ball direction and speed when player holds the ball.  
+	 * Ball holds inside the player
+	 * @param {number} id 
+	 */
+	playerHoldBall(id) {
+		this.players[id].hold = true;
+		this.players[id].speed = PLAYER.SPEED_ON_HOLD;
+		this.ball.x = this.players[id].x + PLAYER.RADIUS * Math.sin(this.players[id].direction);
+		this.ball.y = this.players[id].y + PLAYER.RADIUS * Math.cos(this.players[id].direction);
+		this.ball.direction = this.players[id].direction;
+		this.ball.speed = this.players[id].speed;
 	}
 
-	playerInterractBall(socket) {
-		this.players[ socket ].shot = 0;
+	/**
+	 * Force actions with ball.  
+	 * - rotate clockwise
+	 * - rotate counterclockwise
+	 * - push
+	 * - pull
+	 * @param {number} id
+	 */
+	playerInterractBall(id) {
+		this.players[ id ].shot = 0;
 
 		const ballY = this.ball.y;
 		const ballX = this.ball.x;
 
-		const playerY = this.players[socket].y;
-		const playerX = this.players[socket].x;
+		const playerY = this.players[id].y;
+		const playerX = this.players[id].x;
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 		
-		if (this.players[socket].pull) {
+		if (this.players[id].pull) {
 			
 			if (currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
 				this.ball.y -= PLAYER.PULL_FORCE * (ballY - playerY)/Math.abs(ballY - playerY);
@@ -143,69 +177,89 @@ class Game {
 			}
 			return;
 		}
-		if (this.players[socket].rotateClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) + Math.PI / 2;
+		if (this.players[id].rotateClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
+			this.ball.direction = Math.atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y) + Math.PI / 2;
 			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE; 
 			return;
 		}
-		if (this.players[socket].rotateCounterClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.direction = Math.atan2(this.ball.x - this.players[socket].x, this.ball.y - this.players[socket].y) - Math.PI / 2;
+		if (this.players[id].rotateCounterClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
+			this.ball.direction = Math.atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y) - Math.PI / 2;
 			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE; 
 			return;
 		}
-		if (this.players[socket].push && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.direction = this.players[socket].direction;
-			this.ball.speed = this.players[socket].speed;
+		if (this.players[id].push && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
+			this.ball.direction = this.players[id].direction;
+			this.ball.speed = this.players[id].speed;
 		}
 	}
 
-	playerShotBall(socket) {
-		if (this.players[ socket ].hold) {
-			this.ball.x = this.players[ socket ].x + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.sin(this.players[ socket ].direction);
-			this.ball.y = this.players[ socket ].y + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.cos(this.players[ socket ].direction);
-			this.ball.direction = this.players[ socket ].direction;
-			this.ball.speed = PLAYER.SHOT_FORCE * this.players[ socket ].shot;
+	/**
+	 * Shot ball with player's direction and shot power that was set by player in the ***catch perfect timing game*** 
+	 * @param {number} id 
+	 */
+	playerKickBall(id) {
+		if (this.players[ id ].hold) {
+			this.ball.x = this.players[ id ].x + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.sin(this.players[ id ].direction);
+			this.ball.y = this.players[ id ].y + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.cos(this.players[ id ].direction);
+			this.ball.direction = this.players[ id ].direction;
+			this.ball.speed = PLAYER.KICK_FORCE * this.players[ id ].shot;
 		
-			this.players[ socket ].shot = 0;
-			this.players[ socket ].pull = false;
-			this.players[ socket ].push = false;
-			this.players[ socket ].assist = false;
-			this.players[ socket ].hold = false;
+			this.players[ id ].shot = 0;
+			this.players[ id ].pull = false;
+			this.players[ id ].push = false;
+			this.players[ id ].assist = false;
+			this.players[ id ].hold = false;
 		} else {
-			this.players[ socket ].shot = 0;
-			this.players[ socket ].hold = 0;
+			this.players[ id ].shot = 0;
+			this.players[ id ].hold = 0;
 		}
 	}
 
-	playerAssistBall(socket){
-		this.ball.x = this.players[socket].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
-		this.ball.y = this.players[socket].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
-		this.ball.direction = this.players[socket].direction;
+	/**
+	 * Assist ball with constant speed and current player's direction 
+	 * @param {number} id 
+	 */
+	playerAssistBall(id){
+		this.ball.x = this.players[id].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[id].direction);
+		this.ball.y = this.players[id].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[id].direction);
+		this.ball.direction = this.players[id].direction;
 		this.ball.speed = PLAYER.ASSIST_FORCE;
 
-		this.players[ socket ].shot = 0;
-		this.players[ socket ].pull = false;
-		this.players[ socket ].push = false;
-		this.players[ socket ].assist = false;
-		this.players[ socket ].hold = false;
+		this.players[ id ].shot = 0;
+		this.players[ id ].pull = false;
+		this.players[ id ].push = false;
+		this.players[ id ].assist = false;
+		this.players[ id ].hold = false;
 
 	}
 
-	isBallTouch(socket, dt) {
+	/**
+	 * Defines collisions type betweeen ball and player
+	 * @param {number} id 
+	 * @param {number} dt 
+	 * @returns
+	 * - 0 - no collision
+	 * - 1 - player collides with ball 
+	 * - 2 - player hold ball
+	 * - 3 - player hold ball and kick it
+	 * - 4 - player hold ball and assist it
+	 * - 5 - player use force actions
+	 */
+	isBallTouch(id, dt) {
 		const ballY = this.ball.x + dt * this.ball.speed * Math.cos(this.ball.direction);
 		const ballX = this.ball.y + dt * this.ball.speed * Math.sin(this.ball.direction);
 
-		const playerY = this.players[socket].x + dt * this.players[socket].speed * Math.cos(this.players[socket].direction);
-		const playerX = this.players[socket].y + dt * this.players[socket].speed * Math.sin(this.players[socket].direction);
+		const playerY = this.players[id].x + dt * this.players[id].speed * Math.cos(this.players[id].direction);
+		const playerX = this.players[id].y + dt * this.players[id].speed * Math.sin(this.players[id].direction);
 
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 
 		if (currentDistance <= PLAYER.PLAYER_BALL_COLLISION_DISTANCE) {
-			if (this.players[socket].pull) {
-				if (this.players[socket].shot !== 0) {
+			if (this.players[id].pull) {
+				if (this.players[id].shot !== 0) {
 					return 3;
 				} // Player Hold the ball and shots it in same time
-				else if (this.players[socket].assist === true) {
+				else if (this.players[id].assist === true) {
 					return 4;
 				} // Player assist
 				else {
@@ -215,10 +269,10 @@ class Game {
 				return 1;
 			} // Just collision
 		} else {
-			if (currentDistance <= PLAYER.PLAYER_BALL_HOLD_DISTANCE && this.players[socket].pull){
+			if (currentDistance <= PLAYER.PLAYER_BALL_HOLD_DISTANCE && this.players[id].pull){
 				return 2;
 			}
-			else if (this.players[socket].pull || this.players[socket].push || this.players[socket].rotateClockwise || this.players[socket].rotateCounterClockwise) {
+			else if (this.players[id].pull || this.players[id].push || this.players[id].rotateClockwise || this.players[id].rotateCounterClockwise) {
 				return 5;
 			} // Player force actions
 			else {
@@ -227,23 +281,32 @@ class Game {
 		}
 	}
 
-	playerPlayerCollision(player, me_index) {
+	/**
+	 * Process collision between player and all other players that is next to him in **this.players{}** object  
+	 * @param {number} id player to process
+	 * @param {number} index index of player in **this.players{}** object
+	 */
+	playerPlayerCollision(id, index) {
 		let i = 0;
 		for (const other in this.players) {
-			if (i > me_index) {
-				const current_distance = (this.players[other].x - this.players[player].x) ** 2 + (this.players[other].y - this.players[player].y) ** 2;
-				if (current_distance <= PLAYER.RADIUS ** 2 * 2) {
+			if (i > index) {
+				const currentDistance = (this.players[other].x - this.players[id].x) ** 2 + (this.players[other].y - this.players[id].y) ** 2;
+				if (currentDistance <= PLAYER.RADIUS ** 2 * 2) {
 					// Process colision = change directions and speed
 					const dir = this.players[other].direction;
-					this.players[other].direction = this.players[player].direction;
-					this.players[player].direction = dir;
+					this.players[other].direction = this.players[id].direction;
+					this.players[id].direction = dir;
 				}
 			}
 			i++;
 		}
 	}
 
-	goal(team) {
+	/**
+	 * Change score and move players in default positions after goal
+	 * @param {boolean} team 
+	 */
+	onGoal(team) {
 		// Set ball to center
 		this.ball.x = PITCH.FULL_X / 2;
 		this.ball.y = PITCH.FULL_Y / 2;
@@ -296,6 +359,10 @@ class Game {
 		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
 	}
 
+	/**
+	 * Pasuse game for `delay` time
+	 * @param {number} delay in miliseconds 
+	 */
 	pause(delay) {
 		clearInterval(this.interval);
 		setTimeout(() => {
@@ -306,22 +373,32 @@ class Game {
 		}, delay);
 	}
 
-	handleInput(socket, msg) {
-		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
+	/**
+	 * Change player's force actions with new in `message`
+	 * @param {number} id 
+	 * @param {object} message 
+	 * @returns 
+	 */
+	handleInput(id, message) {
+		if (!Object.prototype.hasOwnProperty.call(this.players, `${id.id}`))
 			return;
 		
-		if (msg.inputType === INPUT_TYPE.KEY)
-			for (const key in msg.res) {
-				this.players[socket.id][key] = msg.res[key];	
+		if (message.inputType === INPUT_TYPE.KEY)
+			for (const key in message.res) {
+				this.players[id.id][key] = message.res[key];	
 			}
 		else
-			this.players[socket.id][msg.inputType] = msg.res;	
+			this.players[id.id][message.inputType] = message.res;	
 
 	}
 	
+	/**
+	 * Create Update message for all players - description of current state of the game
+	 * @returns {object} description of the game
+	 */
 	createUpdate() {
 		return {
-			t: Date.now(),
+			timestamp: Date.now(),
 			ball: this.ball,
 			players: Object.values(this.players).map((player) => {
 				return {
@@ -334,6 +411,11 @@ class Game {
 		};
 	}
 
+	/**
+	 * Add Player to the **this.sockets{}** and **this.players{}** objects
+	 * @param {Socket} socket 
+	 * @param {string} nickname 
+	 */
 	addPlayer(socket, nickname) {
 		const team = Object.keys(this.players).length % 2;
 		if(team)
@@ -350,6 +432,11 @@ class Game {
 		console.log(teamName + ":    " + nickname.bold + ":  connected on socket: " + socket.id);
 	}
 
+	/**
+	 * Remove Player to the **this.sockets{}** and **this.players{}** objects
+	 * @param {Socket} socket 
+	 * @returns 
+	 */
 	removePlayer(socket) {
 		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
 			return;

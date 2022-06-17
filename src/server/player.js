@@ -1,5 +1,8 @@
 const {PLAYER, PITCH, GAME} = require("../shared/constants");
 
+/**
+ * Describe Player states and behavior.
+ */
 class Player {
 	constructor (socket, nickname, x, y, team) {
 		if (x <= PITCH.RIGHT_BORDER && x >= PITCH.LEFT_BORDER && y <= PITCH.BOTTOM_BORDER && y >= PITCH.TOP_BORDER) {
@@ -21,7 +24,7 @@ class Player {
 		/**Rasius in pixels, currently doesnt affect anything */
 		this.radius = PLAYER.RADIUS;
 
-		/** `true` if user is holding ball */
+		/**Boolean: `true` if user is holding ball */
 		this.hold = false;
 		/**Number: value of shot power or `0` if there is no shot */
 		this.shot = 0;
@@ -61,6 +64,9 @@ class Player {
 		this.y += dt * this.speed * Math.cos(this.direction);
 	}
 
+	/**
+	 * Set player to goalkeeper position, near goal
+	 */
 	setGoalkeeperPosition() {
 		this.y = PITCH.Y / 2;
 		if (this.team === GAME.LEFT_TEAM) {
@@ -71,6 +77,9 @@ class Player {
 		}
 	}
 	
+	/**
+	 * Set player to midfield position, near center of own side
+	 */
 	setMidfielderPosition() {
 		this.y = PITCH.Y / 2;
 		if (this.team === GAME.LEFT_TEAM) {
@@ -80,7 +89,9 @@ class Player {
 		}
 	}
 
-	
+	/**
+	 * Set player to attacker position, near senter of the pitch
+	 */
 	setForwardPosition() {
 		this.y = PITCH.Y / 2;
 		if (this.team === GAME.LEFT_TEAM) {
