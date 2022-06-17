@@ -16,7 +16,7 @@ const PLAYER= {
 	SPEED_ON_FORCE_ACTION: 150,
 	SPEED_ON_HOLD: 75,
 	PULL_FORCE: 6,
-	SHOT_FORCE: 1700,
+	KICK_FORCE: 1700,
 	ASSIST_FORCE: 800,
 	/*** Distance between Player and Ball where pull power works*/
 	DISTANCE_PLAYER_PULL_POWER: 75 ** 2,

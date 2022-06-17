@@ -42,7 +42,7 @@ socket.on(MESSAGE.GAME_UPDATE, function (data) {
 	currentUpdate = data;
 	findMe(data);
 	requestAnimationFrame(renderUpdate);
-	pingCounter(data.t);
+	pingCounter(data.timestamp);
 });
 
 class Ping extends React.Component {
