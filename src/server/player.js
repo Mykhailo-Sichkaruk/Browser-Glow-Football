@@ -2,13 +2,14 @@ const {PLAYER, PITCH, GAME} = require("../shared/constants");
 
 class Player {
 	constructor (socket, nickname, x, y, team) {
-		this.socket = socket;
-		this.nickname = nickname;
 		if (x <= PITCH.RIGHT_BORDER && x >= PITCH.LEFT_BORDER && y <= PITCH.BOTTOM_BORDER && y >= PITCH.TOP_BORDER) {
 			this.x = x;
 			this.y = y;
 		} else
 			this.setGoalkeeperPosition();
+		
+		this.nickname = nickname;
+		this.socket = socket;
 		/** True == 'Blue team' || False == 'Red team'*/
 		this.team = team;
 		/**Direction in Radians: 3.14 = PI */
@@ -20,6 +21,8 @@ class Player {
 		/**Rasius in pixels, currently doesnt affect anything */
 		this.radius = PLAYER.RADIUS;
 
+		/** `true` if user is holding ball */
+		this.hold = false;
 		/**Number: value of shot power or `0` if there is no shot */
 		this.shot = 0;
 		/**Boolean: `true` if [space] pressed and trying to pull the ball */

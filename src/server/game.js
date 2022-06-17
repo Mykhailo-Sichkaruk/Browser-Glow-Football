@@ -74,19 +74,19 @@ class Game {
 			case 0:
 				this.players[socket].speed = PLAYER.SPEED_DEFAULT;
 				break;
-			case 1:
+			case 1: // Just collision
 				this.playerTouchBall(socket); //Touch
 				break;
-			case 2:
+			case 2: // Player holds the ball
 				this.playerHoldBall(socket);
 				break;
-			case 3:
-				this.playerShotBall(socket); // Shot
+			case 3: // Player Hold the ball and shots it in same time
+				this.playerShotBall(socket); 
 				break;
-			case 4:
-				this.playerAssistBall(socket); // Assist
+			case 4:	// Player assist
+				this.playerAssistBall(socket); 
 				break;
-			case 5:
+			case 5: // Player force actions
 				this.playerInterractBall(socket);
 				this.players[socket].speed = PLAYER.SPEED_ON_FORCE_ACTION;
 				break;
@@ -113,6 +113,7 @@ class Game {
 	}
 
 	playerHoldBall(socket) {
+		this.players[socket].hold = true;
 		this.players[socket].speed = PLAYER.SPEED_ON_HOLD;
 		this.ball.x = this.players[socket].x + PLAYER.RADIUS * Math.sin(this.players[socket].direction);
 		this.ball.y = this.players[socket].y + PLAYER.RADIUS * Math.cos(this.players[socket].direction);
@@ -121,6 +122,8 @@ class Game {
 	}
 
 	playerInterractBall(socket) {
+		this.players[ socket ].shot = 0;
+
 		const ballY = this.ball.y;
 		const ballX = this.ball.x;
 
@@ -157,23 +160,35 @@ class Game {
 	}
 
 	playerShotBall(socket) {
-		this.ball.x = this.players[socket].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
-		this.ball.y = this.players[socket].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
-		this.ball.direction = this.players[socket].direction;
-		this.ball.speed = PLAYER.SHOT_FORCE;
-		this.players[socket].shot = 0;
-		this.players[socket].pull = false;
-		this.players[socket].push = false;
-		this.players[socket].assist = false;
+		if (this.players[ socket ].hold) {
+			this.ball.x = this.players[ socket ].x + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.sin(this.players[ socket ].direction);
+			this.ball.y = this.players[ socket ].y + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.cos(this.players[ socket ].direction);
+			this.ball.direction = this.players[ socket ].direction;
+			this.ball.speed = PLAYER.SHOT_FORCE * this.players[ socket ].shot;
+		
+			this.players[ socket ].shot = 0;
+			this.players[ socket ].pull = false;
+			this.players[ socket ].push = false;
+			this.players[ socket ].assist = false;
+			this.players[ socket ].hold = false;
+		} else {
+			this.players[ socket ].shot = 0;
+			this.players[ socket ].hold = 0;
+		}
 	}
 
-	playerAssistBall(socket) {
+	playerAssistBall(socket){
 		this.ball.x = this.players[socket].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[socket].direction);
 		this.ball.y = this.players[socket].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[socket].direction);
 		this.ball.direction = this.players[socket].direction;
 		this.ball.speed = PLAYER.ASSIST_FORCE;
 
-		this.players[socket].pull = false;
+		this.players[ socket ].shot = 0;
+		this.players[ socket ].pull = false;
+		this.players[ socket ].push = false;
+		this.players[ socket ].assist = false;
+		this.players[ socket ].hold = false;
+
 	}
 
 	isBallTouch(socket, dt) {
@@ -205,7 +220,7 @@ class Game {
 			}
 			else if (this.players[socket].pull || this.players[socket].push || this.players[socket].rotateClockwise || this.players[socket].rotateCounterClockwise) {
 				return 5;
-			} // Player gets Nitro
+			} // Player force actions
 			else {
 				return 0;
 			} // No collision
@@ -240,14 +255,11 @@ class Game {
 		for (const socket in this.players) {
 			// For blue tam
 			if (this.players[socket].team) {
-				this.players[socket].x =
-          (PITCH.FULL_X / 2) * (blue_number / 3);
+				this.players[socket].x = (PITCH.FULL_X / 2) * (blue_number / 3);
 				this.players[socket].y = PITCH.FULL_Y / 2;
 				blue_number++;
 			} else if (!this.players[socket].team) {
-				this.players[socket].x =
-          PITCH.FULL_X / 2 +
-          (PITCH.FULL_X / 2) * (red_number / 3);
+				this.players[socket].x = PITCH.FULL_X / 2 + (PITCH.FULL_X / 2) * (red_number / 3);
 				this.players[socket].y = PITCH.FULL_Y / 2;
 				red_number++;
 			}
@@ -299,7 +311,7 @@ class Game {
 			return;
 		
 		if (msg.inputType === INPUT_TYPE.KEY)
-			for (let key in msg.res) {
+			for (const key in msg.res) {
 				this.players[socket.id][key] = msg.res[key];	
 			}
 		else
