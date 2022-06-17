@@ -28,21 +28,21 @@ function initPushPower() {
 	line.style.animation = "push_line 0.5s linear 1";
 	
 	document.addEventListener("mouseup", () => {
+		const realTime = Date.now() - startTime;
 		line.style.animationPlayState = "paused";
-		let res = Date.now() - startTime;
 		let pushPower;
-		if (res <= GAME.SHOT_ANIMATION_TIME / 2)
-			pushPower = (1 - Math.abs(res - GAME.SHOT_ANIMATION_TIME / 4) / (GAME.SHOT_ANIMATION_TIME / 4));
-		else if (res >= GAME.SHOT_ANIMATION_TIME)
+		if (realTime <= GAME.SHOT_ANIMATION_TIME / 2)
+			pushPower = 1 - (Math.abs(GAME.PERFECT_SHOT_TIME - realTime) / GAME.PERFECT_SHOT_TIME);
+		else if (realTime >= GAME.SHOT_ANIMATION_TIME)
 			pushPower = 0;
 		else
-			pushPower = (1 - Math.abs(res - (GAME.SHOT_ANIMATION_TIME / 4) * 3) / (GAME.SHOT_ANIMATION_TIME / 4));
+			pushPower = 1 - (Math.abs(GAME.PERFECT_SHOT_TIME * 3 - realTime) / GAME.PERFECT_SHOT_TIME );
 
 		socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.SHOT, res: pushPower });
 		setTimeout(() => {
 			push.style.display = "none";
 			line.style.display = "none";
-		}, GAME.SHOT_POWER_PANE_DELAY);
+		}, GAME.SHOT_ANIMATION_TIME);
 	}, { once: true });
 }
 
