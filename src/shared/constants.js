@@ -1,7 +1,12 @@
-const GAME= {
+const GAME = {
+	LEFT_TEAM: "left",
+	RIGHT_TEAM: "right",
 	AFTER_GOAL_DELAY_MS: 1000, //ms
 	PING_ON_KEY_STATUS_REFRESHED_MS: 50,
 	SERVER_PING: 20,
+	SHOT_ANIMATION_TIME: 500, //ms
+	SHOT_POWER_PANE_DELAY: 1000, //ms
+	MOUSE_UPDATE_DELAY: 100, //ms
 };
 const PLAYER= {
 	RADIUS: 15,
@@ -14,6 +19,9 @@ const PLAYER= {
 	ASSIST_FORCE: 800,
 	/*** Distance between Player and Ball where pull power works*/
 	DISTANCE_PLAYER_PULL_POWER: 75 ** 2,
+	get PLAYER_PLAYER_COLLISION_DISTANCE() 	{ return (this.RADIUS * 2) ** 2; },
+	get PLAYER_BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + BALL.RADIUS) ** 2; },
+	get PLAYER_BALL_HOLD_DISTANCE() 		{ return this.PLAYER_BALL_COLLISION_DISTANCE * 4; },
 	RED_COLOR: "red",
 	BLUE_COLOR: "blue"
 };
