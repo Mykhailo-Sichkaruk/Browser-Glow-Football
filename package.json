@@ -4,9 +4,9 @@
     "description": "Glow-Football",
     "main": "src/server/server.js",
     "scripts": {
-        "front": "webpack --env production",
-        "server": "cross-env NODE_ENV=development node src/server/server.js",
-        "all": "webpack --env production && cross-env NODE_ENV=development node src/server/server.js"
+        "front": "webpack",
+        "server": "node src/server/server.js",
+        "all": "webpack && node src/server/server.js"
     },
     "author": "Mykhailo Sichkaruk",
     "license": "ISC",
