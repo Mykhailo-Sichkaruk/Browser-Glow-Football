@@ -1,4 +1,5 @@
-const GAME = {
+"use strict";
+const GAME = Object.freeze({
 	LEFT_TEAM: "left",
 	RIGHT_TEAM: "right",
 	AFTER_GOAL_DELAY_MS: 1000, //ms
@@ -8,8 +9,8 @@ const GAME = {
 	get PERFECT_SHOT_TIME() { return this.SHOT_ANIMATION_TIME / 4; },
 	SHOT_POWER_PANE_DELAY: 1000, //ms
 	MOUSE_UPDATE_DELAY: 100, //ms
-};
-const PLAYER= {
+});
+const PLAYER = Object.freeze({
 	RADIUS: 15,
 	MASS: 5,
 	SPEED_DEFAULT: 250,
@@ -25,8 +26,8 @@ const PLAYER= {
 	get PLAYER_BALL_HOLD_DISTANCE() 		{ return this.PLAYER_BALL_COLLISION_DISTANCE * 4; },
 	RED_COLOR: "red",
 	BLUE_COLOR: "blue"
-};
-const PITCH= {
+});
+const PITCH = Object.freeze({
 	X: 1540,
 	Y: 840,
 	FULL_X: 1600,
@@ -45,39 +46,39 @@ const PITCH= {
 	CENTRAL_CIRCLE_RADIUS: 160,
 	BORDER_LEFT_X: 0,
 	RESISTANCE: 0.99,
-};
-const BALL= {
+});
+const BALL = Object.freeze({
 	MASS: 1,
 	RADIUS: 7,
 	BONUS_SPEED_ON_ROTATE: 10,
 	COLOR: "white",
-};
-const MESSAGE= {
+});
+const MESSAGE = Object.freeze({
 	CONNECTION: "connection",
 	JOIN_GAME: "join_game",
 	GAME_UPDATE: "update",
 	GOAL: "goal",
 	INPUT: "input",
 	DISCONNECT: "disconnect",
-};
-const INPUT_TYPE= {
+});
+const INPUT_TYPE = Object.freeze({
 	KEY: "key",
 	DIRECTION: "direction",
 	SHOT: "shot",
 	ASSIST: "assist",
-};
-const KEY_TYPE= {
+});
+const KEY_TYPE = Object.freeze({
 	PULL: "pull",
 	STOP: "stop",
 	PUSH: "push",
 	ROTATE_CLOCKWISE: "rotateClockwise",
 	ROTATE_COUNTER_CLOCKWISE: "rotateCounterClockwise",
-};
-const DEVELOP= {
+});
+const DEVELOP = Object.freeze({
 	SERVER_PORT: 3000,
 	SERVER_ADRESS_IPv4: "localhost",
 	SITE_FOLDER_NAME: "dist",
-};
+});
 
 module.exports = {
 	GAME,
