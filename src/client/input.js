@@ -25,8 +25,8 @@ function handleMouseDirection(e) {
 }
 
 function handleRMBclick(e) {
-	socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.ASSIST, res: true });
 	e.preventDefault();
+	assist();
 }
 
 function kick() {
@@ -44,7 +44,6 @@ function kick() {
 		if (realTime <= GAME.SHOT_ANIMATION_TIME / 2)
 			pushPower = 1 - (Math.abs(GAME.PERFECT_SHOT_TIME - realTime) / GAME.PERFECT_SHOT_TIME);
 		else if (realTime >= GAME.SHOT_ANIMATION_TIME) {
-			pushPower = 0;
 			push.style.display = "none";
 			line.style.display = "none";
 			return;
@@ -54,7 +53,6 @@ function kick() {
 			
 		//Send kick power to server
 		socket.emit(MESSAGE.INPUT, { inputType: INPUT_TYPE.SHOT, res: pushPower });
-		console.log(pushPower);
 
 		stopSendKeyStatus();
 
@@ -67,6 +65,15 @@ function kick() {
 		}, GAME.SHOT_ANIMATION_TIME);
 	}, { once: true });
 
+}
+
+function assist() {
+	socket.emit(MESSAGE.INPUT, { inputType: INPUT_TYPE.ASSIST, res: true });
+
+	stopSendKeyStatus();
+	setTimeout(() => {
+		startSendKeyStatus();
+	}, GAME.SHOT_ANIMATION_TIME);
 }
 
 function handleMouseClick(e) {
