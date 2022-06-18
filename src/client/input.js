@@ -19,17 +19,7 @@ let xRatio = PITCH.FULL_X / document.documentElement.clientWidth;
 let yRatio = PITCH.FULL_Y / document.documentElement.clientHeight;
 
 
-function handleMouseDirection(e) {
-	const dir = Math.atan2(e.clientX * xRatio - me.x, e.clientY * yRatio - me.y);
-	socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.DIRECTION, res: dir });
-}
-
-function handleRMBclick(e) {
-	e.preventDefault();
-	assist();
-}
-
-function kick() {
+function kick(event) {
 	const startTime = Date.now();
 	
 	push.setAttribute("style", "display: block;");
@@ -67,21 +57,34 @@ function kick() {
 
 }
 
-function assist() {
+function assist(event) {
+	event.preventDefault();
+	stopSendKeyStatus();
 	socket.emit(MESSAGE.INPUT, { inputType: INPUT_TYPE.ASSIST, res: true });
 
-	stopSendKeyStatus();
 	setTimeout(() => {
 		startSendKeyStatus();
-	}, GAME.SHOT_ANIMATION_TIME);
+	}, GAME.SHOT_ANIMATION_TIME*2);
 }
 
-function handleMouseClick(e) {
-	switch (e.button) {
-	case 0:
+function handleMouseClick(event) {
+	switch (event.button) {
+	case 0: //Left click
 		kick();
+		//console.log("Left click");
+		break;
+	case 1: //Middle click
+		//console.log("Middle click");
+		break;
+	case 2: //Right click
+		//console.log("Right click");
 		break;
 	}
+}
+
+function handleMouseMove(event) {
+	const dir = Math.atan2(event.clientX * xRatio - me.x, event.clientY * yRatio - me.y);
+	socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.DIRECTION, res: dir });
 }
 
 function startListenKeys() {
@@ -94,17 +97,17 @@ function endListenKeys() {
 	document.removeEventListener("keyup", unpressKey, true);
 }
 
-function unpressKey(e) {
-	if (controller[e.code]) {
-		controller[e.code].pressed = false;
+function unpressKey(event) {
+	if (controller[event.code]) {
+		controller[event.code].pressed = false;
 	}
 }
 
-function pressKey(e) {	
-	if (controller[e.code]) {
-		controller[e.code].pressed = true;
+function pressKey(event) {	
+	if (controller[event.code]) {
+		controller[event.code].pressed = true;
 	} else
-		console.log(e.code);
+		console.log(event.code);
 }
 
 function startSendKeyStatus() {
@@ -125,19 +128,13 @@ function stopSendKeyStatus() {
 
 export function initKeyboardInput() {
 	startListenKeys();
-	keyStatusInterval = setInterval(() => {
-		const keyStatus = {};
-		Object.keys(controller).forEach(key => {
-			keyStatus[controller[key].type] = controller[key].pressed;
-		});
-		socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.KEY, res: keyStatus });
-	},  GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
+	startSendKeyStatus();
 }
 
 export function initMouseInput() {
-	document.addEventListener("mousemove", _.throttle(handleMouseDirection, GAME.MOUSE_UPDATE_DELAY));
+	document.addEventListener("mousemove", _.throttle(handleMouseMove, GAME.MOUSE_UPDATE_DELAY));
 	document.addEventListener("mousedown", handleMouseClick);
-	document.addEventListener("contextmenu", handleRMBclick, false);
+	document.addEventListener("contextmenu", assist, false);
 	window.addEventListener("resize", () => {
 		xRatio =  PITCH.FULL_X / document.documentElement.clientWidth;
 		yRatio =  PITCH.FULL_Y / document.documentElement.clientHeight;
