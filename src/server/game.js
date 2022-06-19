@@ -212,20 +212,21 @@ class Game {
 	 * Assist ball with constant speed and current player's direction 
 	 * @param {number} id 
 	 */
-	playerAssistBall(id){
-		this.ball.x = this.players[id].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[id].direction);
-		this.ball.y = this.players[id].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[id].direction);
-		this.ball.direction = this.players[id].direction;
-		this.ball.speed = PLAYER.ASSIST_FORCE;
+	playerAssistBall(id) {
+		if (this.players[ id ].hold) {
+			this.ball.x = this.players[ id ].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[ id ].direction);
+			this.ball.y = this.players[ id ].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[ id ].direction);
+			this.ball.direction = this.players[ id ].direction;
+			this.ball.speed = PLAYER.ASSIST_FORCE;
 
-		this.players[ id ].shot = 0;
-		this.players[ id ].pull = false;
-		this.players[ id ].push = false;
-		this.players[ id ].assist = false;
-		this.players[ id ].hold = false;
+			this.players[ id ].shot = 0;
+			this.players[ id ].pull = false;
+			this.players[ id ].push = false;
+			this.players[ id ].assist = false;
+			this.players[ id ].hold = false;
 
+		}
 	}
-
 	/**
 	 * Defines collisions type betweeen ball and player
 	 * @param {number} id 
@@ -380,9 +381,9 @@ class Game {
 			for (const key in message.res) {
 				this.players[id.id][key] = message.res[key];	
 			}
-		else
+		else {
 			this.players[id.id][message.inputType] = message.res;	
-
+		}
 	}
 	
 	/**
