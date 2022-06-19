@@ -83,6 +83,9 @@ function handleMouseClick(event) {
 }
 
 function handleMouseMove(event) {
+	if (!((event.clientX * xRatio - me.x)**2 + (event.clientY  * yRatio -me.y)**2) >= PLAYER.RADIUS ** 2)
+		return;
+	
 	const dir = Math.atan2(event.clientX * xRatio - me.x, event.clientY * yRatio - me.y);
 	socket.emit( MESSAGE.INPUT, { inputType:  INPUT_TYPE.DIRECTION, res: dir });
 }
@@ -113,11 +116,16 @@ function pressKey(event) {
 function startSendKeyStatus() {
 	keyStatusInterval = setInterval(() => {
 		const keyStatus = {};
+		let isImportant = false;
 		
-		for (const key in controller)
+		for (const key in controller) {
 			keyStatus[ controller[ key ].type ] = controller[ key ].pressed;
+			isImportant += controller[key].pressed;
+		}
+
+		if(isImportant)
+			socket.emit(MESSAGE.INPUT, { inputType: INPUT_TYPE.KEY, res: keyStatus });
 		
-		socket.emit(MESSAGE.INPUT, { inputType: INPUT_TYPE.KEY, res: keyStatus });
 	}, GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
 
 }
