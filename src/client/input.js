@@ -14,6 +14,14 @@ const controller = {
 	"KeyD": 		{ pressed: false, type:  KEY_TYPE.ROTATE_COUNTER_CLOCKWISE },
 };
 
+let keyStatusSave = {
+	[KEY_TYPE.PULL]: false,
+	[KEY_TYPE.STOP]: false,
+	[KEY_TYPE.PUSH]: false,
+	[KEY_TYPE.ROTATE_CLOCKWISE]: false,
+	[KEY_TYPE.ROTATE_COUNTER_CLOCKWISE]: false,
+};
+
 let keyStatusInterval;
 let xRatio = PITCH.FULL_X / document.documentElement.clientWidth;
 let yRatio = PITCH.FULL_Y / document.documentElement.clientHeight;
@@ -116,14 +124,18 @@ function pressKey(event) {
 function startSendKeyStatus() {
 	keyStatusInterval = setInterval(() => {
 		const keyStatus = {};
-		let isImportant = false;
+		let isImportant = 0;
 		
 		for (const key in controller) {
-			keyStatus[ controller[ key ].type ] = controller[ key ].pressed;
-			isImportant += controller[key].pressed;
+			if (keyStatusSave[ controller[ key ].type ] !== controller[ key ].pressed) {
+				keyStatus[ controller[ key ].type ] = controller[ key ].pressed;
+				keyStatusSave[ controller[ key ].type ] = controller[ key ].pressed;
+				isImportant++;
+			}
+
 		}
 
-		if(isImportant)
+		if(isImportant > 0)
 			socket.emit(MESSAGE.INPUT, { inputType: INPUT_TYPE.KEY, res: keyStatus });
 		
 	}, GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
