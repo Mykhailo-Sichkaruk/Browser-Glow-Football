@@ -149,34 +149,27 @@ class Game {
 	 * @param {number} id
 	 */
 	playerInterractBall(id) {
-		this.players[ id ].shot = 0;
-
-		const ballY = this.ball.y;
-		const ballX = this.ball.x;
-
-		const playerY = this.players[id].y;
-		const playerX = this.players[id].x;
-		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
+		const currentDistance = (this.ball.y - this.players[id].y) ** 2 + (this.ball.x - this.players[id].x) ** 2;
 		
 		if (this.players[id].pull) {
-			
 			if (currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
-				this.ball.y -= PLAYER.PULL_FORCE * (ballY - playerY)/Math.abs(ballY - playerY);
-				this.ball.x -= PLAYER.PULL_FORCE * (ballX - playerX)/Math.abs(ballX - playerX);
+				const ballToPlayerDirection = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y);
+				this.ball.direction = (ballToPlayerDirection + this.ball.direction)/2 ;
+				this.ball.velosity += BALL.BONUS_SPEED_ON_ROTATE;
 			}
 			else if (currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER * 4) {
-				this.ball.y -= (PLAYER.PULL_FORCE / 2) * (ballY - playerY)/Math.abs(ballY - playerY);
-				this.ball.x -= (PLAYER.PULL_FORCE / 2) * (ballX - playerX)/Math.abs(ballX - playerX);
+				this.ball.y -= (PLAYER.PULL_FORCE / 2) * (this.ball.y - this.players[id].y)/Math.abs(this.ball.y - this.players[id].y);
+				this.ball.x -= (PLAYER.PULL_FORCE / 2) * (this.ball.x - this.players[id].x)/Math.abs(this.ball.x - this.players[id].x);
 			}
 			return;
 		}
 		if (this.players[id].rotateClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.direction = Math.atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y) + Math.PI / 2;
+			this.ball.direction = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y) - Math.PI / 2;
 			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE; 
 			return;
 		}
 		if (this.players[id].rotateCounterClockwise && currentDistance <= PLAYER.DISTANCE_PLAYER_PULL_POWER) {
-			this.ball.direction = Math.atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y) - Math.PI / 2;
+			this.ball.direction = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y) + Math.PI / 2;
 			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE; 
 			return;
 		}
