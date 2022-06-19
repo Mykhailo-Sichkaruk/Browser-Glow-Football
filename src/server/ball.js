@@ -1,8 +1,5 @@
 const {PITCH, BALL, } = require("../shared/constants");
 
-
-
-
 class Ball {
 	constructor() {
 		this.x = PITCH.FULL_X / 2,
@@ -16,8 +13,8 @@ class Ball {
 
 	move(dt) {
         
-		const dy = + dt * this.speed * Math.cos(this.direction);
-		const dx = + dt * this.speed * Math.sin(this.direction);
+		const dy = dt * this.speed * Math.cos(this.direction);
+		const dx = dt * this.speed * Math.sin(this.direction);
 
 		//Check if ball hits the border then change direction
 		if        (this.y + this.radius + dy >= PITCH.BOTTOM_BORDER) {
