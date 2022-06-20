@@ -4,7 +4,7 @@ class Team {
 		this.score = 0;
 		this.playersCount = 0;
 	}
-    
+
 	addPlayer() {
 		this.playersCount++;
 	}
@@ -16,15 +16,15 @@ class Team {
 	addScore() {
 		this.score++;
 	}
-    
-	removeScore() { 
+
+	removeScore() {
 		this.score = 0;
 	}
-    
+
 	getScore() {
 		return this.score;
 	}
-    
+
 	getPlayersCount() {
 		return this.playersCount;
 	}

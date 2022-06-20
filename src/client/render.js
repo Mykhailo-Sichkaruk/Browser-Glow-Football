@@ -1,5 +1,5 @@
 import { currentUpdate } from "./index.js";
-const {PLAYER, BALL, PITCH} = require("../shared/constants");
+const { PLAYER, BALL, PITCH } = require("../shared/constants");
 
 const canvas = document.getElementById("canvas");
 let ctx;
@@ -11,8 +11,8 @@ function initCanvas() {
 	console.log("Game screen inicializated: " + ctx.canvas.width + "x" + ctx.canvas.height);
 }
 
-let GOAL = {
-	y1: ( PITCH.Y -  PITCH.GOAL_WIDTH) / 2 +  PITCH.OUTLINE_WIDTH +  PITCH.PADDING_WIDTH,
+const GOAL = {
+	y1: (PITCH.Y -  PITCH.GOAL_WIDTH) / 2 +  PITCH.OUTLINE_WIDTH +  PITCH.PADDING_WIDTH,
 	y2:  PITCH.GOAL_WIDTH,
 	x11:  PITCH.PADDING_WIDTH,
 	x12:  PITCH.OUTLINE_WIDTH,
@@ -30,8 +30,8 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 	if (typeof radius === "number") {
 		radius = { tl: radius, tr: radius, br: radius, bl: radius };
 	} else {
-		var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
-		for (var side in defaultRadius) {
+		const defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+		for (const side in defaultRadius) {
 			radius[side] = radius[side] || defaultRadius[side];
 		}
 	}
@@ -77,17 +77,17 @@ function drawPitch() {
 	//Set pitch color
 	ctx.fillStyle =  PITCH.COLOR;
 	//Draw pitch
-	roundRect(ctx, ( PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH), ( PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH),  PITCH.X,  PITCH.Y,  PITCH.RADIUS, true, false);
+	roundRect(ctx, (PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH), (PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH),  PITCH.X,  PITCH.Y,  PITCH.RADIUS, true, false);
 	//Draw central circle
 	ctx.strokeStyle = "white";
 	ctx.beginPath();
-	ctx.arc( PITCH.FULL_X / 2,  PITCH.FULL_Y / 2,  PITCH.CENTRAL_CIRCLE_RADIUS, 0, 2 * Math.PI, true);
+	ctx.arc(PITCH.FULL_X / 2,  PITCH.FULL_Y / 2,  PITCH.CENTRAL_CIRCLE_RADIUS, 0, 2 * Math.PI, true);
 	ctx.stroke();
 	//Draw central line
-	ctx.beginPath();      
-	ctx.moveTo( PITCH.FULL_X/2, 0);    
-	ctx.lineTo( PITCH.FULL_X/2,  PITCH.FULL_Y);  
-	ctx.stroke(); 
+	ctx.beginPath();
+	ctx.moveTo(PITCH.FULL_X / 2, 0);
+	ctx.lineTo(PITCH.FULL_X / 2,  PITCH.FULL_Y);
+	ctx.stroke();
 	//Erase GOAL SPACE
 	ctx.clearRect(GOAL.x11, GOAL.y1, GOAL.x12, GOAL.y2);
 	ctx.clearRect(GOAL.x21, GOAL.y1, GOAL.x22, GOAL.y2);
@@ -106,7 +106,7 @@ function renderUpdate() {
 
 	//Draw every player
 	currentUpdate.players.forEach(p => {
-		drawCircle(ctx, p.x, p.y,  PLAYER.RADIUS, (p.team == true) ? ( PLAYER.BLUE_COLOR) : ( PLAYER.RED_COLOR), "red", 1);
+		drawCircle(ctx, p.x, p.y,  PLAYER.RADIUS, (p.team === true) ? (PLAYER.BLUE_COLOR) : (PLAYER.RED_COLOR), "red", 1);
 	});
 
 }

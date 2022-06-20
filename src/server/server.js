@@ -1,6 +1,6 @@
-"use strict";
 
-const {DEVELOP, MESSAGE, } = require("../shared/constants");
+
+const { DEVELOP, MESSAGE, } = require("../shared/constants");
 require("colors");
 const express = require("express");
 const app = express();
@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const Game = require("./game");
-let game = new Game();
+const game = new Game();
 
 // Start Websoket server
 server.listen(DEVELOP.SERVER_PORT, DEVELOP.SERVER_ADRESS_IPv4);

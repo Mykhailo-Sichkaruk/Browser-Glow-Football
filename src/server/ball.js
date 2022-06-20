@@ -1,4 +1,4 @@
-const {PITCH, BALL, } = require("../shared/constants");
+const { PITCH, BALL, } = require("../shared/constants");
 
 class Ball {
 	constructor() {
@@ -12,7 +12,7 @@ class Ball {
 	}
 
 	move(dt) {
-        
+
 		const dy = dt * this.speed * Math.cos(this.direction);
 		const dx = dt * this.speed * Math.sin(this.direction);
 

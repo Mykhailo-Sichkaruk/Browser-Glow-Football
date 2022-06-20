@@ -5,13 +5,13 @@ import ReactDOM from "react-dom";
 import { initKeyboardInput, initMouseInput } from "./input";
 import { renderUpdate, initCanvas } from "./render";
 
-const {MESSAGE, PITCH, GAME} = require("../shared/constants");
-const nickname_form = document.getElementById("nickname_form");
-const start_game_button = document.getElementById("start_game_button");
-const red_score = document.getElementById("red_score");
-const blue_score = document.getElementById("blue_score");
-const score_board = document.getElementById("score_board");
-const score_effect = document.getElementById("score_effect");
+const { MESSAGE, PITCH, GAME } = require("../shared/constants");
+const nicknameFormDOM = document.getElementById("nickname_form");
+const startGameButtonDOM = document.getElementById("start_game_button");
+const redScoreDOM = document.getElementById("red_score");
+const blueScoreDOM = document.getElementById("blue_score");
+const scoreBoardDOM = document.getElementById("score_board");
+const scoreEffectDOM = document.getElementById("score_effect");
 const root = ReactDOM.createRoot(document.getElementById("root"));
 document.getElementById("start_game_button").addEventListener("click", startGame, false);
 let currentUpdate;
@@ -21,24 +21,24 @@ const pingCounterFabric = () => {
 	let pingSum = 0;
 	let pingCount = 0;
 
-	return (updateSentTime) => {
+	return updateSentTime => {
 		const ping = Date.now() - updateSentTime;
 		pingSum += ping;
-				
+
 		if (pingCount++ >= GAME.SERVER_PING) {
 			pingSum /= pingCount;
 			root.render(<Ping time={pingSum.toFixed(0)} />);
 			pingCount = 0;
 			pingSum = 0;
-		}	
+		}
 
-		
+
 	};
 };
 
 const pingCounter = pingCounterFabric();
 
-socket.on(MESSAGE.GAME_UPDATE, function (data) {
+socket.on(MESSAGE.GAME_UPDATE, data => {
 	currentUpdate = data;
 	findMe(data);
 	requestAnimationFrame(renderUpdate);
@@ -53,7 +53,7 @@ class Ping extends React.Component {
 	render() {
 		return (
 			<div className="ping">
-				{this.props.time + "ms"} 
+				{this.props.time + "ms"}
 			</div>
 		);
 	}
@@ -72,8 +72,8 @@ class App extends React.Component {
 
 
 	}
-	findMe(update) { 
-		for(let player in update.players) {
+	findMe(update) {
+		for (const player in update.players) {
 			if (update.players[ player ].socket === socket.id) {
 				//me = update.players[ player ];
 				this.setState({ myData: update.players[player] });
@@ -88,25 +88,24 @@ class App extends React.Component {
 
 }
 
-socket.on(MESSAGE.GOAL, function (res) {
+socket.on(MESSAGE.GOAL, res => {
 	if (res.redTeamScored) {
-		score_effect.style.background = "blue";
+		scoreEffectDOM.style.background = "blue";
+	} else {
+		scoreEffectDOM.style.background = "red";
 	}
-	else {
-		score_effect.style.background = "red";
-	}
-	score_effect.style.display = "block";
-	score_effect.style.animation = "goal_effect 1s linear 1";
+	scoreEffectDOM.style.display = "block";
+	scoreEffectDOM.style.animation = "goal_effect 1s linear 1";
 	setTimeout(() => {
-		score_effect.style.display = "none";
+		scoreEffectDOM.style.display = "none";
 	}, GAME.AFTER_GOAL_DELAY_MS);
 
-	blue_score.innerHTML = res.blue;
-	red_score.innerHTML = res.red;
+	blueScoreDOM.innerHTML = res.blue;
+	redScoreDOM.innerHTML = res.red;
 });
 
 function findMe(update) {
-	for(let player in update.players) {
+	for (const player in update.players) {
 		if (update.players[ player ].socket === socket.id) {
 			me = update.players[ player ];
 			break;
@@ -115,9 +114,9 @@ function findMe(update) {
 }
 
 function startHtml() {
-	nickname_form.style.display = "none";
-	start_game_button.style.display = "none";
-	score_board.style.display = "block";
+	nicknameFormDOM.style.display = "none";
+	startGameButtonDOM.style.display = "none";
+	scoreBoardDOM.style.display = "block";
 	document.getElementById("canvas").style.background = PITCH.CANVAS_BACKGROUND_COLOR;
 }
 
@@ -126,7 +125,7 @@ function startGame() {
 	initMouseInput();
 	initKeyboardInput();
 	initCanvas();
-	socket.emit(MESSAGE.JOIN_GAME, nickname_form.value);
+	socket.emit(MESSAGE.JOIN_GAME, nicknameFormDOM.value);
 }
 
 

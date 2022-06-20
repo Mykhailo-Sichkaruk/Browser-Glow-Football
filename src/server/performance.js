@@ -1,7 +1,7 @@
-const {GAME} = require("../shared/constants");
+const { GAME } = require("../shared/constants");
 
 class Performance {
-	constructor () {
+	constructor() {
 		this.ping = {
 			count: 0,
 			sum: 0,
