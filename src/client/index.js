@@ -2,10 +2,10 @@
 import "./css/style.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import { initKeyboardInput, initMouseInput } from "./input";
-import { renderUpdate, initCanvas } from "./render";
+import { initInput, endInput } from "./input";
+import { renderUpdate, initCanvas, clearCanvas } from "./render";
 
-const { MESSAGE, PITCH, GAME } = require("../shared/constants");
+const { MESSAGE, GAME } = require("../shared/constants");
 const nicknameFormDOM = document.getElementById("nickname_form");
 const startGameButtonDOM = document.getElementById("start_game_button");
 const redScoreDOM = document.getElementById("red_score");
@@ -13,7 +13,8 @@ const blueScoreDOM = document.getElementById("blue_score");
 const scoreBoardDOM = document.getElementById("score_board");
 const scoreEffectDOM = document.getElementById("score_effect");
 const root = ReactDOM.createRoot(document.getElementById("root"));
-document.getElementById("start_game_button").addEventListener("click", startGame, false);
+startGameButtonDOM.addEventListener("click", initGame, false);
+
 let currentUpdate;
 let me;
 
@@ -31,8 +32,6 @@ const pingCounterFabric = () => {
 			pingCount = 0;
 			pingSum = 0;
 		}
-
-
 	};
 };
 
@@ -44,49 +43,6 @@ socket.on(MESSAGE.GAME_UPDATE, data => {
 	requestAnimationFrame(renderUpdate);
 	pingCounter(data.timestamp);
 });
-
-class Ping extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<div className="ping">
-				{this.props.time + "ms"}
-			</div>
-		);
-	}
-}
-
-class App extends React.Component {
-	constructor(props) {
-		super(props);
-		this.child = React.createRef();
-		this.state = {
-			lastUpdateTime: 0,
-			myData: props.myData,
-			currentUpdate: props.currentUpdate,
-		};
-
-
-
-	}
-	findMe(update) {
-		for (const player in update.players) {
-			if (update.players[ player ].socket === socket.id) {
-				//me = update.players[ player ];
-				this.setState({ myData: update.players[player] });
-				break;
-			}
-		}
-	}
-
-	render() {
-		<Ping time="100000"/>;
-	}
-
-}
 
 socket.on(MESSAGE.GOAL, res => {
 	if (res.redTeamScored) {
@@ -104,6 +60,17 @@ socket.on(MESSAGE.GOAL, res => {
 	redScoreDOM.innerHTML = res.red;
 });
 
+socket.on("disconnect", () => {
+	endGame();
+});
+
+// eslint-disable-next-line no-unused-vars
+const Ping = ({ time }) => (
+	<div className="ping">
+		<span>{time}</span>
+	</div>
+);
+
 function findMe(update) {
 	for (const player in update.players) {
 		if (update.players[ player ].socket === socket.id) {
@@ -117,17 +84,26 @@ function startHtml() {
 	nicknameFormDOM.style.display = "none";
 	startGameButtonDOM.style.display = "none";
 	scoreBoardDOM.style.display = "block";
-	document.getElementById("canvas").style.background = PITCH.CANVAS_BACKGROUND_COLOR;
+	document.getElementById("canvas").setAttribute("class", "canvasWhileGame");
 }
 
-function startGame() {
+function initGame() {
 	startHtml();
-	initMouseInput();
-	initKeyboardInput();
+	initInput();
 	initCanvas();
 	socket.emit(MESSAGE.JOIN_GAME, nicknameFormDOM.value);
 }
 
-
+function endGame() {
+	clearCanvas();
+	endInput();
+	document.getElementById("canvas").setAttribute("display", "none");
+	document.getElementById("canvas").setAttribute("class", "canvasNew");
+	document.getElementById("canvas").setAttribute("background", "white");
+	nicknameFormDOM.style.display = "block";
+	startGameButtonDOM.style.display = "block";
+	scoreBoardDOM.style.display = "none";
+	root.render(<Ping time={"Server disconnected"} />);
+}
 
 export { currentUpdate, me };
