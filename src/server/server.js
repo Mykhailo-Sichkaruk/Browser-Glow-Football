@@ -27,11 +27,11 @@ io.on(MESSAGE.CONNECTION, socket => {
 
 
 function disconnect() {
-	game.removePlayer(this);
+	game.disconnectPlayer(this);
 }
 
 function joinGame(username) {
-	game.join(this, username);
+	game.joinPlayer(this, username);
 }
 
 function handleInput(msg) {

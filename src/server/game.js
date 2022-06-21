@@ -2,7 +2,7 @@ const { PLAYER, PITCH, BALL, GAME, MESSAGE, INPUT_TYPE } = require("../shared/co
 const Player = require("./player");
 const Ball = require("./ball");
 const Team = require("./team");
-const Perfprmance = require("./performance");
+const Performance = require("./performance");
 const PerfHooks = require("perf_hooks");
 
 /**
@@ -25,7 +25,7 @@ class Game {
 			red: new Team(true),
 		};
 
-		this.performance = new Perfprmance();
+		this.performance = new Performance();
 		// Start updating
 		this.interval = setInterval(() => {
 			this.update();
@@ -396,7 +396,7 @@ class Game {
 	 * @param {Socket} socket
 	 * @param {string} nickname
 	 */
-	join(socket, nickname) {
+	joinPlayer(socket, nickname) {
 		const team = Object.keys(this.players).length % 2;
 		if (team)
 			this.team.blue.incrementPlayers();
@@ -417,7 +417,7 @@ class Game {
 	 * @param {Socket} socket
 	 * @returns
 	 */
-	removePlayer(socket) {
+	disconnectPlayer(socket) {
 		if (!Object.prototype.hasOwnProperty.call(this.players, `${socket.id}`))
 			return;
 
