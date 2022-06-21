@@ -13,8 +13,8 @@ const blueScoreDOM = document.getElementById("blue_score");
 const scoreBoardDOM = document.getElementById("score_board");
 const scoreEffectDOM = document.getElementById("score_effect");
 const root = ReactDOM.createRoot(document.getElementById("root"));
-startGameButtonDOM.addEventListener("click", initGame, false);
 
+let connectionStatus = true;
 let currentUpdate;
 let me;
 
@@ -36,6 +36,7 @@ const pingCounterFabric = () => {
 };
 
 const pingCounter = pingCounterFabric();
+
 
 socket.on(MESSAGE.GAME_UPDATE, data => {
 	currentUpdate = data;
@@ -62,8 +63,14 @@ socket.on(MESSAGE.GOAL, res => {
 
 socket.on("disconnect", () => {
 	endGame();
+	connectionStatus = false;
 });
 
+socket.on("connect", () => {
+	startGameButtonDOM.addEventListener("click", initGame, false);
+	connectionStatus = true;
+	root.render(<Ping time = "Connected"></Ping>);
+});
 // eslint-disable-next-line no-unused-vars
 const Ping = ({ time }) => (
 	<div className="ping">
@@ -81,10 +88,14 @@ function findMe(update) {
 }
 
 function startHtml() {
-	nicknameFormDOM.style.display = "none";
-	startGameButtonDOM.style.display = "none";
-	scoreBoardDOM.style.display = "block";
-	document.getElementById("canvas").setAttribute("class", "canvasWhileGame");
+	if (connectionStatus) {
+		nicknameFormDOM.style.display = "none";
+		startGameButtonDOM.style.display = "none";
+		scoreBoardDOM.style.display = "block";
+		document.getElementById("canvas").setAttribute("class", "canvasWhileGame");
+	} else {
+		nicknameFormDOM.innerText = "Please wait to server connection";
+	}
 }
 
 function initGame() {
