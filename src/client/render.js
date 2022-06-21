@@ -2,14 +2,7 @@ import { currentUpdate } from "./index.js";
 const { PLAYER, BALL, PITCH } = require("../shared/constants");
 
 const canvas = document.getElementById("canvas");
-let ctx;
-
-function initCanvas() {
-	ctx = canvas.getContext("2d");
-	ctx.canvas.width = 1600;
-	ctx.canvas.height = 900;
-	console.log("Game screen inicializated: " + ctx.canvas.width + "x" + ctx.canvas.height);
-}
+const ctx = canvas.getContext("2d");
 
 const GOAL = {
 	y1: (PITCH.Y -  PITCH.GOAL_WIDTH) / 2 +  PITCH.OUTLINE_WIDTH +  PITCH.PADDING_WIDTH,
@@ -19,6 +12,16 @@ const GOAL = {
 	x21:  PITCH.X +  PITCH.OUTLINE_WIDTH +  PITCH.PADDING_WIDTH,
 	x22:  PITCH.OUTLINE_WIDTH,
 };
+
+function clearCanvas() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function initCanvas() {
+	ctx.canvas.width = PITCH.FULL_X;
+	ctx.canvas.height = PITCH.FULL_Y;
+	console.log("Game screen inicializated: " + ctx.canvas.width + "x" + ctx.canvas.height);
+}
 
 function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 	if (typeof stroke === "undefined") {
@@ -91,7 +94,6 @@ function drawPitch() {
 	//Erase GOAL SPACE
 	ctx.clearRect(GOAL.x11, GOAL.y1, GOAL.x12, GOAL.y2);
 	ctx.clearRect(GOAL.x21, GOAL.y1, GOAL.x22, GOAL.y2);
-
 }
 
 function renderUpdate() {
@@ -112,5 +114,4 @@ function renderUpdate() {
 }
 
 
-
-export { renderUpdate, initCanvas };
+export { renderUpdate, initCanvas, clearCanvas };
