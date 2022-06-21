@@ -107,17 +107,17 @@ function endListenKeys() {
 	document.removeEventListener("keyup", unpressKey, true);
 }
 
-function unpressKey(event) {
-	if (controller[event.code]) {
-		controller[event.code].pressed = false;
-	}
-}
-
 function pressKey(event) {
 	if (controller[event.code]) {
 		controller[event.code].pressed = true;
 	} else
 		console.log(event.code);
+}
+
+function unpressKey(event) {
+	if (controller[event.code]) {
+		controller[event.code].pressed = false;
+	}
 }
 
 function startSendKeyStatus() {
@@ -131,7 +131,6 @@ function startSendKeyStatus() {
 				keyStatusSave[ controller[ key ].type ] = controller[ key ].pressed;
 				isImportant++;
 			}
-
 		}
 
 		if (isImportant > 0)
@@ -145,12 +144,17 @@ function stopSendKeyStatus() {
 	clearInterval(keyStatusInterval);
 }
 
-export function initKeyboardInput() {
+function initKeyboardInput() {
 	startListenKeys();
 	startSendKeyStatus();
 }
 
-export function initMouseInput() {
+function endKeyboardInput() {
+	endListenKeys();
+	stopSendKeyStatus();
+}
+
+function initMouseInput() {
 	document.addEventListener("mousemove", _.throttle(handleMouseMove, GAME.MOUSE_UPDATE_DELAY));
 	document.addEventListener("mousedown", handleMouseClick);
 	document.addEventListener("contextmenu", assist, false);
@@ -158,4 +162,20 @@ export function initMouseInput() {
 		xRatio =  PITCH.FULL_X / document.documentElement.clientWidth;
 		yRatio =  PITCH.FULL_Y / document.documentElement.clientHeight;
 	});
+}
+
+function endMouseInput() {
+	document.removeEventListener("mousemove", handleMouseMove);
+	document.removeEventListener("mousedown", handleMouseClick);
+	document.removeEventListener("contextmenu", assist, false);
+}
+
+export function initInput() {
+	initKeyboardInput();
+	initMouseInput();
+}
+
+export function endInput() {
+	endKeyboardInput();
+	endMouseInput();
 }
