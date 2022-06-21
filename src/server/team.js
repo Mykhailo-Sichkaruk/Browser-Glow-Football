@@ -5,7 +5,7 @@ class Team {
 		this.playersCount = 0;
 	}
 
-	addPlayer() {
+	incrementPlayers() {
 		this.playersCount++;
 	}
 

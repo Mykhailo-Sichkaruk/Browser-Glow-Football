@@ -31,7 +31,7 @@ function disconnect() {
 }
 
 function joinGame(username) {
-	game.addPlayer(this, username);
+	game.join(this, username);
 }
 
 function handleInput(msg) {

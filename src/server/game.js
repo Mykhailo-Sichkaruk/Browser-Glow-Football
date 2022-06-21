@@ -396,12 +396,12 @@ class Game {
 	 * @param {Socket} socket
 	 * @param {string} nickname
 	 */
-	addPlayer(socket, nickname) {
+	join(socket, nickname) {
 		const team = Object.keys(this.players).length % 2;
 		if (team)
-			this.team.blue.addPlayer();
+			this.team.blue.incrementPlayers();
 		else
-			this.team.red.addPlayer();
+			this.team.red.incrementPlayers();
 
 
 		// Add player to global players array
