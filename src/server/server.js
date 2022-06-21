@@ -12,10 +12,10 @@ const Game = require("./game");
 const game = new Game();
 
 // Start Websoket server
-server.listen(DEVELOP.SERVER_PORT, DEVELOP.SERVER_ADRESS_IPv4);
+server.listen(DEVELOP.SERVER_PORT, DEVELOP.SERVER_ADRESS_IPV4);
 // Start hosting game on webpage
 app.use(express.static(DEVELOP.SITE_FOLDER_NAME));
-console.log("Server running on : ".green + DEVELOP.SERVER_ADRESS_IPv4.white + ":" + `${DEVELOP.SERVER_PORT}`.cyan);
+console.log("Server running on : ".green + DEVELOP.SERVER_ADRESS_IPV4.white + ":" + `${DEVELOP.SERVER_PORT}`.cyan);
 
 // Set server to listen for messages from clients
 io.on(MESSAGE.CONNECTION, socket => {

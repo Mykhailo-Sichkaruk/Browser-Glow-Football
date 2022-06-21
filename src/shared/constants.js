@@ -1,3 +1,4 @@
+// eslint-disable-next-line strict
 "use strict";
 const GAME = Object.freeze({
 	LEFT_TEAM: "left",
@@ -22,7 +23,7 @@ const PLAYER = Object.freeze({
 	/*** Distance between Player and Ball where pull power works*/
 	DISTANCE_PLAYER_PULL_POWER: 75 ** 2,
 	get PLAYER_PLAYER_COLLISION_DISTANCE() 	{ return (this.RADIUS * 2) ** 2; },
-	get PLAYER_BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + BALL.RADIUS) ** 2; },
+	get PLAYER_BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + this.RADIUS) ** 2; },
 	get PLAYER_BALL_HOLD_DISTANCE() 		{ return this.PLAYER_BALL_COLLISION_DISTANCE * 4; },
 	RED_COLOR: "red",
 	BLUE_COLOR: "blue"
@@ -76,7 +77,7 @@ const KEY_TYPE = Object.freeze({
 });
 const DEVELOP = Object.freeze({
 	SERVER_PORT: 3000,
-	SERVER_ADRESS_IPv4: "localhost",
+	SERVER_ADRESS_IPV4: "localhost",
 	SITE_FOLDER_NAME: "dist",
 });
 
