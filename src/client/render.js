@@ -13,7 +13,7 @@ const GOAL = {
 	x22:  PITCH.OUTLINE_WIDTH,
 };
 
-function clearCanvas() {
+async function clearCanvas() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -107,9 +107,10 @@ function renderUpdate() {
 	drawCircle(ctx, currentUpdate.ball.x, currentUpdate.ball.y,  BALL.RADIUS,  BALL.COLOR, "black", 1);
 
 	//Draw every player
-	currentUpdate.players.forEach(p => {
-		drawCircle(ctx, p.x, p.y,  PLAYER.RADIUS, (p.team === true) ? (PLAYER.BLUE_COLOR) : (PLAYER.RED_COLOR), "red", 1);
-	});
+	for (const player of currentUpdate.players) {
+		const teamColor = (player.team) ? (PLAYER.BLUE_COLOR) : (PLAYER.RED_COLOR);
+		drawCircle(ctx, player.x, player.y, PLAYER.RADIUS, teamColor, "black", 1);
+	}
 
 }
 

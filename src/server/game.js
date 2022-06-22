@@ -66,9 +66,8 @@ class Game {
 			this.onGoal(false);
 		}
 		// Move all players
-		Object.values(this.players).forEach(player => {
-			player.move(dt);
-		});
+		for (const player in this.players)
+			this.players[ player ].move(dt);
 	}
 
 	/**
@@ -112,10 +111,8 @@ class Game {
 	 */
 	sendUpdate() {
 		const update = this.createUpdate();
-		Object.keys(this.sockets).forEach(playerID => {
-			const socket = this.sockets[playerID];
-			socket.emit(MESSAGE.GAME_UPDATE, update);
-		});
+		for (const socket in this.players)
+			this.sockets[ socket ].emit(MESSAGE.GAME_UPDATE, update);
 	}
 
 	/**
@@ -221,6 +218,7 @@ class Game {
 
 		}
 	}
+
 	/**
 	 * Defines collisions type betweeen ball and player
 	 * @param {number} id
@@ -331,11 +329,9 @@ class Game {
 			};
 		}
 
+		for (const socket in this.players)
+			this.sockets[ socket ].emit("goal", res);
 
-		Object.keys(this.sockets).forEach(playerID => {
-			const socket = this.sockets[playerID];
-			socket.emit(MESSAGE.GOAL, res);
-		});
 
 		this.sendUpdate();
 		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
@@ -402,7 +398,6 @@ class Game {
 			this.team.blue.incrementPlayers();
 		else
 			this.team.red.incrementPlayers();
-
 
 		// Add player to global players array
 		this.players[socket.id] = new Player(socket.id, nickname, 0, 0, team);
