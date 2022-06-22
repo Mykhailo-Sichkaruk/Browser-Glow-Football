@@ -1,18 +1,18 @@
-/* eslint-disable no-undef */
 import "./css/style.css";
-import React from "react";
 import ReactDOM from "react-dom";
 import { initInput, endInput } from "./input";
 import { renderUpdate, initCanvas, clearCanvas } from "./render";
+import { io } from "socket.io-client";
 
+export const socket = io({ autoConnect: false });
 const { MESSAGE, GAME } = require("../shared/constants");
-const nicknameFormDOM = document.getElementById("nickname_form");
-const startGameButtonDOM = document.getElementById("start_game_button");
-const redScoreDOM = document.getElementById("red_score");
-const blueScoreDOM = document.getElementById("blue_score");
-const scoreBoardDOM = document.getElementById("score_board");
-const scoreEffectDOM = document.getElementById("score_effect");
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const nicknameFormDOM 		= document.getElementById("nickname_form");
+const startGameButtonDOM 	= document.getElementById("start_game_button");
+const redScoreDOM 			= document.getElementById("red_score");
+const blueScoreDOM 			= document.getElementById("blue_score");
+const scoreBoardDOM 		= document.getElementById("score_board");
+const scoreEffectDOM 		= document.getElementById("score_effect");
 
 let connectionStatus = true;
 let currentUpdate;
@@ -37,16 +37,38 @@ const pingCounterFabric = () => {
 
 const pingCounter = pingCounterFabric();
 
+window.onload = () => {
+	initSocket();
+};
 
-socket.on(MESSAGE.GAME_UPDATE, data => {
-	currentUpdate = data;
-	findMe(data);
+function initSocket() {
+	socket.on(MESSAGE.GAME_UPDATE, onUpdate);
+	socket.on(MESSAGE.GOAL, onGoal);
+	socket.on(MESSAGE.DISCONNECT, onDisconnect);
+	socket.on(MESSAGE.CONNECT, onConnect);
+	socket.connect();
+}
+
+function onDisconnect() {
+	endGame();
+	connectionStatus = false;
+}
+
+function onConnect() {
+	document.getElementById("start_game_button").addEventListener("click", initGame, false);
+	connectionStatus = true;
+	root.render(<Ping time = "Connected"></Ping>);
+}
+
+function onUpdate(update) {
+	currentUpdate = update;
+	findMe(update);
 	requestAnimationFrame(renderUpdate);
-	pingCounter(data.timestamp);
-});
+	pingCounter(update.timestamp);
+}
 
-socket.on(MESSAGE.GOAL, res => {
-	if (res.redTeamScored) {
+function onGoal(result) {
+	if (result.redTeamScored) {
 		scoreEffectDOM.style.background = "blue";
 	} else {
 		scoreEffectDOM.style.background = "red";
@@ -57,20 +79,10 @@ socket.on(MESSAGE.GOAL, res => {
 		scoreEffectDOM.style.display = "none";
 	}, GAME.AFTER_GOAL_DELAY_MS);
 
-	blueScoreDOM.innerHTML = res.blue;
-	redScoreDOM.innerHTML = res.red;
-});
+	blueScoreDOM.innerHTML = result.blue;
+	redScoreDOM.innerHTML = result.red;
+}
 
-socket.on("disconnect", () => {
-	endGame();
-	connectionStatus = false;
-});
-
-socket.on("connect", () => {
-	startGameButtonDOM.addEventListener("click", initGame, false);
-	connectionStatus = true;
-	root.render(<Ping time = "Connected"></Ping>);
-});
 // eslint-disable-next-line no-unused-vars
 const Ping = ({ time }) => (
 	<div className="ping">
