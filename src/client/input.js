@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import { throttle } from "lodash";
-import { me } from "./index";
+import { me, socket } from "./index";
 
 const { PLAYER, BALL, PITCH, KEY_TYPE, INPUT_TYPE, GAME, MESSAGE } = require("../shared/constants");
 const line = document.getElementById("line");
@@ -14,7 +14,7 @@ const controller = {
 	"KeyD": 		{ pressed: false, type:  KEY_TYPE.ROTATE_COUNTER_CLOCKWISE },
 };
 
-const keyStatusSave = {
+const keyStatusPrevious = {
 	[KEY_TYPE.PULL]: false,
 	[KEY_TYPE.STOP]: false,
 	[KEY_TYPE.PUSH]: false,
@@ -126,9 +126,9 @@ function startSendKeyStatus() {
 		let isImportant = 0;
 
 		for (const key in controller) {
-			if (keyStatusSave[ controller[ key ].type ] !== controller[ key ].pressed) {
+			if (keyStatusPrevious[ controller[ key ].type ] !== controller[ key ].pressed) {
 				keyStatus[ controller[ key ].type ] = controller[ key ].pressed;
-				keyStatusSave[ controller[ key ].type ] = controller[ key ].pressed;
+				keyStatusPrevious[ controller[ key ].type ] = controller[ key ].pressed;
 				isImportant++;
 			}
 		}
