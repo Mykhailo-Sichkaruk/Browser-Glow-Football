@@ -56,6 +56,7 @@ const BALL = Object.freeze({
 });
 const MESSAGE = Object.freeze({
 	CONNECTION: "connection",
+	CONNECT: "connect",
 	JOIN_GAME: "join_game",
 	GAME_UPDATE: "update",
 	GOAL: "goal",
