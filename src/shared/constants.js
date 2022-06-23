@@ -82,7 +82,8 @@ const DEVELOP = Object.freeze({
 	SITE_FOLDER_NAME: "dist",
 });
 
-module.exports = {
+
+export {
 	GAME,
 	PLAYER,
 	PITCH,

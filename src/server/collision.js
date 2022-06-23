@@ -1,4 +1,4 @@
-const { PLAYER, BALL } = require("../shared/constants");
+import  { PLAYER, BALL } from "../shared/constants.js";
 
 class Collision {
 	constructor() {
@@ -203,4 +203,4 @@ class Collision {
 	}
 }
 
-module.exports = Collision;
+export default Collision;

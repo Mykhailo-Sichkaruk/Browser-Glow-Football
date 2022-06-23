@@ -1,4 +1,4 @@
-const { PLAYER, PITCH, GAME } = require("../shared/constants");
+import { PLAYER, PITCH, GAME } from "../shared/constants.js";
 
 /**
  * Describe Player states and behavior.
@@ -128,4 +128,4 @@ class Player {
 
 }
 
-module.exports = Player;
+export default Player;

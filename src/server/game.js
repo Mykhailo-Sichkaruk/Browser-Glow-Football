@@ -1,15 +1,22 @@
-const { PITCH, GAME, MESSAGE, INPUT_TYPE } = require("../shared/constants");
-const Collision = require("./collision");
-const Player = require("./player");
-const Ball = require("./ball");
-const Team = require("./team");
-const Performance = require("./performance");
-const PerfHooks = require("perf_hooks");
+import * as PerfHooks from "perf_hooks";
+import  { PITCH, INPUT_TYPE, GAME, MESSAGE } from "../shared/constants.js";
+import Collision from "./collision.js";
+import Player from "./player.js";
+import Team from "./team.js";
+import Ball from "./ball.js";
+import Performance from "./performance.js";
+import chalk from "chalk";
+
+// const Player = require("./player");
+// const Ball = require("./ball");
+// const Team = require("./team");
+// const Performance = require("./performance");
+// const PerfHooks = require("perf_hooks");
 
 /**
  * Defines game state and behavior.
  */
-class Game extends Collision {
+export class Game extends Collision {
 	constructor() {
 		super();
 		/**Save all connections/sockets. Used to send updates*/
@@ -203,8 +210,8 @@ class Game extends Collision {
 		this.players[socket.id] = new Player(socket.id, nickname, 0, 0, team);
 		this.sockets[socket.id] = socket;
 
-		const teamName = team ? "BLUE".blue : "RED ".red;
-		console.log(teamName + ":    " + nickname.bold + ":  connected on socket: " + socket.id);
+		const teamName = team ? chalk.blue("BLUE") : chalk.red("RED ");
+		console.log(teamName + ":    " + chalk.bold(nickname) + ":  connected on socket: " + socket.id);
 	}
 
 	/**
@@ -227,4 +234,3 @@ class Game extends Collision {
 
 }
 
-module.exports = Game;

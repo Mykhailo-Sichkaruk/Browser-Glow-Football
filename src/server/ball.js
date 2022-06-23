@@ -1,4 +1,4 @@
-const { PITCH, BALL, } = require("../shared/constants");
+import  { BALL, PITCH } from "../shared/constants.js";
 
 class Ball {
 	constructor() {
@@ -65,4 +65,4 @@ class Ball {
 
 }
 
-module.exports = Ball;
+export default Ball;

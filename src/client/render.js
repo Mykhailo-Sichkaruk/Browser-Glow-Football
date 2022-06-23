@@ -1,5 +1,5 @@
 import { currentUpdate } from "./index.js";
-const { PLAYER, BALL, PITCH } = require("../shared/constants");
+import { PLAYER, BALL, PITCH } from "../shared/constants.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");

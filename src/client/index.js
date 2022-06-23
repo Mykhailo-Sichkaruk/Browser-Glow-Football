@@ -1,11 +1,11 @@
 import "./css/style.css";
 import ReactDOM from "react-dom";
-import { initInput, endInput } from "./input";
-import { renderUpdate, initCanvas, clearCanvas } from "./render";
+import { initInput, endInput } from "./input.js";
+import { renderUpdate, initCanvas, clearCanvas } from "./render.js";
 import { io } from "socket.io-client";
+import { MESSAGE, GAME } from "../shared/constants.js";
 
 export const socket = io({ autoConnect: false });
-const { MESSAGE, GAME } = require("../shared/constants");
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const nicknameFormDOM 		= document.getElementById("nickname_form");
 const startGameButtonDOM 	= document.getElementById("start_game_button");

@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import { throttle } from "lodash";
-import { me, socket } from "./index";
+import { me, socket } from "./index.js";
+import  { PLAYER, BALL, PITCH, KEY_TYPE, INPUT_TYPE, GAME, MESSAGE } from "../shared/constants.js";
 
-const { PLAYER, BALL, PITCH, KEY_TYPE, INPUT_TYPE, GAME, MESSAGE } = require("../shared/constants");
 const line = document.getElementById("line");
 const push = document.getElementById("push");
 const controller = {

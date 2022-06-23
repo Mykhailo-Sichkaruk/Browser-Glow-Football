@@ -1,4 +1,4 @@
-const { GAME } = require("../shared/constants");
+import { GAME } from "../shared/constants.js";
 
 class Performance {
 	constructor() {
@@ -26,4 +26,4 @@ class Performance {
 	}
 }
 
-module.exports = Performance;
+export default Performance;
