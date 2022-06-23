@@ -2,17 +2,16 @@ const { PITCH, BALL, } = require("../shared/constants");
 
 class Ball {
 	constructor() {
-		this.x = PITCH.FULL_X / 2,
-		this.y = PITCH.FULL_Y / 2,
-		this.mass = 		BALL.MASS,
-		this.radius = 		BALL.RADIUS,
+		this.x = (PITCH.FULL_X / 2);
+		this.y = PITCH.FULL_Y / 2;
+		this.mass = BALL.MASS;
+		this.radius = BALL.RADIUS;
 		this.resistance = 	PITCH.RESISTANCE;
 		this.direction = 0;
 		this.speed = 0;
 	}
 
 	move(dt) {
-
 		const shift = dt * this.speed;
 		const dy = shift * Math.cos(this.direction);
 		const dx = shift * Math.sin(this.direction);
