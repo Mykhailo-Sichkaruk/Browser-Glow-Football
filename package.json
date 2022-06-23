@@ -43,7 +43,6 @@
         "express": "^4.18.1",
         "lodash": "^4.17.21",
         "mini-css-extract-plugin": "^2.6.0",
-        "node-sass": "^7.0.1",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
         "socket.io": "^4.5.1",
@@ -70,9 +69,11 @@
         "webpack-dev-server": "^4.9.2"
     },
     "browserslist": [
-        "> 5%",
+        "> 10%",
         "last 2 versions",
-        "not ie <= 8"
+        "not ie <= 8",
+        "not op_mini all",
+        "not dead"
     ],
     "private": true
 }
