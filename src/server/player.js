@@ -51,22 +51,18 @@ class Player {
 		if (this.stop)
 			return;
 
-		const dy = dt * this.speed * Math.cos(this.direction);
-		const dx = dt * this.speed * Math.sin(this.direction);
+		const shift = dt * this.speed;
+		const dy = shift * Math.cos(this.direction);
+		const dx = shift * Math.sin(this.direction);
 
 		//Check if will Player hits the border, if so, turn him around
-		if (this.y + this.radius + dy >= PITCH.BOTTOM_BORDER) {
+		if (this.hitTopBorder(dy) || this.hitBottomBorder(dy))
 			this.direction = Math.PI - this.direction;
-		} else if (this.y - this.radius + dy <= PITCH.TOP_BORDER) {
-			this.direction = Math.PI - this.direction;
-		} else if (this.x + this.radius + dx >= PITCH.RIGHT_BORDER) {
+		else if (this.hitLeftBorder(dx) || this.hitRightBorder(dx))
 			this.direction = Math.PI * 2 - this.direction;
-		} else if (this.x - this.radius + dx <= PITCH.LEFT_BORDER) {
-			this.direction = Math.PI * 2 - this.direction;
-		}
 
-		this.x += dt * this.speed * Math.sin(this.direction);
-		this.y += dt * this.speed * Math.cos(this.direction);
+		this.x += shift * Math.sin(this.direction);
+		this.y += shift * Math.cos(this.direction);
 	}
 
 	/**
@@ -112,6 +108,22 @@ class Player {
 			y >= PITCH.TOP_BORDER &&
 			y <= PITCH.BOTTOM_BORDER
 		);
+	}
+
+	hitTopBorder(dy) {
+		return this.y - this.radius + dy <= PITCH.TOP_BORDER;
+	}
+
+	hitBottomBorder(dy) {
+		return this.y + this.radius + dy >= PITCH.BOTTOM_BORDER;
+	}
+
+	hitLeftBorder(dx) {
+		return this.x - this.radius + dx <= PITCH.LEFT_BORDER;
+	}
+
+	hitRightBorder(dx) {
+		return this.x + this.radius + dx >= PITCH.RIGHT_BORDER;
 	}
 
 }
