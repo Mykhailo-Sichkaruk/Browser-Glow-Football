@@ -27,7 +27,7 @@ let xRatio = PITCH.FULL_X / document.documentElement.clientWidth;
 let yRatio = PITCH.FULL_Y / document.documentElement.clientHeight;
 
 
-function kick(event) {
+function kick() {
 	const startTime = Date.now();
 
 	push.setAttribute("style", "display: block;");
@@ -90,7 +90,7 @@ function handleMouseClick(event) {
 }
 
 function handleMouseMove(event) {
-	if (!((event.clientX * xRatio - me.x) ** 2 + (event.clientY  * yRatio - me.y) ** 2) >= PLAYER.RADIUS ** 2)
+	if ((event.clientX * xRatio - me.x) ** 2 + (event.clientY  * yRatio - me.y) ** 2 < PLAYER.RADIUS ** 2)
 		return;
 
 	const dir = Math.atan2(event.clientX * xRatio - me.x, event.clientY * yRatio - me.y);
