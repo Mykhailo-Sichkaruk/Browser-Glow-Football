@@ -23,13 +23,7 @@ function initCanvas() {
 	console.log("Game screen inicializated: " + ctx.canvas.width + "x" + ctx.canvas.height);
 }
 
-function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-	if (typeof stroke === "undefined") {
-		stroke = true;
-	}
-	if (typeof radius === "undefined") {
-		radius = 5;
-	}
+function roundRect(x, y, width, height, fill, radius = 5, stroke = true) {
 	if (typeof radius === "number") {
 		radius = { tl: radius, tr: radius, br: radius, bl: radius };
 	} else {
@@ -58,7 +52,7 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 
 }
 
-function drawCircle(ctx, x, y, radius, fill, stroke, strokeWidth) {
+function drawCircle(x, y, radius, fill, stroke, strokeWidth) {
 	ctx.beginPath();
 	ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
 	if (fill) {
@@ -76,11 +70,11 @@ function drawPitch() {
 	//Set pitch outline color
 	ctx.fillStyle =  PITCH.OUTLINE_COLOR;
 	//Draw big pitch for outline
-	roundRect(ctx,  PITCH.PADDING_WIDTH,  PITCH.PADDING_WIDTH,  PITCH.X + 2 *  PITCH.OUTLINE_WIDTH,  PITCH.Y + 2 *  PITCH.OUTLINE_WIDTH,  PITCH.RADIUS, true, false);
+	roundRect(PITCH.PADDING_WIDTH, PITCH.PADDING_WIDTH,  PITCH.X + 2 *  PITCH.OUTLINE_WIDTH,  PITCH.Y + 2 *  PITCH.OUTLINE_WIDTH, true, PITCH.RADIUS, false);
 	//Set pitch color
 	ctx.fillStyle =  PITCH.COLOR;
 	//Draw pitch
-	roundRect(ctx, (PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH), (PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH),  PITCH.X,  PITCH.Y,  PITCH.RADIUS, true, false);
+	roundRect((PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH), (PITCH.PADDING_WIDTH +  PITCH.OUTLINE_WIDTH),  PITCH.X,  PITCH.Y, true, PITCH.RADIUS, false);
 	//Draw central circle
 	ctx.strokeStyle = "white";
 	ctx.beginPath();
@@ -104,12 +98,12 @@ function renderUpdate() {
 	drawPitch();
 
 	//Draw ball
-	drawCircle(ctx, currentUpdate.ball.x, currentUpdate.ball.y,  BALL.RADIUS,  BALL.COLOR, "black", 1);
+	drawCircle(currentUpdate.ball.x, currentUpdate.ball.y,  BALL.RADIUS,  BALL.COLOR, "black", 1);
 
 	//Draw every player
 	for (const player of currentUpdate.players) {
 		const teamColor = (player.team) ? (PLAYER.BLUE_COLOR) : (PLAYER.RED_COLOR);
-		drawCircle(ctx, player.x, player.y, PLAYER.RADIUS, teamColor, "black", 1);
+		drawCircle(player.x, player.y, PLAYER.RADIUS, teamColor, "black", 1);
 	}
 
 }
