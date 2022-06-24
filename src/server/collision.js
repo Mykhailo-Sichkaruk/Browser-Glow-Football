@@ -43,23 +43,13 @@ class Collision {
 		this.ball.speed = (((this.players[id].mass - this.ball.mass) *  this.players[id].speed +  2 * this.ball.mass) /  (this.players[id].mass + this.ball.mass)) * 2;
 	}
 
-	/**
-	 * Force actions with ball.
-	 * - rotate clockwise
-	 * - rotate counterclockwise
-	 * - push
-	 * - pull
-	 * @param {number} id
-	 */
-	playerInterractBall(id) {
+	playerPullBall(id) {
 		const currentDistance = (this.ball.y - this.players[id].y) ** 2 + (this.ball.x - this.players[id].x) ** 2;
 
-		if (this.players[ id ].pull) {
+		if (this.players[id].pull) {
 			if (currentDistance <= PLAYER.HOLD_BALL_DISTANCE) {
 				this.playerHoldBall(id);
-				return;
-			}
-			if (currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
+			} else if (currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
 				const ballToPlayerDirection = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y);
 				this.ball.direction = (ballToPlayerDirection + this.ball.direction) / 2;
 				this.ball.velosity += BALL.BONUS_SPEED_ON_ROTATE;
@@ -67,22 +57,22 @@ class Collision {
 				this.ball.y -= Math.sign(this.ball.y - this.players[id].y) * (PLAYER.PULL_FORCE / 2);
 				this.ball.x -= Math.sign(this.ball.x - this.players[id].x) * (PLAYER.PULL_FORCE / 2);
 			}
-			return;
 		}
-		if (this.players[id].rotateClockwise && currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
-			this.ball.direction = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y) - Math.PI / 2;
-			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
-			return;
-		}
-		if (this.players[id].rotateCounterClockwise && currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
-			this.ball.direction = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y) + Math.PI / 2;
-			this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
-			return;
-		}
-		if (this.players[id].push && currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
-			this.ball.direction = this.players[id].direction;
-			this.ball.speed = this.players[id].speed;
-		}
+	}
+
+	playerRotateClockwiseBall(id) {
+		this.ball.direction = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y) - Math.PI / 2;
+		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
+	}
+
+	playerRotateCounterClockwiseBall(id) {
+		this.ball.direction = Math.atan2(this.players[ id ].x - this.ball.x, this.players[ id ].y - this.ball.y) + Math.PI / 2;
+		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
+	}
+
+	playerPushBall(id) {
+		this.ball.direction = this.players[ id ].direction;
+		this.ball.speed = this.players[ id ].speed;
 	}
 
 	/**
@@ -158,8 +148,19 @@ class Collision {
 
 		if (currentDistance <= PLAYER.BALL_COLLISION_DISTANCE) {
 			this.playerTouchBall(id);
-		} else if (this.players[id].pull || this.players[id].push || this.players[id].rotateClockwise || this.players[id].rotateCounterClockwise && currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
-			this.playerInterractBall(id);
+			return;
+		}
+
+		if (currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
+			if (this.players[id].pull) {
+				this.playerPullBall(id);
+			} else if (this.players[id].rotateClockwise) {
+				this.playerRotateClockwiseBall(id);
+			} else if (this.players[id].rotateCounterClockwise) {
+				this.playerRotateCounterClockwiseBall(id);
+			} else if (this.players[id].push) {
+				this.playerPushBall(id);
+			}
 		}
 	}
 
