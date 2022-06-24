@@ -11,6 +11,12 @@ const GAME = Object.freeze({
 	SHOT_POWER_PANE_DELAY: 1000, //ms
 	MOUSE_UPDATE_DELAY: 100, //ms
 });
+const BALL = Object.freeze({
+	MASS: 1,
+	RADIUS: 7,
+	BONUS_SPEED_ON_ROTATE: 10,
+	COLOR: "white",
+});
 const PLAYER = Object.freeze({
 	RADIUS: 15,
 	MASS: 5,
@@ -22,8 +28,8 @@ const PLAYER = Object.freeze({
 	ASSIST_FORCE: 800,
 	/*** Distance between Player and Ball where pull power works*/
 	PULL_DISTANCE_POWER: 75 ** 2,
-	get PLAYER_COLLISION_DISTANCE() 	{ return (this.RADIUS * 2) ** 2; },
-	get BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + this.RADIUS) ** 2; },
+	get PLAYER_COLLISION_DISTANCE() { return (this.RADIUS * 2) ** 2; },
+	get BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + BALL.RADIUS) ** 2; },
 	get HOLD_BALL_DISTANCE() 		{ return this.BALL_COLLISION_DISTANCE * 4; },
 	RED_COLOR: "red",
 	BLUE_COLOR: "blue"
@@ -47,12 +53,6 @@ const PITCH = Object.freeze({
 	CENTRAL_CIRCLE_RADIUS: 160,
 	BORDER_LEFT_X: 0,
 	RESISTANCE: 0.99,
-});
-const BALL = Object.freeze({
-	MASS: 1,
-	RADIUS: 7,
-	BONUS_SPEED_ON_ROTATE: 10,
-	COLOR: "white",
 });
 const MESSAGE = Object.freeze({
 	CONNECTION: "connection",
