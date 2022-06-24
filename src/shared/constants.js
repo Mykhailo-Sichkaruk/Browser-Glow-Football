@@ -21,10 +21,10 @@ const PLAYER = Object.freeze({
 	KICK_FORCE: 1700,
 	ASSIST_FORCE: 800,
 	/*** Distance between Player and Ball where pull power works*/
-	DISTANCE_PLAYER_PULL_POWER: 75 ** 2,
-	get PLAYER_PLAYER_COLLISION_DISTANCE() 	{ return (this.RADIUS * 2) ** 2; },
-	get PLAYER_BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + this.RADIUS) ** 2; },
-	get PLAYER_BALL_HOLD_DISTANCE() 		{ return this.PLAYER_BALL_COLLISION_DISTANCE * 4; },
+	PULL_DISTANCE_POWER: 75 ** 2,
+	get PLAYER_COLLISION_DISTANCE() 	{ return (this.RADIUS * 2) ** 2; },
+	get BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + this.RADIUS) ** 2; },
+	get HOLD_BALL_DISTANCE() 		{ return this.BALL_COLLISION_DISTANCE * 4; },
 	RED_COLOR: "red",
 	BLUE_COLOR: "blue"
 });
