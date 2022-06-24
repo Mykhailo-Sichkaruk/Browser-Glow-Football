@@ -12,34 +12,19 @@ class Collision {
 		let i = 0;
 
 		for (const socket in this.players) {
-			switch (this.isBallTouch(socket, dt)) {
-			case 0:
-				this.players[socket].speed = PLAYER.SPEED_DEFAULT;
-				break;
-			case 1: // Just collision
-				this.playerTouchBall(socket); //Touch
-				break;
-			case 2: // Player holds the ball
-				this.playerHoldBall(socket);
-				break;
-			case 3: // Player Hold the ball and shots it in same time
-				this.playerKickBall(socket);
-				break;
-			case 4:	// Player assist
-				this.playerAssistBall(socket);
-				break;
-			case 5: // Player force actions
-				this.playerInterractBall(socket);
-				this.players[socket].speed = PLAYER.SPEED_ON_FORCE_ACTION;
-				break;
-			}
+			this.playerBallCollision(socket, dt);
 			this.playerPlayerCollision(socket, i);
-
 			i++;
 		}
 	}
 
 	playerHoldBall(id) {
+		if (!this.players[id].pull) {
+			this.players[id].hold = false;
+			this.players[id].speed = PLAYER.SPEED_DEFAULT;
+			return;
+		}
+
 		this.players[id].hold = true;
 		this.players[id].speed = PLAYER.SPEED_ON_HOLD;
 		this.ball.x = this.players[id].x + PLAYER.RADIUS * Math.sin(this.players[id].direction);
@@ -69,7 +54,11 @@ class Collision {
 	playerInterractBall(id) {
 		const currentDistance = (this.ball.y - this.players[id].y) ** 2 + (this.ball.x - this.players[id].x) ** 2;
 
-		if (this.players[id].pull) {
+		if (this.players[ id ].pull) {
+			if (currentDistance <= PLAYER.HOLD_BALL_DISTANCE) {
+				this.playerHoldBall(id);
+				return;
+			}
 			if (currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
 				const ballToPlayerDirection = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y);
 				this.ball.direction = (ballToPlayerDirection + this.ball.direction) / 2;
@@ -112,6 +101,7 @@ class Collision {
 			this.players[ id ].push = false;
 			this.players[ id ].assist = false;
 			this.players[ id ].hold = false;
+			this.players[ id ].speed = PLAYER.SPEED_DEFAULT;
 		} else {
 			this.players[ id ].shot = 0;
 			this.players[ id ].hold = 0;
@@ -134,23 +124,17 @@ class Collision {
 			this.players[ id ].push = false;
 			this.players[ id ].assist = false;
 			this.players[ id ].hold = false;
-
+			this.players[ id ].speed = PLAYER.SPEED_DEFAULT;
 		}
 	}
 
 	/**
-	 * Defines collisions type betweeen ball and player
+	 * Provides collisions betweeen ball and player
 	 * @param {number} id - player key in this.players object
 	 * @param {number} dt - time delta
 	 * @returns
-	 * - 0 - no collision
-	 * - 1 - player collides with ball
-	 * - 2 - player hold ball
-	 * - 3 - player hold ball and kick it
-	 * - 4 - player hold ball and assist it
-	 * - 5 - player use force actions
 	 */
-	isBallTouch(id, dt) {
+	playerBallCollision(id, dt) {
 		const ballDs = this.ball.speed * dt;
 		const ballY = this.ball.x + ballDs * Math.cos(this.ball.direction);
 		const ballX = this.ball.y + ballDs * Math.sin(this.ball.direction);
@@ -161,25 +145,22 @@ class Collision {
 
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 
-		if (currentDistance <= PLAYER.BALL_COLLISION_DISTANCE) {
-			if (this.players[id].pull) {
-				if (this.players[id].shot !== 0) {
-					return 3;
-				} else if (this.players[id].assist === true) { // Player Hold the ball and shots it in same time
-					return 4;
-				} else { // Player assist the ball
-					return 2;
-				} // Player holds the ball
+		if (this.players[id].hold) {
+			if (this.players[id].shot) {
+				this.playerKickBall(id);
+			} else if (this.players[ id ].assist) {
+				this.playerAssistBall(id);
 			} else {
-				return 1;
-			} // Just collision
-		} else if (currentDistance <= PLAYER.HOLD_BALL_DISTANCE && this.players[id].pull) {
-			return 2;
-		} else if (this.players[id].pull || this.players[id].push || this.players[id].rotateClockwise || this.players[id].rotateCounterClockwise) {
-			return 5;
-		} else {  // Player force actions
-			return 0;
-		} // No collision or action
+				this.playerHoldBall(id);
+			}
+			return;
+		}
+
+		if (currentDistance <= PLAYER.BALL_COLLISION_DISTANCE) {
+			this.playerTouchBall(id);
+		} else if (this.players[id].pull || this.players[id].push || this.players[id].rotateClockwise || this.players[id].rotateCounterClockwise && currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
+			this.playerInterractBall(id);
+		}
 	}
 
 	/**

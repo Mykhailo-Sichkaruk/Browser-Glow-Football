@@ -102,10 +102,6 @@ export class Game extends Collision {
 				this.players[socket].y = PITCH.FULL_Y / 2;
 				redIndex++;
 			}
-
-			this.players[socket].speed = 0;
-			this.players[socket].pull = false;
-			this.players[socket].push = false;
 		}
 
 		let res;
@@ -126,7 +122,7 @@ export class Game extends Collision {
 		}
 
 		for (const socket in this.players)
-			this.sockets[ socket ].emit("goal", res);
+			this.sockets[ socket ].emit(MESSAGE.GOAL, res);
 
 
 		this.sendUpdate();
