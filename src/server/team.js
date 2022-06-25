@@ -3,6 +3,9 @@ class Team {
 		this.name = name;
 		this.score = 0;
 		this.playersCount = 0;
+		this.goalkeeper = null;
+		this.midfielder = null;
+		this.forward = null;
 	}
 
 	incrementPlayers() {
@@ -27,6 +30,30 @@ class Team {
 
 	getPlayersCount() {
 		return this.playersCount;
+	}
+
+	setGoalkeeper(player) {
+		this.goalkeeper = player;
+	}
+
+	setMidfielder(player) {
+		this.midfielder = player;
+	}
+
+	setForward(player) {
+		this.forward = player;
+	}
+
+	getGoalkeeper() {
+		return this.goalkeeper;
+	}
+
+	getMidfielder() {
+		return this.midfielder;
+	}
+
+	getForward() {
+		return this.forward;
 	}
 
 }

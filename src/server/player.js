@@ -71,9 +71,9 @@ class Player {
 	setGoalkeeperPosition() {
 		this.y = PITCH.Y / 2;
 		if (this.team === GAME.LEFT_TEAM) {
-			this.x = PITCH.LEFT_BORDER + PITCH.GOAL_WIDTH / 2;
+			this.x = PITCH.BLUE_GOALKEEPER_POSITION_X;
 		} else {
-			this.x = PITCH.RIGHT_BORDER - PITCH.GOAL_WIDTH / 2;
+			this.x = PITCH.RED_GOALKEEPER_POSITION_X;
 		}
 	}
 
@@ -83,9 +83,9 @@ class Player {
 	setMidfielderPosition() {
 		this.y = PITCH.Y / 2;
 		if (this.team === GAME.LEFT_TEAM) {
-			this.x = PITCH.X / 4;
+			this.x = PITCH.BLUE_MIDFIELDER_POSITION_X;
 		} else {
-			this.x = PITCH.X / 4 * 3;
+			this.x = PITCH.RED_MIDFIELDER_POSITION_X;
 		}
 	}
 
@@ -95,9 +95,9 @@ class Player {
 	setForwardPosition() {
 		this.y = PITCH.Y / 2;
 		if (this.team === GAME.LEFT_TEAM) {
-			this.x = PITCH.X / 2 - PITCH.CENTRAL_CIRCLE_RADIUS;
+			this.x = PITCH.BLUE_FORWARD_POSITION_X;
 		} else {
-			this.x = PITCH.X / 2 + PITCH.CENTRAL_CIRCLE_RADIUS;
+			this.x = PITCH.RED_FORWARD_POSITION_X;
 		}
 	}
 
