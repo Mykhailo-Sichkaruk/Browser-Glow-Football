@@ -8,7 +8,7 @@ import { Server } from "socket.io";
 const app = express();
 // file deepcode ignore HttpToHttps: <please specify a reason of ignoring this>
 const server = http.createServer(app);
-const io = new Server(server);
+export const io = new Server(server);
 const game = new Game();
 
 // Start server listening

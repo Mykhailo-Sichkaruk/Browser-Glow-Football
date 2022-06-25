@@ -6,6 +6,7 @@ import Team from "./team.js";
 import Ball from "./ball.js";
 import Performance from "./performance.js";
 import chalk from "chalk";
+import { io } from "./server.js";
 
 // const Player = require("./player");
 // const Ball = require("./ball");
@@ -121,9 +122,7 @@ export class Game extends Collision {
 			};
 		}
 
-		for (const socket in this.players)
-			this.sockets[ socket ].emit(MESSAGE.GOAL, res);
-
+		io.emit(MESSAGE.GOAL, res);
 
 		this.sendUpdate();
 		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
@@ -167,8 +166,7 @@ export class Game extends Collision {
 	 */
 	sendUpdate() {
 		const update = this.createUpdate();
-		for (const socket in this.players)
-			this.sockets[ socket ].emit(MESSAGE.GAME_UPDATE, update);
+		io.emit(MESSAGE.GAME_UPDATE, update);
 	}
 
 	/**
