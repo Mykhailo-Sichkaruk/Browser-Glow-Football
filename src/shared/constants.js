@@ -10,6 +10,8 @@ const GAME = Object.freeze({
 	get PERFECT_SHOT_TIME() { return this.SHOT_ANIMATION_TIME / 4; },
 	SHOT_POWER_PANE_DELAY: 1000, //ms
 	MOUSE_UPDATE_DELAY: 100, //ms
+	TEAM_MAX_PLAYERS: 3,
+	get MAX_PLAYERS() { return this.TEAM_MAX_PLAYERS * 2; },
 });
 const BALL = Object.freeze({
 	MASS: 1,
