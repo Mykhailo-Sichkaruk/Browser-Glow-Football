@@ -18,8 +18,9 @@ import { io } from "./server.js";
  * Defines game state and behavior.
  */
 export class Game extends Collision {
-	constructor() {
+	constructor(id) {
 		super();
+		this.id = id;
 		/**Save all connections/sockets. Used to send updates*/
 		this.sockets = {};
 		/**Save all Players instances of current game */
@@ -36,10 +37,7 @@ export class Game extends Collision {
 		/** Performance object*/
 		this.performance = new Performance();
 		// Start updating
-		this.interval = setInterval(() => {
-			this.update();
-		}
-		, GAME.SERVER_PING);
+		this.interval = setInterval(() => { this.update(); }, GAME.SERVER_PING);
 	}
 
 	/**
@@ -122,7 +120,7 @@ export class Game extends Collision {
 			};
 		}
 
-		io.emit(MESSAGE.GOAL, res);
+		io.in(this.id).emit(MESSAGE.GOAL, res);
 
 		this.sendUpdate();
 		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
@@ -166,7 +164,7 @@ export class Game extends Collision {
 	 */
 	sendUpdate() {
 		const update = this.createUpdate();
-		io.emit(MESSAGE.GAME_UPDATE, update);
+		io.in(this.id).emit(MESSAGE.GAME_UPDATE, update);
 	}
 
 	/**
@@ -205,7 +203,7 @@ export class Game extends Collision {
 		this.sockets[socket.id] = socket;
 
 		const teamName = team ? chalk.blue("BLUE") : chalk.red("RED ");
-		console.log(teamName + ":    " + chalk.bold(nickname) + ":  connected on socket: " + socket.id);
+		console.log(teamName + ":\t" + chalk.bold(nickname) + ":  connected on socket: " + socket.id);
 	}
 
 	/**
@@ -224,6 +222,10 @@ export class Game extends Collision {
 
 		delete this.sockets[ socket.id ];
 		delete this.players[ socket.id ];
+	}
+
+	isFree() {
+		return Object.keys(this.players).length < GAME.MAX_PLAYERS;
 	}
 
 }
