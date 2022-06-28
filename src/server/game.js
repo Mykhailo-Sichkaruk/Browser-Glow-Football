@@ -57,12 +57,9 @@ class Game extends Collision {
 	 */
 	move(dt) {
 		// Move ball
-		let res;
-		if ((res = this.ball.move(dt)) === 2) {
-			this.onGoal(true);
-		} else if (res === 1) {
-			this.onGoal(false);
-		}
+		const res = this.ball.move(dt);
+		if (res !== undefined)
+			this.onGoal(res);
 		// Move all players
 		for (const player in this.players)
 			this.players[ player ].move(dt);

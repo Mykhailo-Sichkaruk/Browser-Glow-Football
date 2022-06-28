@@ -8,31 +8,49 @@ class Ball {
 		this.setInCenter();
 	}
 
+	/**
+	 * Move ball and return goal status
+	 * @param {*} dt - miliseconds since last update
+	 * @returns `undefined` if **no** goal was hit, `true` for blue team scored, `false` for red team scored
+	 */
 	move(dt) {
-		const shift = dt * this.speed;
-		const dy = shift * Math.cos(this.direction);
-		const dx = shift * Math.sin(this.direction);
+		const ds = dt * this.speed;
+		const dy = ds * Math.cos(this.direction);
+		const dx = ds * Math.sin(this.direction);
 
-		//Check if ball hits the border then change direction
-		if (this.hitBottom(dy) || this.hitTop(dy)) {
-			this.direction = Math.PI - this.direction;
-		} else if (this.hitRight(dx)) {
-			if (this.isInGoal())
-				return 1;
-			else
+		const result = this.isGoal(dx);
+
+		if (result === undefined) {
+			if (this.hitBottom(dy) || this.hitTop(dy)) {
+				this.direction = Math.PI - this.direction;
+			} else if (this.hitRight(dx) || this.hitLeft(dx)) {
 				this.direction = Math.PI * 2 - this.direction;
-		} else if (this.hitLeft(dx)) {
-			if (this.isInGoal())
-				return 2;
-			else
-				this.direction = Math.PI * 2 - this.direction;
+			}
+			//Then move
+			this.x += ds * Math.sin(this.direction);
+			this.y += ds * Math.cos(this.direction);
+			//Apply resistance to velosity
+			this.speed *= this.resistance;
+
+			return undefined;
 		}
-		//Then move
-		this.x += shift * Math.sin(this.direction);
-		this.y += shift * Math.cos(this.direction);
-		//Apply resistance to velosity
-		this.speed *= this.resistance;
-		return 0; //False for Ball not touching the border or goal
+
+		return result;
+	}
+
+	/**
+	 * Check if ball will hit the goal
+	 * @param {*} dx - distance to move in x direction
+	 * @returns `undefined` if **no** goal was hit, `true` for blue team scored, `false` for red team scored
+	 */
+	isGoal(dx) {
+		if ((this.y >= PITCH.FULL_Y / 2 - PITCH.GOAL_WIDTH / 2) && (this.y <= PITCH.FULL_Y / 2 + PITCH.GOAL_WIDTH / 2)) {
+			if (this.hitRight(dx)) {
+				return true;
+			} else if (this.hitLeft(dx)) {
+				return false;
+			}
+		}
 	}
 
 	setInCenter() {
@@ -40,11 +58,6 @@ class Ball {
 		this.y = PITCH.FULL_Y / 2;
 		this.speed = 0;
 		this.direction = 0;
-	}
-
-	isInGoal() {
-		if ((this.y >= PITCH.FULL_Y / 2 - PITCH.GOAL_WIDTH / 2) && (this.y <= PITCH.FULL_Y / 2 + PITCH.GOAL_WIDTH / 2))
-			return true;
 	}
 
 	hitBottom(dy) {
