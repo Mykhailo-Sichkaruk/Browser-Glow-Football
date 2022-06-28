@@ -2,13 +2,10 @@ import  { BALL, PITCH } from "../shared/constants.js";
 
 class Ball {
 	constructor() {
-		this.x = (PITCH.FULL_X / 2);
-		this.y = PITCH.FULL_Y / 2;
 		this.mass = BALL.MASS;
 		this.radius = BALL.RADIUS;
-		this.resistance = 	PITCH.RESISTANCE;
-		this.direction = 0;
-		this.speed = 0;
+		this.resistance = PITCH.RESISTANCE;
+		this.setInCenter();
 	}
 
 	move(dt) {
@@ -42,6 +39,7 @@ class Ball {
 		this.x = PITCH.FULL_X / 2;
 		this.y = PITCH.FULL_Y / 2;
 		this.speed = 0;
+		this.direction = 0;
 	}
 
 	isInGoal() {
@@ -50,23 +48,19 @@ class Ball {
 	}
 
 	hitBottom(dy) {
-		if (this.y + this.radius + dy >= PITCH.BOTTOM_BORDER)
-			return true;
+		return (this.y + this.radius + dy >= PITCH.BOTTOM_BORDER);
 	}
 
 	hitTop(dy) {
-		if (this.y - this.radius + dy <= PITCH.TOP_BORDER)
-			return true;
+		return (this.y - this.radius + dy <= PITCH.TOP_BORDER);
 	}
 
 	hitRight(dx) {
-		if (this.x + this.radius + dx >= PITCH.RIGHT_BORDER)
-			return true;
+		return (this.x + this.radius + dx >= PITCH.RIGHT_BORDER);
 	}
 
 	hitLeft(dx) {
-		if (this.x - this.radius + dx <= PITCH.LEFT_BORDER)
-			return true;
+		return (this.x - this.radius + dx <= PITCH.LEFT_BORDER);
 	}
 
 }
