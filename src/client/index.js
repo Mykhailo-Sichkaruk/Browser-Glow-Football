@@ -14,7 +14,6 @@ const blueScoreDOM 			= document.getElementById("blue_score");
 const scoreBoardDOM 		= document.getElementById("score_board");
 const scoreEffectDOM 		= document.getElementById("score_effect");
 
-let connectionStatus = true;
 let currentUpdate;
 let me;
 
@@ -51,12 +50,10 @@ function initSocket() {
 
 function onDisconnect() {
 	endGame();
-	connectionStatus = false;
 }
 
 function onConnect() {
-	document.getElementById("start_game_button").addEventListener("click", initGame, false);
-	connectionStatus = true;
+	startGameButtonDOM.addEventListener("click", initGame);
 	root.render(<Ping time = "Connected"></Ping>);
 }
 
@@ -100,14 +97,10 @@ function findMe(update) {
 }
 
 function startHtml() {
-	if (connectionStatus) {
-		nicknameFormDOM.style.display = "none";
-		startGameButtonDOM.style.display = "none";
-		scoreBoardDOM.style.display = "block";
-		document.getElementById("canvas").setAttribute("class", "canvasWhileGame");
-	} else {
-		nicknameFormDOM.innerText = "Please wait to server connection";
-	}
+	nicknameFormDOM.style.display = "none";
+	startGameButtonDOM.style.display = "none";
+	scoreBoardDOM.style.display = "block";
+	document.getElementById("canvas").setAttribute("class", "canvasWhileGame");
 }
 
 function initGame() {
@@ -118,6 +111,7 @@ function initGame() {
 }
 
 function endGame() {
+	startGameButtonDOM.removeEventListener("click", initGame);
 	clearCanvas();
 	endInput();
 	document.getElementById("canvas").setAttribute("display", "none");
