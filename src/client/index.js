@@ -65,19 +65,19 @@ function onUpdate(update) {
 }
 
 function onGoal(result) {
-	if (result.redTeamScored) {
+	if (result.teamScored)
 		scoreEffectDOM.style.background = "blue";
-	} else {
+	else
 		scoreEffectDOM.style.background = "red";
-	}
+
 	scoreEffectDOM.style.display = "block";
 	scoreEffectDOM.style.animation = "goal_effect 1s linear 1";
 	setTimeout(() => {
 		scoreEffectDOM.style.display = "none";
 	}, GAME.AFTER_GOAL_DELAY_MS);
 
-	blueScoreDOM.innerHTML = result.blue;
-	redScoreDOM.innerHTML = result.red;
+	blueScoreDOM.innerHTML = result.blueScore;
+	redScoreDOM.innerHTML = result.redScore;
 }
 
 // eslint-disable-next-line no-unused-vars

@@ -58,8 +58,10 @@ class Game extends Collision {
 	move(dt) {
 		// Move ball
 		const res = this.ball.move(dt);
-		if (res !== undefined)
+		if (res !== undefined) {
 			this.onGoal(res);
+			return;
+		}
 		// Move all players
 		for (const player in this.players)
 			this.players[ player ].move(dt);
@@ -70,29 +72,27 @@ class Game extends Collision {
 	 * @param {boolean} team
 	 */
 	onGoal(team) {
+		// Set ball in center of the pitch
 		this.ball.setInCenter();
 		// Set Players to teir start positions after goal
 		for (const player in this.players) {
 			this.players[ player ].setStartPosition();
 		}
-		let res;
-		if (team === true) {
-			this.team.red.addScore();
-			res = {
-				redTeamScored: false,
-				blue: this.team.blue.getScore(),
-				red: this.team.red.getScore(),
-			};
-		} else {
-			this.team.blue.addScore();
-			res = {
-				redTeamScored: true,
-				blue: this.team.blue.getScore(),
-				red: this.team.red.getScore(),
-			};
-		}
 
-		io.in(this.id).emit(MESSAGE.GOAL, res);
+		// Change score
+		if (team)
+			this.team.blue.addScore();
+		else
+			this.team.red.addScore();
+
+		// Create content for message
+		const content = {
+			teamScored: team,
+			blueScore: this.team.blue.getScore(),
+			redScore: this.team.red.getScore(),
+		};
+		// Send message to all players in room
+		io.in(this.id).emit(MESSAGE.GOAL, content);
 
 		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
 	}
