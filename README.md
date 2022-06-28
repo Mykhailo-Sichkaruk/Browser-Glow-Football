@@ -8,7 +8,7 @@
 ## How to build?  
 
 + Run  `npm i` in terminal to install all related Node packages  
-+ then `npm run front` to build froont-end  
++ then `npm run front` to build front-end  
 + and  `npm run server` to start server  
 + in browser adress bar type `http://localhost:3000/` 
 
