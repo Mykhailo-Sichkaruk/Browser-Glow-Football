@@ -4,18 +4,27 @@ import { PLAYER, PITCH, GAME } from "../shared/constants.js";
  * Describe Player states and behavior.
  */
 class Player {
-	constructor(socket, nickname, x, y, team) {
-		if (this.isInsidePitch(x, y)) {
-			this.x = x;
-			this.y = y;
-		} else
-			this.setGoalkeeperPosition();
-
-		this.nickname = nickname;
+	/**
+	 *
+	 * @param {*} socket
+	 * @param {string} nickname
+	 * @param {boolean} team - true Blue team false Red team
+	 * @param {number} teamPosition - 1 - goalkeeper, 2 - midfielder, 3 - forward
+ 	 * @param {string} room - room id
+	 */
+	constructor(socket, nickname, team, teamPosition, room) {
+		/** Socket.io room/game indentificator */
+		this.room = room;
+		/** Socket of current player */
 		this.socket = socket;
+		/** Nick */
+		this.nickname = nickname;
 		/** True == 'Blue team' || False == 'Red team'*/
 		this.team = team;
 		/**Direction in Radians: 3.14 = PI */
+		this.teamPosition = teamPosition;
+		this.setStartPosition();
+
 		this.direction = 0;
 		/**Mass affects collision with players and ball.
 		 * The more mass - more your push power, more harder to push you*/
@@ -69,8 +78,8 @@ class Player {
 	 * Set player to goalkeeper position, near goal
 	 */
 	setGoalkeeperPosition() {
-		this.y = PITCH.Y / 2;
-		if (this.team === GAME.LEFT_TEAM) {
+		this.y = PITCH.FULL_Y / 2;
+		if (this.team) {
 			this.x = PITCH.BLUE_GOALKEEPER_POSITION_X;
 		} else {
 			this.x = PITCH.RED_GOALKEEPER_POSITION_X;
@@ -81,8 +90,8 @@ class Player {
 	 * Set player to midfield position, near center of own side
 	 */
 	setMidfielderPosition() {
-		this.y = PITCH.Y / 2;
-		if (this.team === GAME.LEFT_TEAM) {
+		this.y = PITCH.FULL_Y / 2;
+		if (this.team) {
 			this.x = PITCH.BLUE_MIDFIELDER_POSITION_X;
 		} else {
 			this.x = PITCH.RED_MIDFIELDER_POSITION_X;
@@ -93,8 +102,8 @@ class Player {
 	 * Set player to attacker position, near senter of the pitch
 	 */
 	setForwardPosition() {
-		this.y = PITCH.Y / 2;
-		if (this.team === GAME.LEFT_TEAM) {
+		this.y = PITCH.FULL_Y / 2;
+		if (this.team) {
 			this.x = PITCH.BLUE_FORWARD_POSITION_X;
 		} else {
 			this.x = PITCH.RED_FORWARD_POSITION_X;
@@ -124,6 +133,20 @@ class Player {
 
 	hitRightBorder(dx) {
 		return this.x + this.radius + dx >= PITCH.RIGHT_BORDER;
+	}
+
+	setStartPosition() {
+		switch (this.teamPosition) {
+		case 2:
+			this.setMidfielderPosition();
+			break;
+		case 3:
+			this.setForwardPosition();
+			break;
+		default:
+			this.setGoalkeeperPosition();
+			break;
+		}
 	}
 
 }

@@ -1,6 +1,6 @@
 import express from "express";
 import { DEVELOP, MESSAGE } from "../shared/constants.js";
-import { Game } from "./game.js";
+import Game from "./game.js";
 import chalk from "chalk";
 import http from "http";
 import { Server } from "socket.io";
@@ -50,10 +50,15 @@ function disconnect() {
 }
 
 function joinGame(username) {
+	// Get free game id
 	const id = getFreeGameId();
+	// Join socket to room
 	this.join(id);
+	// Save id in socket object
 	this.roomId = id;
-	games[id].joinPlayer(this, username);
+	// Add player to game with id
+	games[ id ].joinPlayer(this, username);
+	// Start listening for messages from client
 	this.on(MESSAGE.INPUT, handleInput);
 	this.on(MESSAGE.DISCONNECT, disconnect);
 }

@@ -1,5 +1,4 @@
-import * as PerfHooks from "perf_hooks";
-import  { PITCH, INPUT_TYPE, GAME, MESSAGE } from "../shared/constants.js";
+import  { INPUT_TYPE, GAME, MESSAGE } from "../shared/constants.js";
 import Collision from "./collision.js";
 import Player from "./player.js";
 import Team from "./team.js";
@@ -17,9 +16,10 @@ import { io } from "./server.js";
 /**
  * Defines game state and behavior.
  */
-export class Game extends Collision {
+class Game extends Collision {
 	constructor(id) {
 		super();
+		/** Id of room in socket server */
 		this.id = id;
 		/**Save all connections/sockets. Used to send updates*/
 		this.sockets = {};
@@ -36,8 +36,8 @@ export class Game extends Collision {
 		};
 		/** Performance object*/
 		this.performance = new Performance();
-		// Start updating
-		this.interval = setInterval(() => { this.update(); }, GAME.SERVER_PING);
+		/** Node.js timer to start/stop game loop */
+		this.interval = setInterval(() => { this.update(); }, GAME.SERVER_PING); // Start game loop
 	}
 
 	/**
@@ -45,8 +45,7 @@ export class Game extends Collision {
 	 * Started in constructor, can be paused with this.pause(delay) method
 	 */
 	update() {
-		const start = PerfHooks.performance.now();
-
+		// Calculate time difference between last update and current update
 		const dt = (Date.now() - this.lastUpdateTime) / 1000;
 		// Process colision
 		this.collision(dt);
@@ -56,8 +55,6 @@ export class Game extends Collision {
 		this.sendUpdate();
 		// Save time of last update
 		this.lastUpdateTime = Date.now();
-		// Save performance
-		this.performance.addPing(PerfHooks.performance.now() - start);
 	}
 
 	/**
@@ -82,27 +79,11 @@ export class Game extends Collision {
 	 * @param {boolean} team
 	 */
 	onGoal(team) {
-		// Set ball to center
-		this.ball.x = PITCH.FULL_X / 2;
-		this.ball.y = PITCH.FULL_Y / 2;
-		this.ball.speed = 0;
-		// Set Players to start
-		let redIndex = 1;
-		let blueIndex = 1;
-
-		for (const socket in this.players) {
-			// For blue tam
-			if (this.players[socket].team) {
-				this.players[socket].x = (PITCH.FULL_X / 2) * (blueIndex / 3);
-				this.players[socket].y = PITCH.FULL_Y / 2;
-				blueIndex++;
-			} else if (!this.players[socket].team) {
-				this.players[socket].x = PITCH.FULL_X / 2 + (PITCH.FULL_X / 2) * (redIndex / 3);
-				this.players[socket].y = PITCH.FULL_Y / 2;
-				redIndex++;
-			}
+		this.ball.setInCenter();
+		// Set Players to teir start positions after goal
+		for (const player in this.players) {
+			this.players[ player ].setStartPosition();
 		}
-
 		let res;
 		if (team === true) {
 			this.team.red.addScore();
@@ -122,7 +103,6 @@ export class Game extends Collision {
 
 		io.in(this.id).emit(MESSAGE.GOAL, res);
 
-		this.sendUpdate();
 		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
 	}
 
@@ -193,17 +173,21 @@ export class Game extends Collision {
 	 */
 	joinPlayer(socket, nickname) {
 		const team = Object.keys(this.players).length % 2;
-		if (team)
+		let teamPosition;
+		if (team) {
 			this.team.blue.incrementPlayers();
-		else
+			teamPosition = this.team.blue.getPlayersCount();
+		} else {
 			this.team.red.incrementPlayers();
+			teamPosition = this.team.red.getPlayersCount();
+		}
 
 		// Add player to global players array
-		this.players[socket.id] = new Player(socket.id, nickname, 0, 0, team);
+		this.players[socket.id] = new Player(socket.id, nickname, team, teamPosition);
 		this.sockets[socket.id] = socket;
 
 		const teamName = team ? chalk.blue("BLUE") : chalk.red("RED ");
-		console.log(teamName + ":\t" + chalk.bold(nickname) + ":  connected on socket: " + socket.id);
+		console.log(chalk.yellow(this.id) + " " + teamName + ":\t" + chalk.bold("\"" + nickname + "\"") + ":  connected on socket: " + socket.id);
 	}
 
 	/**
@@ -230,3 +214,4 @@ export class Game extends Collision {
 
 }
 
+export default Game;

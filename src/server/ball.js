@@ -38,6 +38,12 @@ class Ball {
 		return 0; //False for Ball not touching the border or goal
 	}
 
+	setInCenter() {
+		this.x = PITCH.FULL_X / 2;
+		this.y = PITCH.FULL_Y / 2;
+		this.speed = 0;
+	}
+
 	isInGoal() {
 		if ((this.y >= PITCH.FULL_Y / 2 - PITCH.GOAL_WIDTH / 2) && (this.y <= PITCH.FULL_Y / 2 + PITCH.GOAL_WIDTH / 2))
 			return true;
