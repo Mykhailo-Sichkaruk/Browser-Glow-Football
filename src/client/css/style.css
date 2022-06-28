@@ -89,6 +89,12 @@
     font-size: 200%;
     margin: 0%;
     padding: 0%;
+    transition: 2000ms linear;
+}
+
+.start_game_button:hover {
+    background-color: rgb(255, 255, 255);
+    transition: 500ms linear;
 }
 
 .nickname_form {
@@ -180,6 +186,33 @@
     text-size-adjust: 100%;
 }
 
+@keyframes start_game_button_animation {
+    0% {
+        background-color: rgba(54, 54, 54, 0.247);
+    }
+
+    50% {
+        background-color: rgba(255, 255, 255, 0.514);
+    }
+
+    100% {
+        background-color: rgb(255, 255, 255);
+    }
+}
+
+@keyframes start_game_button_animation_reverse {
+    0% {
+        background-color: rgb(255, 255, 255);
+    }
+
+    50% {
+        background-color: rgba(255, 255, 255, 0.514);
+    }
+
+    100% {
+        background-color: rgba(54, 54, 54, 0.247);
+    }
+}
 
 @keyframes gradient {
     0% {
