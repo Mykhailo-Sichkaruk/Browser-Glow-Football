@@ -1,4 +1,4 @@
-import { PLAYER, BALL } from "../shared/constants.js";
+import { PLAYER, BALL, PITCH } from "../shared/constants.js";
 
 class Collision {
 	constructor() {
@@ -31,16 +31,18 @@ class Collision {
 		this.ball.y = this.players[id].y + PLAYER.RADIUS * Math.cos(this.players[id].direction);
 		this.ball.direction = this.players[id].direction;
 		this.ball.speed = this.players[id].speed;
+		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
 	/**
 	 * Change ball direction and speed when player touches ball
-	 * @param {number} id
+	 * @param {number} id player's id
 	 */
 	playerTouchBall(id) {
 		const PowerVector = Math.atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y);
 		this.ball.direction = PowerVector;
 		this.ball.speed = (((this.players[id].mass - this.ball.mass) *  this.players[id].speed +  2 * this.ball.mass) /  (this.players[id].mass + this.ball.mass)) * 2;
+		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
 	playerPullBall(id) {
@@ -55,6 +57,7 @@ class Collision {
 				this.ball.x += PLAYER.PULL_FORCE * Math.sin(ballToPlayerDirection);
 				this.players[ id ].shot = 0;
 				this.players[ id ].hold = 0;
+				this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 			}
 		}
 	}
@@ -62,16 +65,19 @@ class Collision {
 	playerRotateClockwiseBall(id) {
 		this.ball.direction = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y) - Math.PI / 2;
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
+		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
 	playerRotateCounterClockwiseBall(id) {
 		this.ball.direction = Math.atan2(this.players[ id ].x - this.ball.x, this.players[ id ].y - this.ball.y) + Math.PI / 2;
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
+		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
 	playerPushBall(id) {
 		this.ball.direction = this.players[ id ].direction;
 		this.ball.speed = this.players[ id ].speed;
+		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
 	/**
@@ -88,7 +94,6 @@ class Collision {
 			this.players[ id ].shot = 0;
 			this.players[ id ].pull = false;
 			this.players[ id ].push = false;
-			this.players[ id ].assist = false;
 			this.players[ id ].hold = false;
 			this.players[ id ].speed = PLAYER.SPEED_DEFAULT;
 		} else {
@@ -107,10 +112,9 @@ class Collision {
 			this.ball.y = this.players[ id ].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[ id ].direction);
 			this.ball.direction = this.players[ id ].direction;
 			this.ball.speed = PLAYER.ASSIST_FORCE;
+			this.ball.resistance = PITCH.RESISTANCE_ON_ASSIST;
 
-			this.players[ id ].shot = 0;
 			this.players[ id ].pull = false;
-			this.players[ id ].push = false;
 			this.players[ id ].assist = false;
 			this.players[ id ].hold = false;
 			this.players[ id ].speed = PLAYER.SPEED_DEFAULT;
