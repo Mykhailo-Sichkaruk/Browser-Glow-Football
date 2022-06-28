@@ -7,12 +7,6 @@ import Performance from "./performance.js";
 import chalk from "chalk";
 import { io } from "./server.js";
 
-// const Player = require("./player");
-// const Ball = require("./ball");
-// const Team = require("./team");
-// const Performance = require("./performance");
-// const PerfHooks = require("perf_hooks");
-
 /**
  * Defines game state and behavior.
  */
@@ -187,7 +181,7 @@ class Game extends Collision {
 		this.sockets[socket.id] = socket;
 
 		const teamName = team ? chalk.blue("BLUE") : chalk.red("RED ");
-		console.log(chalk.yellow(this.id) + " " + teamName + ":\t" + chalk.bold("\"" + nickname + "\"") + ":  connected on socket: " + socket.id);
+		console.log(chalk.yellow(this.id) + " " + teamName + ":\t" + chalk.bold("\"" + nickname + "\"") + ":  connected on socket: " + chalk.grey(socket.id));
 	}
 
 	/**
