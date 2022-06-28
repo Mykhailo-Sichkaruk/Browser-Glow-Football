@@ -1,4 +1,4 @@
-import { PLAYER, PITCH, GAME } from "../shared/constants.js";
+import { PLAYER, PITCH } from "../shared/constants.js";
 
 /**
  * Describe Player states and behavior.

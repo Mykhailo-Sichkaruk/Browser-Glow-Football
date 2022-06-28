@@ -69,7 +69,7 @@ class Game extends Collision {
 
 	/**
 	 * Change score and move players in default positions after goal
-	 * @param {boolean} team
+	 * @param {boolean} team - team that scored, ***true*** for blue team, ***false*** for red team
 	 */
 	onGoal(team) {
 		// Set ball in center of the pitch
@@ -94,12 +94,12 @@ class Game extends Collision {
 		// Send message to all players in room
 		io.in(this.id).emit(MESSAGE.GOAL, content);
 
-		this.pause(GAME.AFTER_GOAL_DELAY_MS); // Pause the game after goal
+		this.pause(GAME.AFTER_GOAL_DELAY); // Pause the game after goal
 	}
 
 	/**
 	 * Pasuse game for `delay` time
-	 * @param {number} delay in miliseconds
+	 * @param {number} delay miliseconds to pause
 	 */
 	pause(delay) {
 		//Stop the game

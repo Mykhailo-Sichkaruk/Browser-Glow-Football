@@ -4,7 +4,9 @@ class Ball {
 	constructor() {
 		this.mass = BALL.MASS;
 		this.radius = BALL.RADIUS;
-		this.resistance = PITCH.RESISTANCE;
+		this.resistance = PITCH.RESISTANCE_DEFAULT;
+		this.speed = 0;
+		this.direction = 0;
 		this.setInCenter();
 	}
 

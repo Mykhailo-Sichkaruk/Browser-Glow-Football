@@ -74,7 +74,7 @@ function onGoal(result) {
 	scoreEffectDOM.style.animation = "goal_effect 1s linear 1";
 	setTimeout(() => {
 		scoreEffectDOM.style.display = "none";
-	}, GAME.AFTER_GOAL_DELAY_MS);
+	}, GAME.AFTER_GOAL_DELAY);
 
 	blueScoreDOM.innerHTML = result.blueScore;
 	redScoreDOM.innerHTML = result.redScore;

@@ -136,7 +136,7 @@ function startSendKeyStatus() {
 		if (isImportant > 0)
 			socket.emit(MESSAGE.INPUT, { inputType: INPUT_TYPE.KEY, res: keyStatus });
 
-	}, GAME.PING_ON_KEY_STATUS_REFRESHED_MS);
+	}, GAME.PING_ON_KEY_STATUS_REFRESHED);
 
 }
 
@@ -159,8 +159,8 @@ function initMouseInput() {
 	document.addEventListener("mousedown", handleMouseClick);
 	document.addEventListener("contextmenu", assist, false);
 	window.addEventListener("resize", () => {
-		xRatio =  PITCH.FULL_X / document.documentElement.clientWidth;
-		yRatio =  PITCH.FULL_Y / document.documentElement.clientHeight;
+		xRatio = PITCH.FULL_X / document.documentElement.clientWidth;
+		yRatio = PITCH.FULL_Y / document.documentElement.clientHeight;
 	});
 }
 
