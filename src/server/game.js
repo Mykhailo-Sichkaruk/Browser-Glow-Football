@@ -23,7 +23,7 @@ class Game extends Collision {
 		this.ball = new Ball();
 		/**Timestamp of last update. Used to calculare difference in time between prev and next ticks*/
 		this.lastUpdateTime = Date.now();
-		/**Teams in game. */
+		/**Teams in game. Blue and Red */
 		this.team = {
 			blue: new Team(false),
 			red: new Team(true),
@@ -81,9 +81,9 @@ class Game extends Collision {
 
 		// Change score
 		if (team)
-			this.team.blue.addScore();
+			this.team.blue.incrementScore();
 		else
-			this.team.red.addScore();
+			this.team.red.incrementScore();
 
 		// Create content for message
 		const content = {
@@ -166,10 +166,10 @@ class Game extends Collision {
 		const team = Object.keys(this.players).length % 2;
 		let teamPosition;
 		if (team) {
-			this.team.blue.incrementPlayers();
+			this.team.blue.incrementPlayersCount();
 			teamPosition = this.team.blue.getPlayersCount();
 		} else {
-			this.team.red.incrementPlayers();
+			this.team.red.incrementPlayersCount();
 			teamPosition = this.team.red.getPlayersCount();
 		}
 

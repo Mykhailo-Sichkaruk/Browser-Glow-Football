@@ -1,14 +1,15 @@
 class Team {
+	/**
+	 * Team class constructor
+	 * @param {boolean} name - ***true*** for blue team, ***false*** for red team
+	 */
 	constructor(name) {
 		this.name = name;
 		this.score = 0;
 		this.playersCount = 0;
-		this.goalkeeper = null;
-		this.midfielder = null;
-		this.forward = null;
 	}
 
-	incrementPlayers() {
+	incrementPlayersCount() {
 		this.playersCount++;
 	}
 
@@ -16,11 +17,11 @@ class Team {
 		this.playersCount--;
 	}
 
-	addScore() {
+	incrementScore() {
 		this.score++;
 	}
 
-	removeScore() {
+	resetScore() {
 		this.score = 0;
 	}
 
@@ -30,30 +31,6 @@ class Team {
 
 	getPlayersCount() {
 		return this.playersCount;
-	}
-
-	setGoalkeeper(player) {
-		this.goalkeeper = player;
-	}
-
-	setMidfielder(player) {
-		this.midfielder = player;
-	}
-
-	setForward(player) {
-		this.forward = player;
-	}
-
-	getGoalkeeper() {
-		return this.goalkeeper;
-	}
-
-	getMidfielder() {
-		return this.midfielder;
-	}
-
-	getForward() {
-		return this.forward;
 	}
 
 }
