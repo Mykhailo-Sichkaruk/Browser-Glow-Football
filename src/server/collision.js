@@ -1,4 +1,4 @@
-import  { PLAYER, BALL } from "../shared/constants.js";
+import { PLAYER, BALL } from "../shared/constants.js";
 
 class Collision {
 	constructor() {
@@ -46,16 +46,15 @@ class Collision {
 	playerPullBall(id) {
 		const currentDistance = (this.ball.y - this.players[id].y) ** 2 + (this.ball.x - this.players[id].x) ** 2;
 
-		if (this.players[id].pull) {
+		if (this.players[ id ].pull) {
 			if (currentDistance <= PLAYER.HOLD_BALL_DISTANCE) {
 				this.playerHoldBall(id);
 			} else if (currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
 				const ballToPlayerDirection = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y);
-				this.ball.direction = (ballToPlayerDirection + this.ball.direction) / 2;
-				this.ball.velosity += BALL.BONUS_SPEED_ON_ROTATE;
-			} else if (currentDistance <= PLAYER.PULL_DISTANCE_POWER * 4) {
-				this.ball.y -= Math.sign(this.ball.y - this.players[id].y) * (PLAYER.PULL_FORCE / 2);
-				this.ball.x -= Math.sign(this.ball.x - this.players[id].x) * (PLAYER.PULL_FORCE / 2);
+				this.ball.y += PLAYER.PULL_FORCE * Math.cos(ballToPlayerDirection);
+				this.ball.x += PLAYER.PULL_FORCE * Math.sin(ballToPlayerDirection);
+				this.players[ id ].shot = 0;
+				this.players[ id ].hold = 0;
 			}
 		}
 	}

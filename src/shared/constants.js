@@ -29,7 +29,7 @@ const PLAYER = Object.freeze({
 	KICK_FORCE: 1700,
 	ASSIST_FORCE: 800,
 	/*** Distance between Player and Ball where pull power works*/
-	PULL_DISTANCE_POWER: 75 ** 2,
+	get PULL_DISTANCE_POWER() 		{ return (this.RADIUS * 10) ** 2; },
 	get PLAYER_COLLISION_DISTANCE() { return (this.RADIUS * 2) ** 2; },
 	get BALL_COLLISION_DISTANCE() 	{ return (this.RADIUS + BALL.RADIUS) ** 2; },
 	get HOLD_BALL_DISTANCE() 		{ return this.BALL_COLLISION_DISTANCE * 4; },
