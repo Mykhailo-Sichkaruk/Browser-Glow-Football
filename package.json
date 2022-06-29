@@ -10,6 +10,7 @@
     "scripts": {
         "front": "webpack",
         "server": "node src/server/server.js",
+        "serverDebug": "node --inspect src/server/server.js",
         "all": "webpack && node src/server/server.js"
     },
     "author": {
