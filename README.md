@@ -1,7 +1,7 @@
   
 # Browser Glow-Football game with Websockets  
   
-***Try out here : `http://forcefootball.games`***
+***Try out here : `[http://forcefootball.games](http://forcefootball.games/?0)`***
   
 Or host game on your local server
   
