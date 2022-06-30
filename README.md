@@ -1,6 +1,10 @@
   
 # Browser Glow-Football game with Websockets  
   
+***Try out here : `http://forcefootball.games`***
+  
+Or host game on your local server
+  
 ## Requierements  
 
 + Node.js + NPM  [installed](https://nodejs.org/en/download/)
