@@ -20,12 +20,12 @@ app.use(express.static(DEVELOP.SITE_FOLDER_NAME));
 //Print server info
 console.log(chalk.greenBright("Server running on : ") + chalk.white(DEVELOP.SERVER_ADRESS_IPV4) + ":" + chalk.cyan(`${DEVELOP.SERVER_PORT}`));
 
-// Set server to listen for messages from clients
 const rand = () => Math.random().toString(16).substr(2, 8);
 
+// Set Websockets server to listen for messages from clients
 io.on(MESSAGE.CONNECTION, socket => {
 	console.log("Player connected! " + chalk.grey(socket.id));
-	socket.on(MESSAGE.JOIN_GAME, 	joinGame);
+	socket.on(MESSAGE.JOIN_GAME, joinGame);
 });
 
 /**
