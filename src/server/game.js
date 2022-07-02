@@ -117,24 +117,39 @@ class Game extends Collision {
 	 * Create Update message for all players - description of current state of the game
 	 * @returns {object} description of the game
 	 */
-	createUpdate() {
+	async createUpdate() {
 		return {
 			timestamp: Date.now(),
-			ball: this.ball,
+			ball: {
+				x: Math.floor(this.ball.x),
+				y: Math.floor(this.ball.y),
+			},
 			players: Object.values(this.players).map(player => ({
-				x: player.x,
-				y: player.y,
+				x: Math.floor(player.x),
+				y: Math.floor(player.y),
 				socket: player.socket,
 				team: player.team,
 			})),
 		};
 	}
 
+	getState() {
+		const update = {
+			timestamp: Date.now(),
+			ball: this.ball.getState(),
+			players: {},
+		};
+
+		for (const player in this.players) {
+			update.players[ player ] = this.players[ player ].getState();
+		}
+	}
+
 	/**
 	 * Sends current state to all sockets in this.sockets object
 	 */
-	sendUpdate() {
-		const update = this.createUpdate();
+	async sendUpdate() {
+		const update = await this.createUpdate();
 		io.in(this.id).emit(MESSAGE.GAME_UPDATE, update);
 	}
 
