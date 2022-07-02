@@ -36,6 +36,13 @@ const pingCounterFabric = () => {
 
 const pingCounter = pingCounterFabric();
 
+// eslint-disable-next-line no-unused-vars
+const Ping = ({ time }) => (
+	<div className="ping">
+		<span>{time}</span>
+	</div>
+);
+
 window.onload = () => {
 	initSocket();
 };
@@ -80,13 +87,6 @@ function onGoal(result) {
 	redScoreDOM.innerHTML = result.redScore;
 }
 
-// eslint-disable-next-line no-unused-vars
-const Ping = ({ time }) => (
-	<div className="ping">
-		<span>{time}</span>
-	</div>
-);
-
 function findMe(update) {
 	for (const player in update.players) {
 		if (update.players[ player ].socket === socket.id) {
@@ -117,6 +117,9 @@ function endGame() {
 	document.getElementById("canvas").setAttribute("display", "none");
 	document.getElementById("canvas").setAttribute("class", "canvasNew");
 	document.getElementById("canvas").setAttribute("background", "white");
+	document.getElementById("canvasBackground").setAttribute("display", "none");
+	document.getElementById("canvasBackground").setAttribute("class", "canvasNew");
+	document.getElementById("canvasBackground").setAttribute("background", "white");
 	nicknameFormDOM.style.display = "block";
 	startGameButtonDOM.style.display = "block";
 	scoreBoardDOM.style.display = "none";
