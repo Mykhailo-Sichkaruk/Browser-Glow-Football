@@ -2,7 +2,7 @@
 "use strict";
 const GAME = Object.freeze({
 	/** @type {number}  `miliseconds` Delay between server calculations of new game status */
-	SERVER_PING: 20,
+	SERVER_PING: 33,
 	/** @type {number} `miliseconds` Delay between sending info about key`s status */
 	PING_ON_KEY_STATUS_REFRESHED: 50,
 	/** @type {number} `miliseconds` Delay between sending info about mouse direction */
