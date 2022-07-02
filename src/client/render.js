@@ -21,6 +21,7 @@ let animationId;
 let update;
 let lastUpdate;
 
+
 async function clearCanvas() {
 	canvas.width = canvas.width;
 	canvasBackground.width = canvasBackground.width;
@@ -122,7 +123,6 @@ function render() {
 		const teamColor = (update.players[player].team) ? (PLAYER.BLUE_COLOR) : (PLAYER.RED_COLOR);
 		drawCircle(update.players[player].x, update.players[player].y, PLAYER.RADIUS, teamColor);
 	}
-
 	lastUpdate = update;
 	animationId = requestAnimationFrame(render);
 }

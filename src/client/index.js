@@ -17,6 +17,7 @@ const scoreEffectDOM 		= document.getElementById("score_effect");
 
 let currentUpdate;
 let me;
+let frames = 0;
 
 const pingCounterFabric = () => {
 	let pingSum = 0;
@@ -69,6 +70,7 @@ function onUpdate(update) {
 	addUpdate(update);
 	findMe(update);
 	pingCounter(update.timestamp);
+	frames++;
 }
 
 function onGoal(result) {
@@ -108,6 +110,7 @@ function initGame() {
 	initInput();
 	initCanvas();
 	socket.emit(MESSAGE.JOIN_GAME, nicknameFormDOM.value);
+	setInterval(() => { console.log(frames); frames = 0; }, 1000);
 }
 
 function endGame() {

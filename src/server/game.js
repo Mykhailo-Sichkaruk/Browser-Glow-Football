@@ -30,8 +30,11 @@ class Game extends Collision {
 		};
 		/** Performance object*/
 		this.performance = new Performance();
+		this.frames = 0;
 		/** Node.js timer to start/stop game loop */
-		this.interval = setInterval(() => { this.update(); }, GAME.SERVER_PING); // Start game loop
+		this.interval = setInterval(() => { this.update(); }, 10); // Start game loop
+		setInterval(() => { console.log(this.frames); this.frames = 0; }, 1000);
+
 	}
 
 	/**
@@ -117,7 +120,7 @@ class Game extends Collision {
 	 * Create Update message for all players - description of current state of the game
 	 * @returns {object} description of the game
 	 */
-	async createUpdate() {
+	createUpdate() {
 		return {
 			timestamp: Date.now(),
 			ball: {
@@ -150,9 +153,10 @@ class Game extends Collision {
 	/**
 	 * Sends current state to all sockets in this.sockets object
 	 */
-	async sendUpdate() {
+	sendUpdate() {
 		const update = this.getState();
 		io.in(this.id).emit(MESSAGE.GAME_UPDATE, update);
+		this.frames++;
 	}
 
 	/**
