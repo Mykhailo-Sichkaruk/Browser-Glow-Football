@@ -7,6 +7,8 @@ import { Server } from "socket.io";
 
 // file deepcode ignore PureMethodReturnValueIgnored: <please specify a reason of ignoring this>
 
+// file deepcode ignore UseCsurfForExpress: <please specify a reason of ignoring this>, file deepcode ignore DisablePoweredBy: <please specify a reason of ignoring this>, file deepcode ignore DisablePoweredBy: <please specify a reason of ignoring this>
+// deepcode ignore UseCsurfForExpress: <please specify a reason of ignoring this>
 const app = express();
 const server = http.createServer(app);
 export const io = new Server(server);

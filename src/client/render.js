@@ -1,5 +1,8 @@
+/* eslint-disable no-self-assign */
 import { currentUpdate } from "./index.js";
 import { PLAYER, BALL, PITCH } from "../shared/constants.js";
+import { getUpdate } from "./updates.js";
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const canvasBackground = document.getElementById("canvas-background");
@@ -14,9 +17,12 @@ const GOAL = {
 	x22:  PITCH.OUTLINE_WIDTH,
 };
 
+let animation;
+
 async function clearCanvas() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctxBackground.clearRect(0, 0, canvas.width, canvas.height);
+	canvas.width = canvas.width;
+	canvasBackground.width = canvasBackground.width;
+	endRender();
 }
 
 function initCanvas() {
@@ -28,6 +34,7 @@ function initCanvas() {
 	ctx.canvas.height = PITCH.FULL_Y;
 
 	console.log("Game screen inicializated: " + ctx.canvas.width + "x" + ctx.canvas.height);
+	startRender();
 }
 
 function drawCircle(x, y, radius, fill) {
@@ -96,5 +103,33 @@ function drawRoundRectBackground(x, y, width, height, fill, radius = 5, stroke =
 
 }
 
+function render() {
+	const update = getUpdate();
+	if (update === null) {
+		animation = requestAnimationFrame(render);
+		return;
+	}
+	canvas.width = canvas.width;
+	ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear screen
 
-export { renderUpdate, initCanvas, clearCanvas };
+	//Draw ball
+	drawCircle(update.ball.x, update.ball.y, BALL.RADIUS, BALL.COLOR);
+
+	//Draw every player
+	for (const player in update.players) {
+		const teamColor = (update.players[player].team) ? (PLAYER.BLUE_COLOR) : (PLAYER.RED_COLOR);
+		drawCircle(update.players[player].x, update.players[player].y, PLAYER.RADIUS, teamColor);
+	}
+
+	animation = requestAnimationFrame(render);
+}
+
+function startRender() {
+	animation = requestAnimationFrame(render);
+}
+
+function endRender() {
+	cancelAnimationFrame(animation);
+}
+
+export { renderUpdate, initCanvas, clearCanvas, render, startRender, endRender };

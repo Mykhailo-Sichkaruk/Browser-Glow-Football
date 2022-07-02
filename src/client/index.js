@@ -1,9 +1,10 @@
 import "./css/style.css";
 import ReactDOM from "react-dom";
 import { initInput, endInput } from "./input.js";
-import { renderUpdate, initCanvas, clearCanvas } from "./render.js";
+import { initCanvas, clearCanvas } from "./render.js";
 import { io } from "socket.io-client";
 import { MESSAGE, GAME } from "../shared/constants.js";
+import { addUpdate } from "./updates.js";
 
 export const socket = io({ autoConnect: false });
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -65,9 +66,8 @@ function onConnect() {
 }
 
 function onUpdate(update) {
-	currentUpdate = update;
+	addUpdate(update);
 	findMe(update);
-	requestAnimationFrame(renderUpdate);
 	pingCounter(update.timestamp);
 }
 
@@ -89,7 +89,7 @@ function onGoal(result) {
 
 function findMe(update) {
 	for (const player in update.players) {
-		if (update.players[ player ].socket === socket.id) {
+		if (player === socket.id) {
 			me = update.players[ player ];
 			break;
 		}
@@ -117,9 +117,6 @@ function endGame() {
 	document.getElementById("canvas").setAttribute("display", "none");
 	document.getElementById("canvas").setAttribute("class", "canvasNew");
 	document.getElementById("canvas").setAttribute("background", "white");
-	document.getElementById("canvasBackground").setAttribute("display", "none");
-	document.getElementById("canvasBackground").setAttribute("class", "canvasNew");
-	document.getElementById("canvasBackground").setAttribute("background", "white");
 	nicknameFormDOM.style.display = "block";
 	startGameButtonDOM.style.display = "block";
 	scoreBoardDOM.style.display = "none";
