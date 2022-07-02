@@ -2,6 +2,8 @@ import  { BALL, PITCH } from "../shared/constants.js";
 
 class Ball {
 	constructor() {
+		this.x = PITCH.FULL_X / 2;
+		this.y = PITCH.FULL_Y / 2;
 		this.mass = BALL.MASS;
 		this.radius = BALL.RADIUS;
 		this.resistance = PITCH.RESISTANCE_DEFAULT;
