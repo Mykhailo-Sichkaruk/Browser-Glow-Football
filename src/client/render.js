@@ -17,7 +17,9 @@ const GOAL = {
 	x22:  PITCH.OUTLINE_WIDTH,
 };
 
-let animation;
+let animationId;
+let update;
+let lastUpdate;
 
 async function clearCanvas() {
 	canvas.width = canvas.width;
@@ -104,14 +106,14 @@ function drawRoundRectBackground(x, y, width, height, fill, radius = 5, stroke =
 }
 
 function render() {
-	const update = getUpdate();
+	update = getUpdate();
 	if (update === null) {
-		animation = requestAnimationFrame(render);
+		lastUpdate = update;
+		animationId = requestAnimationFrame(render);
 		return;
 	}
-	canvas.width = canvas.width;
-	ctx.clearRect(0, 0, canvas.width, canvas.height); //Clear screen
 
+	clearScreen();
 	//Draw ball
 	drawCircle(update.ball.x, update.ball.y, BALL.RADIUS, BALL.COLOR);
 
@@ -121,15 +123,28 @@ function render() {
 		drawCircle(update.players[player].x, update.players[player].y, PLAYER.RADIUS, teamColor);
 	}
 
-	animation = requestAnimationFrame(render);
+	lastUpdate = update;
+	animationId = requestAnimationFrame(render);
+}
+
+function clearScreen() {
+	if (lastUpdate === null) {
+		return;
+	}
+
+	ctx.clearRect(lastUpdate.ball.x - BALL.RADIUS, lastUpdate.ball.y - BALL.RADIUS, BALL.RADIUS * 2, BALL.RADIUS * 2);
+
+	for (const player in lastUpdate.players) {
+		ctx.clearRect(lastUpdate.players[ player ].x - PLAYER.RADIUS, lastUpdate.players[ player ].y - PLAYER.RADIUS, PLAYER.RADIUS * 2, PLAYER.RADIUS * 2);
+	}
 }
 
 function startRender() {
-	animation = requestAnimationFrame(render);
+	animationId = requestAnimationFrame(render);
 }
 
 function endRender() {
-	cancelAnimationFrame(animation);
+	cancelAnimationFrame(animationId);
 }
 
 export { renderUpdate, initCanvas, clearCanvas, render, startRender, endRender };
