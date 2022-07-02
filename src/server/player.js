@@ -149,6 +149,13 @@ class Player {
 		}
 	}
 
+	getState() {
+		return {
+			x: Math.floor(this.x),
+			y: Math.floor(this.y),
+			team: this.team,
+		};
+	}
 }
 
 export default Player;

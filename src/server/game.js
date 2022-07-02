@@ -143,13 +143,15 @@ class Game extends Collision {
 		for (const player in this.players) {
 			update.players[ player ] = this.players[ player ].getState();
 		}
+
+		return update;
 	}
 
 	/**
 	 * Sends current state to all sockets in this.sockets object
 	 */
 	async sendUpdate() {
-		const update = await this.createUpdate();
+		const update = this.getState();
 		io.in(this.id).emit(MESSAGE.GAME_UPDATE, update);
 	}
 

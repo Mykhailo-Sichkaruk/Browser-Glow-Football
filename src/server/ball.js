@@ -80,6 +80,12 @@ class Ball {
 		return (this.x - this.radius + dx <= PITCH.LEFT_BORDER);
 	}
 
+	getState() {
+		return {
+			x: Math.floor(this.x),
+			y: Math.floor(this.y),
+		};
+	}
 }
 
 export default Ball;
