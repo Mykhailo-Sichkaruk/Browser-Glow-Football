@@ -14,7 +14,7 @@ export const io = new Server(server);
 const games = {};
 
 // Start server listening
-server.listen(DEVELOP.SERVER_PORT, DEVELOP.SERVER_ADRESS_IPV4);
+server.listen(DEVELOP.SERVER_PORT);
 // Start hosting game page on `server_adress:3000`
 app.use(express.static(DEVELOP.SITE_FOLDER_NAME));
 //Print server info
