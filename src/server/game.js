@@ -94,6 +94,8 @@ class Game extends Collision {
 		// Send message to all players in room
 		io.in(this.id).emit(MESSAGE.GOAL, content);
 
+		io.in(this.id).emit(MESSAGE.GAME_UPDATE, this.getState());
+		io.in(this.id).emit(MESSAGE.GAME_UPDATE, this.getState());
 		this.pause(GAME.AFTER_GOAL_DELAY); // Pause the game after goal
 	}
 
