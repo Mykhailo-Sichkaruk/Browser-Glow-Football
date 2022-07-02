@@ -94,7 +94,7 @@ const KEY_TYPE = Object.freeze({
 	ROTATE_COUNTER_CLOCKWISE: "rotateCounterClockwise",
 });
 const DEVELOP = Object.freeze({
-	SERVER_PORT: 3000,
+	SERVER_PORT: 4000,
 	SERVER_ADRESS_IPV4: "localhost",
 	SITE_FOLDER_NAME: "dist",
 });
