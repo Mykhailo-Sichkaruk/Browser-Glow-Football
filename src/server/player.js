@@ -25,7 +25,7 @@ class Player {
 		this.teamPosition = teamPosition;
 		this.setStartPosition();
 
-		this.direction = 0;
+		this.direction = Math.PI * 2;
 		/**Mass affects collision with players and ball.
 		 * The more mass - more your push power, more harder to push you*/
 		this.mass = PLAYER.MASS;
@@ -136,6 +136,7 @@ class Player {
 	}
 
 	setStartPosition() {
+		this.setDefaultState();
 		switch (this.teamPosition) {
 		case 2:
 			this.setMidfielderPosition();
@@ -147,6 +148,18 @@ class Player {
 			this.setGoalkeeperPosition();
 			break;
 		}
+	}
+
+	setDefaultState() {
+		this.push = false;
+		this.rotateClockwise = false;
+		this.rotateCounterClockwise = false;
+		this.pull = false;
+		this.stop = false;
+		this.assist = false;
+		this.hold = false;
+		this.shot = 0;
+		this.speed = PLAYER.SPEED_DEFAULT;
 	}
 
 	getState() {
