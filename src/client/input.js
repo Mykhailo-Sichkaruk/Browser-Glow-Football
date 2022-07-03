@@ -10,8 +10,8 @@ const controller = {
 	"Space": 		{ pressed: false, type:  KEY_TYPE.PULL },
 	"ShiftLeft": 	{ pressed: false, type:  KEY_TYPE.STOP },
 	"KeyW": 		{ pressed: false, type:  KEY_TYPE.PUSH },
-	"KeyA": 		{ pressed: false, type:  KEY_TYPE.ROTATE_CLOCKWISE },
-	"KeyD": 		{ pressed: false, type:  KEY_TYPE.ROTATE_COUNTER_CLOCKWISE },
+	"KeyD": 		{ pressed: false, type:  KEY_TYPE.ROTATE_CLOCKWISE },
+	"KeyA": 		{ pressed: false, type:  KEY_TYPE.ROTATE_COUNTER_CLOCKWISE },
 };
 
 const keyStatusPrevious = {
