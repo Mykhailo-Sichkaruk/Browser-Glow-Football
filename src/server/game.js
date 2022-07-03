@@ -5,7 +5,7 @@ import Team from "./team.js";
 import Ball from "./ball.js";
 import Performance from "./performance.js";
 import chalk from "chalk";
-import { io } from "./server.js";
+import { io, deleteGame } from "./server.js";
 
 /**
  * Defines game state and behavior.
@@ -60,7 +60,6 @@ class Game extends Collision {
 		const res = this.ball.move(dt);
 		if (res !== undefined) {
 			this.onGoal(res);
-			return;
 		}
 		// Move all players
 		for (const player in this.players)
@@ -72,6 +71,8 @@ class Game extends Collision {
 	 * @param {boolean} team - team that scored, ***true*** for blue team, ***false*** for red team
 	 */
 	onGoal(team) {
+		//Send update to all players to improve interpolation process on client side
+		io.in(this.id).emit(MESSAGE.GAME_UPDATE, this.getState());
 		// Set ball in center of the pitch
 		this.ball.setInCenter();
 		// Set Players to teir start positions after goal
@@ -94,6 +95,7 @@ class Game extends Collision {
 		// Send message to all players in room
 		io.in(this.id).emit(MESSAGE.GOAL, content);
 
+		//Send update to all players to improve interpolation process on client side
 		io.in(this.id).emit(MESSAGE.GAME_UPDATE, this.getState());
 		io.in(this.id).emit(MESSAGE.GAME_UPDATE, this.getState());
 		this.pause(GAME.AFTER_GOAL_DELAY); // Pause the game after goal
@@ -216,6 +218,10 @@ class Game extends Collision {
 
 		delete this.sockets[ socket.id ];
 		delete this.players[ socket.id ];
+
+		if (this.team.blue.getPlayersCount() === 0 && this.team.red.getPlayersCount() === 0) {
+			deleteGame(this.id);
+		}
 	}
 
 	isFree() {

@@ -68,3 +68,9 @@ function joinGame(username) {
 function handleInput(msg) {
 	games[this.roomId].handleInput(this, msg);
 }
+
+function deleteGame(id) {
+	delete games[id];
+}
+
+export { deleteGame };
