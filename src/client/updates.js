@@ -6,6 +6,8 @@ function addUpdate(update) {
 	if (updates.length === 0) {
 		updates.push(update);
 		return;
+	} else if (updates.length > 20) {
+		return;
 	}
 
 	const interpolatedUpdate = {
@@ -31,7 +33,11 @@ function addUpdate(update) {
 }
 
 function getUpdate() {
-	if (updates.length > 4) {
+	if (updates.length > 10) {
+		updates.shift();
+		updates.shift();
+		return updates.shift();
+	} else if (updates.length > 4) {
 		return updates.shift();
 	} else if (updates.length === 0) {
 		return null;
