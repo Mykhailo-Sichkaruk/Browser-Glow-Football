@@ -1,4 +1,5 @@
 import { PLAYER, BALL, PITCH } from "../shared/constants.js";
+const { PI, atan2, sin, cos, round, hypot } = Math;
 
 class Collision {
 	constructor() {
@@ -27,8 +28,8 @@ class Collision {
 
 		this.players[id].hold = true;
 		this.players[id].speed = PLAYER.SPEED_ON_HOLD;
-		this.ball.x = this.players[id].x + PLAYER.RADIUS * Math.sin(this.players[id].direction);
-		this.ball.y = this.players[id].y + PLAYER.RADIUS * Math.cos(this.players[id].direction);
+		this.ball.x = this.players[id].x + PLAYER.RADIUS * sin(this.players[id].direction);
+		this.ball.y = this.players[id].y + PLAYER.RADIUS * cos(this.players[id].direction);
 		this.ball.direction = this.players[id].direction;
 		this.ball.speed = this.players[id].speed;
 		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
@@ -39,7 +40,7 @@ class Collision {
 	 * @param {number} id player's id
 	 */
 	playerTouchBall(id) {
-		const PowerVector = Math.atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y);
+		const PowerVector = atan2(this.ball.x - this.players[id].x, this.ball.y - this.players[id].y);
 		this.ball.direction = PowerVector;
 		this.ball.speed = (((this.players[id].mass - this.ball.mass) *  this.players[id].speed +  2 * this.ball.mass) /  (this.players[id].mass + this.ball.mass)) * 2;
 		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
@@ -52,9 +53,9 @@ class Collision {
 			if (currentDistance <= PLAYER.HOLD_BALL_DISTANCE) {
 				this.playerHoldBall(id);
 			} else if (currentDistance <= PLAYER.PULL_DISTANCE_POWER) {
-				const ballToPlayerDirection = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y);
-				this.ball.y += PLAYER.PULL_FORCE * Math.cos(ballToPlayerDirection);
-				this.ball.x += PLAYER.PULL_FORCE * Math.sin(ballToPlayerDirection);
+				const ballToPlayerDirection = atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y);
+				this.ball.y += PLAYER.PULL_FORCE * cos(ballToPlayerDirection);
+				this.ball.x += PLAYER.PULL_FORCE * sin(ballToPlayerDirection);
 				this.players[ id ].shot = 0;
 				this.players[ id ].hold = 0;
 				this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
@@ -64,26 +65,26 @@ class Collision {
 
 	playerRotateClockwiseBall(id, dt) {
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
-		const vector = Math.atan2(Math.round(this.players[ id ].x - this.ball.x), Math.round(this.players[ id ].y - this.ball.y));
+		const vector = atan2(round(this.players[ id ].x - this.ball.x), round(this.players[ id ].y - this.ball.y));
 		const ds = this.ball.speed * dt;
-		const dx = Math.round(this.players[ id ].x - this.ball.x);
-		const dy = Math.round(this.players[ id ].y - this.ball.y);
-		const radius = Math.hypot(dx, dy);
-		const N = (2 * Math.PI * radius) / ds;
-		const angle = (Math.PI / 2) - (Math.PI / N);
+		const dx = round(this.players[ id ].x - this.ball.x);
+		const dy = round(this.players[ id ].y - this.ball.y);
+		const radius = hypot(dx, dy);
+		const N = (2 * PI * radius) / ds;
+		const angle = (PI / 2) - (PI / N);
 		this.ball.direction = vector - angle;
 		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
 	playerRotateCounterClockwiseBall(id, dt) {
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
-		const vector = Math.atan2(Math.round(this.players[ id ].x - this.ball.x), Math.round(this.players[ id ].y - this.ball.y));
+		const vector = atan2(round(this.players[ id ].x - this.ball.x), round(this.players[ id ].y - this.ball.y));
 		const ds = this.ball.speed * dt;
-		const dx = Math.round(this.players[ id ].x - this.ball.x);
-		const dy = Math.round(this.players[ id ].y - this.ball.y);
-		const radius = Math.hypot(dx, dy);
-		const N = (2 * Math.PI * radius) / ds;
-		const angle = (Math.PI / 2) - (Math.PI / N);
+		const dx = round(this.players[ id ].x - this.ball.x);
+		const dy = round(this.players[ id ].y - this.ball.y);
+		const radius = hypot(dx, dy);
+		const N = (2 * PI * radius) / ds;
+		const angle = (PI / 2) - (PI / N);
 		this.ball.direction = vector + angle;
 		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
@@ -100,8 +101,8 @@ class Collision {
 	 */
 	playerKickBall(id) {
 		if (this.players[ id ].hold) {
-			this.ball.x = this.players[ id ].x + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.sin(this.players[ id ].direction);
-			this.ball.y = this.players[ id ].y + (PLAYER.RADIUS + BALL.RADIUS + 2) * Math.cos(this.players[ id ].direction);
+			this.ball.x = this.players[ id ].x + (PLAYER.RADIUS + BALL.RADIUS + 2) * sin(this.players[ id ].direction);
+			this.ball.y = this.players[ id ].y + (PLAYER.RADIUS + BALL.RADIUS + 2) * cos(this.players[ id ].direction);
 			this.ball.direction = this.players[ id ].direction;
 			this.ball.speed = PLAYER.KICK_FORCE * this.players[ id ].shot;
 
@@ -122,8 +123,8 @@ class Collision {
 	 */
 	playerAssistBall(id) {
 		if (this.players[ id ].hold) {
-			this.ball.x = this.players[ id ].x + (PLAYER.RADIUS + this.ball.radius + 2) * Math.sin(this.players[ id ].direction);
-			this.ball.y = this.players[ id ].y + (PLAYER.RADIUS + this.ball.radius + 2) * Math.cos(this.players[ id ].direction);
+			this.ball.x = this.players[ id ].x + (PLAYER.RADIUS + this.ball.radius + 2) * sin(this.players[ id ].direction);
+			this.ball.y = this.players[ id ].y + (PLAYER.RADIUS + this.ball.radius + 2) * cos(this.players[ id ].direction);
 			this.ball.direction = this.players[ id ].direction;
 			this.ball.speed = PLAYER.ASSIST_FORCE;
 			this.ball.resistance = PITCH.RESISTANCE_ON_ASSIST;
@@ -143,12 +144,12 @@ class Collision {
 	 */
 	playerBallCollision(id, dt) {
 		const ballDs = this.ball.speed * dt;
-		const ballY = this.ball.x + ballDs * Math.cos(this.ball.direction);
-		const ballX = this.ball.y + ballDs * Math.sin(this.ball.direction);
+		const ballY = this.ball.x + ballDs * cos(this.ball.direction);
+		const ballX = this.ball.y + ballDs * sin(this.ball.direction);
 
 		const playerDs = this.players[id].speed * dt;
-		const playerY = this.players[id].x + playerDs * Math.cos(this.players[id].direction);
-		const playerX = this.players[id].y + playerDs * Math.sin(this.players[id].direction);
+		const playerY = this.players[id].x + playerDs * cos(this.players[id].direction);
+		const playerX = this.players[id].y + playerDs * sin(this.players[id].direction);
 
 		const currentDistance = (ballY - playerY) ** 2 + (ballX - playerX) ** 2;
 

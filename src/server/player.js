@@ -1,4 +1,5 @@
 import { PLAYER, PITCH } from "../shared/constants.js";
+const { PI, sin, cos, round } = Math;
 
 /**
  * Describe Player states and behavior.
@@ -25,7 +26,7 @@ class Player {
 		this.teamPosition = teamPosition;
 		this.setStartPosition();
 
-		this.direction = Math.PI * 2;
+		this.direction = PI * 2;
 		/**Mass affects collision with players and ball.
 		 * The more mass - more your push power, more harder to push you*/
 		this.mass = PLAYER.MASS;
@@ -61,17 +62,17 @@ class Player {
 			return;
 
 		const shift = dt * this.speed;
-		const dy = shift * Math.cos(this.direction);
-		const dx = shift * Math.sin(this.direction);
+		const dy = shift * cos(this.direction);
+		const dx = shift * sin(this.direction);
 
 		//Check if will Player hits the border, if so, turn him around
 		if (this.hitTopBorder(dy) || this.hitBottomBorder(dy))
-			this.direction = Math.PI - this.direction;
+			this.direction = PI - this.direction;
 		else if (this.hitLeftBorder(dx) || this.hitRightBorder(dx))
-			this.direction = Math.PI * 2 - this.direction;
+			this.direction = PI * 2 - this.direction;
 
-		this.x += shift * Math.sin(this.direction);
-		this.y += shift * Math.cos(this.direction);
+		this.x += shift * sin(this.direction);
+		this.y += shift * cos(this.direction);
 	}
 
 	/**
@@ -164,8 +165,8 @@ class Player {
 
 	getState() {
 		return {
-			x: Math.floor(this.x),
-			y: Math.floor(this.y),
+			x: round(this.x),
+			y: round(this.y),
 			team: this.team,
 		};
 	}

@@ -1,4 +1,5 @@
-import  { BALL, PITCH } from "../shared/constants.js";
+import { BALL, PITCH } from "../shared/constants.js";
+const { PI, sin, cos, round } = Math;
 
 class Ball {
 	constructor() {
@@ -19,20 +20,20 @@ class Ball {
 	 */
 	move(dt) {
 		const ds = dt * this.speed;
-		const dy = ds * Math.cos(this.direction);
-		const dx = ds * Math.sin(this.direction);
+		const dy = ds * cos(this.direction);
+		const dx = ds * sin(this.direction);
 
 		const result = this.isGoal(dx);
 
 		if (result === undefined) {
 			if (this.hitBottom(dy) || this.hitTop(dy)) {
-				this.direction = Math.PI - this.direction;
+				this.direction = PI - this.direction;
 			} else if (this.hitRight(dx) || this.hitLeft(dx)) {
-				this.direction = Math.PI * 2 - this.direction;
+				this.direction = PI * 2 - this.direction;
 			}
 			//Then move
-			this.x += ds * Math.sin(this.direction);
-			this.y += ds * Math.cos(this.direction);
+			this.x += ds * sin(this.direction);
+			this.y += ds * cos(this.direction);
 			//Apply resistance to velosity
 			this.speed *= this.resistance;
 
@@ -82,8 +83,8 @@ class Ball {
 
 	getState() {
 		return {
-			x: Math.floor(this.x),
-			y: Math.floor(this.y),
+			x: round(this.x),
+			y: round(this.y),
 		};
 	}
 }
