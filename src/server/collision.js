@@ -62,15 +62,29 @@ class Collision {
 		}
 	}
 
-	playerRotateClockwiseBall(id) {
-		this.ball.direction = Math.atan2(this.players[id].x - this.ball.x, this.players[id].y - this.ball.y) - Math.PI / 2;
+	playerRotateClockwiseBall(id, dt) {
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
+		const vector = Math.atan2(Math.round(this.players[ id ].x - this.ball.x), Math.round(this.players[ id ].y - this.ball.y));
+		const ds = this.ball.speed * dt;
+		const dx = Math.round(this.players[ id ].x - this.ball.x);
+		const dy = Math.round(this.players[ id ].y - this.ball.y);
+		const radius = Math.hypot(dx, dy);
+		const N = (2 * Math.PI * radius) / ds;
+		const angle = (Math.PI / 2) - (Math.PI / N);
+		this.ball.direction = vector - angle;
 		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
-	playerRotateCounterClockwiseBall(id) {
-		this.ball.direction = Math.atan2(this.players[ id ].x - this.ball.x, this.players[ id ].y - this.ball.y) + Math.PI / 2;
+	playerRotateCounterClockwiseBall(id, dt) {
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
+		const vector = Math.atan2(Math.round(this.players[ id ].x - this.ball.x), Math.round(this.players[ id ].y - this.ball.y));
+		const ds = this.ball.speed * dt;
+		const dx = Math.round(this.players[ id ].x - this.ball.x);
+		const dy = Math.round(this.players[ id ].y - this.ball.y);
+		const radius = Math.hypot(dx, dy);
+		const N = (2 * Math.PI * radius) / ds;
+		const angle = (Math.PI / 2) - (Math.PI / N);
+		this.ball.direction = vector + angle;
 		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
@@ -158,9 +172,9 @@ class Collision {
 			if (this.players[id].pull) {
 				this.playerPullBall(id);
 			} else if (this.players[id].rotateClockwise) {
-				this.playerRotateClockwiseBall(id);
+				this.playerRotateClockwiseBall(id, dt);
 			} else if (this.players[id].rotateCounterClockwise) {
-				this.playerRotateCounterClockwiseBall(id);
+				this.playerRotateCounterClockwiseBall(id, dt);
 			} else if (this.players[id].push) {
 				this.playerPushBall(id);
 			}
