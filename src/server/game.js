@@ -121,22 +121,6 @@ class Game extends Collision {
 	 * Create Update message for all players - description of current state of the game
 	 * @returns {object} description of the game
 	 */
-	async createUpdate() {
-		return {
-			timestamp: Date.now(),
-			ball: {
-				x: Math.floor(this.ball.x),
-				y: Math.floor(this.ball.y),
-			},
-			players: Object.values(this.players).map(player => ({
-				x: Math.floor(player.x),
-				y: Math.floor(player.y),
-				socket: player.socket,
-				team: player.team,
-			})),
-		};
-	}
-
 	getState() {
 		const update = {
 			timestamp: Date.now(),
@@ -220,12 +204,17 @@ class Game extends Collision {
 		delete this.players[ socket.id ];
 
 		if (this.team.blue.getPlayersCount() === 0 && this.team.red.getPlayersCount() === 0) {
-			deleteGame(this.id);
+			this.finish();
 		}
 	}
 
 	isFree() {
 		return Object.keys(this.players).length < GAME.MAX_PLAYERS;
+	}
+
+	finish() {
+		clearInterval(this.interval);
+		deleteGame(this.id);
 	}
 
 }
