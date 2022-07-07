@@ -65,19 +65,19 @@ class Collision {
 
 	playerRotateClockwiseBall(id, dt) {
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
-		const vector = atan2(round(this.players[ id ].x - this.ball.x), round(this.players[ id ].y - this.ball.y));
-		const ds = this.ball.speed * dt;
-		const dx = round(this.players[ id ].x - this.ball.x);
-		const dy = round(this.players[ id ].y - this.ball.y);
-		const radius = hypot(dx, dy);
-		const N = (2 * PI * radius) / ds;
-		const angle = (PI / 2) - (PI / N);
+		const { vector, angle } = this.getRotationAngle(id, dt);
 		this.ball.direction = vector - angle;
 		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
 	}
 
 	playerRotateCounterClockwiseBall(id, dt) {
 		this.ball.speed += BALL.BONUS_SPEED_ON_ROTATE;
+		const { vector, angle } = this.getRotationAngle(id, dt);
+		this.ball.direction = vector + angle;
+		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
+	}
+
+	getRotationAngle(id, dt) {
 		const vector = atan2(round(this.players[ id ].x - this.ball.x), round(this.players[ id ].y - this.ball.y));
 		const ds = this.ball.speed * dt;
 		const dx = round(this.players[ id ].x - this.ball.x);
@@ -85,8 +85,7 @@ class Collision {
 		const radius = hypot(dx, dy);
 		const N = (2 * PI * radius) / ds;
 		const angle = (PI / 2) - (PI / N);
-		this.ball.direction = vector + angle;
-		this.ball.resistance = PITCH.RESISTANCE_DEFAULT;
+		return { vector, angle };
 	}
 
 	playerPushBall(id) {
