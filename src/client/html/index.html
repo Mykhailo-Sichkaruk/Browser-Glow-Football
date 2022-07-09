@@ -13,14 +13,20 @@
     <meta name="author" content="Mykhailo Sichkaruk + Thanks to: Ivan Petrenko">
 </head>
 
-<body>
+<body id="body">
     <div id="root"></div>
     <canvas id="canvas-background" class="canvasBackground"></canvas>
     <canvas id="canvas" class="canvas"></canvas>
     <div class="mouse" id="mouse"></div>
     <input type="text" id="nickname_form" class="nickname_form" placeholder="nickname" autofocus>
     <button class="start_game_button" type="button" id="start_game_button">START</button>
-
+    <div id="expandable-menu" class="expandable-menu">
+        <div id="team">
+            <div id="team--room-id"></div>
+            <div id="team-create-room"></div>
+            <div id="team-join-room"></div>
+        </div>
+    </div>
     <div class="score_board" id="score_board">
         <span class="blue_score" id="blue_score">0</span>
         :

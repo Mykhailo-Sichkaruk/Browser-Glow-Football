@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import { throttle } from "lodash";
 import { me, socket } from "./index.js";
-import  { PLAYER, BALL, PITCH, KEY_TYPE, INPUT_TYPE, GAME, MESSAGE } from "../shared/constants.js";
+import { PLAYER, BALL, PITCH, KEY_TYPE, INPUT_TYPE, GAME, MESSAGE } from "../shared/constants.js";
 
 const line = document.getElementById("line");
 const push = document.getElementById("push");

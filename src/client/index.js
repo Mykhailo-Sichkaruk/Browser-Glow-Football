@@ -14,6 +14,7 @@ const redScoreDOM 			= document.getElementById("red_score");
 const blueScoreDOM 			= document.getElementById("blue_score");
 const scoreBoardDOM 		= document.getElementById("score_board");
 const scoreEffectDOM 		= document.getElementById("score_effect");
+const scrollMenuDOM	 		= document.getElementById("expandable-menu");
 
 let currentUpdate;
 let me;
@@ -44,8 +45,13 @@ const Ping = ({ time }) => (
 	</div>
 );
 
+scrollMenuDOM.classList.add("collapse-menu");
+scrollMenuDOM.classList.add("expand-menu");
+
 window.onload = () => {
+	console.log("window loaded");
 	initSocket();
+	document.body.addEventListener("wheel", handleScroll);
 };
 
 function initSocket() {
@@ -121,6 +127,31 @@ function endGame() {
 	startGameButtonDOM.style.display = "block";
 	scoreBoardDOM.style.display = "none";
 	root.render(<Ping time={"Server disconnected"} />);
+}
+
+function handleScroll(event) {
+	if (checkScrollDirectionIsUp(event)) {
+		onScrollUp();
+	} else {
+		onScrollDown();
+	}
+}
+
+function checkScrollDirectionIsUp(event) {
+	if (event.wheelDelta) {
+		return event.wheelDelta > 0;
+	}
+	return event.deltaY < 0;
+}
+
+function onScrollUp() {
+	console.log("scroll up");
+	scrollMenuDOM.classList.toggle("expand-menu");
+}
+
+function onScrollDown() {
+	console.log("scroll down");
+	scrollMenuDOM.classList.toggle("collapse-menu");
 }
 
 export { currentUpdate, me };
