@@ -52,6 +52,7 @@ window.onload = () => {
 	console.log("window loaded");
 	initSocket();
 	document.body.addEventListener("wheel", handleScroll);
+	document.addEventListener("keydown", onEnter);
 };
 
 function initSocket() {
@@ -114,6 +115,7 @@ function initGame() {
 	initInput();
 	initCanvas();
 	socket.emit(MESSAGE.JOIN_GAME, nicknameFormDOM.value);
+	document.removeEventListener("keydown", onEnter);
 }
 
 function endGame() {
@@ -127,6 +129,7 @@ function endGame() {
 	startGameButtonDOM.style.display = "block";
 	scoreBoardDOM.style.display = "none";
 	root.render(<Ping time={"Server disconnected"} />);
+	document.addEventListener("keydown", onEnter);
 }
 
 function handleScroll(event) {
@@ -152,6 +155,12 @@ function onScrollUp() {
 function onScrollDown() {
 	console.log("scroll down");
 	scrollMenuDOM.classList.toggle("collapse-menu");
+}
+
+function onEnter(event) {
+	if (event.key === "Enter") {
+		initGame();
+	}
 }
 
 export { currentUpdate, me };
