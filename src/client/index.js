@@ -45,8 +45,6 @@ const Ping = ({ time }) => (
 	</div>
 );
 
-scrollMenuDOM.classList.add("collapse-menu");
-scrollMenuDOM.classList.add("expand-menu");
 
 window.onload = () => {
 	console.log("window loaded");
@@ -148,13 +146,11 @@ function checkScrollDirectionIsUp(event) {
 }
 
 function onScrollUp() {
-	console.log("scroll up");
-	scrollMenuDOM.classList.toggle("expand-menu");
+	scrollMenuDOM.className = "collapsed-menu";
 }
 
 function onScrollDown() {
-	console.log("scroll down");
-	scrollMenuDOM.classList.toggle("collapse-menu");
+	scrollMenuDOM.className = "expanded-menu";
 }
 
 function onEnter(event) {
