@@ -215,23 +215,41 @@
 }
 
 .expandable-menu {
+    border-radius: 10px;
+    border: groove;
+    border-style: solid;
+    opacity: 0;
+}
+
+.collapsed-menu {
     background-color: rgb(0, 192, 32);
     border-bottom: 2px solid rgb(200, 255, 0);
+    position: absolute;
+    z-index: 5;
+    top: 30%;
+    left: 35%;
+    width: 30%;
+    height: 45%;
+    border-radius: 10px;
+    border: groove;
+    border-style: solid;
+    opacity: 0;
+    transition: 250ms linear;
+}
+
+.expanded-menu {
+    background-color: rgb(0, 192, 32);
     position: absolute;
     z-index: 5;
     top: 50%;
     left: 35%;
     width: 30%;
     height: 45%;
-    opacity: 0;
-}
-
-.collapse-menu {
-    animation: close 1s ease;
-}
-
-.expand-menu {
-    animation: open 1s ease;
+    border-radius: 25px;
+    border-left: inset 5px rgb(0, 192, 32);
+    border-top: inset 5px rgb(0, 192, 32);
+    opacity: 1;
+    transition: 250ms linear;
 }
 
 
