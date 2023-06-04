@@ -48,7 +48,7 @@
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
         "socket.io": "^4.5.1",
-        "socket.io-client": "^4.5.1",
+        "socket.io-client": "^4.6.1",
         "style-loader": "^3.3.1",
         "vm-browserify": "^1.1.2"
     },
